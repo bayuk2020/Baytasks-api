@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\TelegramSettingController;
 use App\Http\Controllers\Api\BoardController;
 use App\Http\Controllers\Api\HabitController;
+use App\Http\Controllers\Api\JournalController;
+use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\BookNoteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -157,6 +160,70 @@ Route::delete(
 Route::post(
     '/habits/{id}/archive',
     [HabitController::class, 'archive']
+);
+
+// =========================
+// JOURNAL
+// =========================
+Route::apiResource(
+    'journals',
+    JournalController::class
+);
+
+
+
+
+// =========================
+// BOOKS & BOOK NOTES / LIBRARY / READING VAULT
+// =========================
+Route::get(
+    '/books',
+    [BookController::class, 'index']
+);
+
+Route::post(
+    '/books',
+    [BookController::class, 'store']
+);
+
+Route::put(
+    '/books/{book}',
+    [BookController::class, 'update']
+);
+
+Route::delete(
+    '/books/{book}',
+    [BookController::class, 'destroy']
+);
+
+Route::post(
+    '/books/{book}/progress',
+    [BookController::class, 'updateProgress']
+);
+
+Route::post(
+    '/books/upload-cover',
+    [BookController::class, 'uploadCover']
+);
+
+Route::post(
+    '/books/upload-pdf',
+    [BookController::class, 'uploadPdf']
+);
+
+Route::post(
+    '/book-notes',
+    [BookNoteController::class, 'store']
+);
+
+Route::put(
+    '/book-notes/{bookNote}',
+    [BookNoteController::class, 'update']
+);
+
+Route::delete(
+    '/book-notes/{bookNote}',
+    [BookNoteController::class, 'destroy']
 );
 
 // =========================

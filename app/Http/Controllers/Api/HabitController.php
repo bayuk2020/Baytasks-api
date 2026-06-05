@@ -15,10 +15,9 @@ class HabitController extends Controller
 
     public function index()
     {
-        $habits = Habit::with('logs')
-            ->where('archived', false)
-            ->latest()
-            ->get();
+    $habits = Habit::with('logs')
+        ->latest()
+        ->get();
 
         return response()->json(
             $habits
@@ -170,7 +169,7 @@ public function archive($id)
     $habit = Habit::findOrFail($id);
 
     $habit->update([
-        'archived' => true,
+        'archived' => !$habit->archived
     ]);
 
     return response()->json([

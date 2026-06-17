@@ -1,22 +1,27 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
-class IncomeSource extends Model
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Contact extends Model
 {
-    protected $table = 'finance_income_sources';
+    protected $table = 'finance_contacts';
+
     protected $fillable = [
         'id',
-        'user_id',
         'name',
-        'color',
-        'is_active',
+        'type',
+        'phone',
+        'notes',
     ];
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+
     public $incrementing = false;
+
     protected $keyType = 'string';
-    public function transactions()
+
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }

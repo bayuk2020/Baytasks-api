@@ -12,6 +12,16 @@ use App\Http\Controllers\Api\HabitController;
 use App\Http\Controllers\Api\JournalController;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\BookNoteController;
+use App\Http\Controllers\Api\Finance\AccountController;
+use App\Http\Controllers\Api\Finance\TransactionController;
+use App\Http\Controllers\Api\Finance\IncomeSourceController;
+use App\Http\Controllers\Api\Finance\BudgetController;
+use App\Http\Controllers\Api\Finance\DebtController;
+use App\Http\Controllers\Api\Finance\TradeController;
+use App\Http\Controllers\Api\Finance\ContactController;
+// 1. IMPORT CONTROLLER BARU DI SINI SU
+use App\Http\Controllers\Api\Finance\AnalyticsController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,194 +47,73 @@ Route::get('/test', function () {
 // =========================
 
 Route::get('/tasks', [TaskController::class, 'index']);
-
 Route::get('/tasks/{id}', [TaskController::class, 'show']);
-
 Route::post('/tasks', [TaskController::class, 'store']);
-
 Route::patch('/tasks/{id}', [TaskController::class, 'update']);
-
 Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
-
 
 // =========================
 // SUBTASKS
 // =========================
 
-Route::post(
-    '/subtasks',
-    [SubtaskController::class, 'store']
-);
-
-Route::patch(
-    '/subtasks/{id}',
-    [SubtaskController::class, 'update']
-);
-
-Route::delete(
-    '/subtasks/{id}',
-    [SubtaskController::class, 'destroy']
-);
+Route::post('/subtasks', [SubtaskController::class, 'store']);
+Route::patch('/subtasks/{id}', [SubtaskController::class, 'update']);
+Route::delete('/subtasks/{id}', [SubtaskController::class, 'destroy']);
 
 // =========================
 // ATTACHMENTS
 // =========================
 
-Route::post(
-    '/attachments',
-    [AttachmentController::class, 'store']
-);
-
-Route::delete(
-    '/attachments/{id}',
-    [AttachmentController::class, 'destroy']
-);
+Route::post('/attachments', [AttachmentController::class, 'store']);
+Route::delete('/attachments/{id}', [AttachmentController::class, 'destroy']);
 
 // =========================
 // TELEGRAM SETTINGS
 // =========================
 
-Route::get(
-    '/telegram-settings',
-    [TelegramSettingController::class, 'show']
-);
-
-Route::post(
-    '/telegram-settings',
-    [TelegramSettingController::class, 'save']
-);
-
-Route::post(
-    '/tasks/reorder',
-    [TaskController::class, 'reorder']
-);
+Route::get('/telegram-settings', [TelegramSettingController::class, 'show']);
+Route::post('/telegram-settings', [TelegramSettingController::class, 'save']);
+Route::post('/tasks/reorder', [TaskController::class, 'reorder']);
 
 // =========================
 // BOARDS
 // =========================
 
-Route::get(
-    '/boards',
-    [BoardController::class, 'index']
-);
-
-Route::post(
-    '/boards',
-    [BoardController::class, 'store']
-);
-
-Route::patch(
-    '/boards/{id}',
-    [BoardController::class, 'update']
-);
-
-Route::delete(
-    '/boards/{id}',
-    [BoardController::class, 'destroy']
-);
-
-Route::post(
-    '/boards/reorder',
-    [BoardController::class, 'reorder']
-);
+Route::get('/boards', [BoardController::class, 'index']);
+Route::post('/boards', [BoardController::class, 'store']);
+Route::patch('/boards/{id}', [BoardController::class, 'update']);
+Route::delete('/boards/{id}', [BoardController::class, 'destroy']);
+Route::post('/boards/reorder', [BoardController::class, 'reorder']);
 
 // =========================
 // HABITS
 // =========================
 
-Route::get(
-    '/habits',
-    [HabitController::class, 'index']
-);
-
-Route::post(
-    '/habits',
-    [HabitController::class, 'store']
-);
-
-Route::patch(
-    '/habits/{id}',
-    [HabitController::class, 'update']
-);
-
-Route::post(
-    '/habits/{id}/toggle',
-    [HabitController::class, 'toggle']
-);
-
-Route::delete(
-    '/habits/{id}',
-    [HabitController::class, 'destroy']
-);
-
-Route::post(
-    '/habits/{id}/archive',
-    [HabitController::class, 'archive']
-);
+Route::get('/habits', [HabitController::class, 'index']);
+Route::post('/habits', [HabitController::class, 'store']);
+Route::patch('/habits/{id}', [HabitController::class, 'update']);
+Route::post('/habits/{id}/toggle', [HabitController::class, 'toggle']);
+Route::delete('/habits/{id}', [HabitController::class, 'destroy']);
+Route::post('/habits/{id}/archive', [HabitController::class, 'archive']);
 
 // =========================
 // JOURNAL
 // =========================
-Route::apiResource(
-    'journals',
-    JournalController::class
-);
-
-
-
+Route::apiResource('journals', JournalController::class);
 
 // =========================
 // BOOKS & BOOK NOTES / LIBRARY / READING VAULT
 // =========================
-Route::get(
-    '/books',
-    [BookController::class, 'index']
-);
-
-Route::post(
-    '/books',
-    [BookController::class, 'store']
-);
-
-Route::put(
-    '/books/{book}',
-    [BookController::class, 'update']
-);
-
-Route::delete(
-    '/books/{book}',
-    [BookController::class, 'destroy']
-);
-
-Route::post(
-    '/books/{book}/progress',
-    [BookController::class, 'updateProgress']
-);
-
-Route::post(
-    '/books/upload-cover',
-    [BookController::class, 'uploadCover']
-);
-
-Route::post(
-    '/books/upload-pdf',
-    [BookController::class, 'uploadPdf']
-);
-
-Route::post(
-    '/book-notes',
-    [BookNoteController::class, 'store']
-);
-
-Route::put(
-    '/book-notes/{bookNote}',
-    [BookNoteController::class, 'update']
-);
-
-Route::delete(
-    '/book-notes/{bookNote}',
-    [BookNoteController::class, 'destroy']
-);
+Route::get('/books', [BookController::class, 'index']);
+Route::post('/books', [BookController::class, 'store']);
+Route::put('/books/{book}', [BookController::class, 'update']);
+Route::delete('/books/{book}', [BookController::class, 'destroy']);
+Route::post('/books/{book}/progress', [BookController::class, 'updateProgress']);
+Route::post('/books/upload-cover', [BookController::class, 'uploadCover']);
+Route::post('/books/upload-pdf', [BookController::class, 'uploadPdf']);
+Route::post('/book-notes', [BookNoteController::class, 'store']);
+Route::put('/book-notes/{bookNote}', [BookNoteController::class, 'update']);
+Route::delete('/book-notes/{bookNote}', [BookNoteController::class, 'destroy']);
 
 // =========================
 // AUTH USER
@@ -232,4 +121,27 @@ Route::delete(
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+// =========================
+// FINANCE
+// =========================
+
+Route::prefix('finance')->group(function () {
+    // 2. DAFTARKAN ROUTE ANALITIK BARU DI SINI
+    // Hasil jalurnya otomatis menjadi: /api/finance/analytics-data
+    Route::get('analytics-data', AnalyticsController::class);
+
+    Route::get('contacts/analytics', [ContactController::class, 'analytics']);
+    Route::get('contacts/{contact}/transactions', [ContactController::class, 'transactions']);
+
+    Route::apiResource('contacts', ContactController::class);
+    Route::apiResource('accounts', AccountController::class);
+    Route::apiResource('transactions', TransactionController::class);
+    Route::apiResource('income-sources', IncomeSourceController::class)->except(['show']);
+    Route::apiResource('budgets', BudgetController::class);
+    Route::apiResource('debts', DebtController::class);
+    
+    Route::post('debts/{debt}/payments', [DebtController::class, 'payment']);
+    Route::apiResource('trades', TradeController::class);
 });

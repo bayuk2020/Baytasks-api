@@ -110,7 +110,7 @@ class RecurringTaskService
                     $task->priority,
 
                 'tags' =>
-                    $task->tags,
+                    is_array($task->tags) ? $task->tags : json_decode($task->tags, true) ?? [],
 
                 'due_at' =>
                     $newDue,

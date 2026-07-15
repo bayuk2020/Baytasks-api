@@ -374,6 +374,30 @@ public function update(
     }
 
     // =========================
+    // DELETE SUBTASK
+    // =========================
+    public function deleteSubtask($id)
+    {
+        // Cari subtask di dalam database, kalau ketemu langsung eksekusi mati
+        // Gunakan query langsung ke DB atau Model Subtask lu (misal: \App\Models\Subtask)
+        $subtask = \DB::table('subtasks')->where('id', $id)->first();
+        
+        if (!$subtask) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Subtask tidak ditemukan'
+            ], 404);
+        }
+
+        \DB::table('subtasks')->where('id', $id)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subtask deleted successfully dari TaskController!'
+        ]);
+    }
+
+    // =========================
 // REORDER TASKS
 // =========================
 

@@ -64,3 +64,8 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+php artisan serve
+ngrok http 8000
+for /l %x in (1,0,2) do (echo [%time%] Running... & php artisan baytasks:reminders & timeout /t 60 /nobreak >nul)

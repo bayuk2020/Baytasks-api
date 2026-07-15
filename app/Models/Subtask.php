@@ -10,7 +10,9 @@ class Subtask extends Model
     use HasFactory;
 
     protected $table = 'subtasks';
-public $timestamps = false;
+    
+    public $timestamps = false;
+
     protected $fillable = [
         'task_id',
         'title',
@@ -22,10 +24,24 @@ public $timestamps = false;
         'done' => 'boolean',
     ];
 
+    // =========================================================
+    // 🌟 JEMBATAN AKSESOR: Biar Telegram bisa pake key 'completed'
+    // =========================================================
+    public function getCompletedAttribute(): bool
+    {
+        return (bool) $this->done;
+    }
+
+    public function setCompletedAttribute($value)
+    {
+        $this->attributes['done'] = (bool) $value;
+    }
+
+    // =========================
+    // RELATIONS
+    // =========================
     public function task()
     {
-        return $this->belongsTo(
-            Task::class
-        );
+        return $this->belongsTo(Task::class);
     }
 }

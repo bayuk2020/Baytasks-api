@@ -19,8 +19,11 @@ use App\Http\Controllers\Api\Finance\BudgetController;
 use App\Http\Controllers\Api\Finance\DebtController;
 use App\Http\Controllers\Api\Finance\TradeController;
 use App\Http\Controllers\Api\Finance\ContactController;
-// 1. IMPORT CONTROLLER BARU DI SINI SU
 use App\Http\Controllers\Api\Finance\AnalyticsController;
+use App\Http\Controllers\Api\TelegramWebhookController;
+use App\Http\Controllers\Api\GoalController;
+use App\Http\Controllers\Api\MilestoneController;
+use App\Http\Controllers\Api\QuarterlyPlanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +61,7 @@ Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
 
 Route::post('/subtasks', [SubtaskController::class, 'store']);
 Route::patch('/subtasks/{id}', [SubtaskController::class, 'update']);
-Route::delete('/subtasks/{id}', [SubtaskController::class, 'destroy']);
+Route::delete('/subtasks/{id}', [App\Http\Controllers\Api\TaskController::class, 'deleteSubtask']);
 
 // =========================
 // ATTACHMENTS
@@ -145,3 +148,13 @@ Route::prefix('finance')->group(function () {
     Route::post('debts/{debt}/payments', [DebtController::class, 'payment']);
     Route::apiResource('trades', TradeController::class);
 });
+
+
+// =========================
+// GOALS SYSTEM API
+// =========================
+Route::apiResource('goals', GoalController::class);
+Route::apiResource('milestones', MilestoneController::class)->only(['store', 'update', 'destroy']);
+Route::apiResource('quarterly-plans', QuarterlyPlanController::class)->only(['store', 'update']);
+
+Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);

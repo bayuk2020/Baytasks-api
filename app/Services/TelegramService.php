@@ -4,62 +4,65 @@ namespace App\Services;
 
 class TelegramService
 {
-    public function sendMessage(
-    $chatId,
-    $message
-) {
+    /**
+     * Mengirim pesan ke Telegram (Mendukung Teks Formal & Tombol Interaktif)
+     */
+    public function sendMessage($chatId, $message, $options = [])
+    {
+        $token = env('TELEGRAM_BOT_TOKEN');
+        $url = "https://api.telegram.org/bot{$token}/sendMessage";
 
-    $token =
-        env(
-            'TELEGRAM_BOT_TOKEN'
-        );
+        // Gabungkan array default dengan parameter options tambahan (seperti reply_markup)
+        $post = array_merge([
+            'chat_id'    => $chatId,
+            'text'       => $message,
+            'parse_mode' => 'HTML',
+        ], $options);
 
-    $url =
-        "https://api.telegram.org/bot{$token}/sendMessage";
+        // Jika reply_markup dikirim dalam bentuk array, ubah ke json string otomatis
+        if (isset($post['reply_markup']) && is_array($post['reply_markup'])) {
+            $post['reply_markup'] = json_encode($post['reply_markup']);
+        }
 
-    $post = [
-        'chat_id' =>
-            $chatId,
+        return $this->executeCurl($url, $post);
+    }
 
-        'text' =>
-            $message,
+    /**
+     * Mengubah/Mengedit pesan yang sudah terkirim (Buat ngilangin tombol setelah diklik)
+     */
+    public function editMessageText($chatId, $messageId, $newMessage, $options = [])
+    {
+        $token = env('TELEGRAM_BOT_TOKEN');
+        $url = "https://api.telegram.org/bot{$token}/editMessageText";
 
-        'parse_mode' =>
-            'HTML',
-    ];
+        $post = array_merge([
+            'chat_id'    => $chatId,
+            'message_id' => $messageId,
+            'text'       => $newMessage,
+            'parse_mode' => 'HTML',
+        ], $options);
 
-    $ch =
-        curl_init();
+        if (isset($post['reply_markup']) && is_array($post['reply_markup'])) {
+            $post['reply_markup'] = json_encode($post['reply_markup']);
+        }
 
-    curl_setopt(
-        $ch,
-        CURLOPT_URL,
-        $url
-    );
+        return $this->executeCurl($url, $post);
+    }
 
-    curl_setopt(
-        $ch,
-        CURLOPT_POST,
-        true
-    );
+    /**
+     * Helper internal curl biar ga nulis kode cURL berulang-ulang, hemat baris!
+     */
+    private function executeCurl($url, $postData)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    curl_setopt(
-        $ch,
-        CURLOPT_POSTFIELDS,
-        $post
-    );
+        $result = curl_exec($ch);
+        curl_close($ch);
 
-    curl_setopt(
-        $ch,
-        CURLOPT_RETURNTRANSFER,
-        true
-    );
-
-    $result =
-        curl_exec($ch);
-
-    curl_close($ch);
-
-    return $result;
-}
+        return $result;
+    }
 }

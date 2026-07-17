@@ -20,7 +20,7 @@ return [
         '*',
     ],
 
-    'allowed_origins' => ['*'],
+   'allowed_origins' => ['https://baytasks.kabyra.my.id'],,
 
     'allowed_origins_patterns' => [],
 

@@ -70,10 +70,12 @@ class TaskHandler
             return;
         }
 
-        if (in_array($this->callbackData, ['pulse_kerja', 'pulse_belajar'])) {
+        if (in_array($this->callbackData, ['pulse_kerja', 'pulse_belajar', 'pulse_lainnya'])) {
             $this->handlePulseCheck();
         } elseif ($this->callbackData === 'intercept_target_tasks') {
             $this->startWizard();
+        } elseif ($this->callbackData === 'intercept_target_memories') {
+            $this->promptForInterruptionTask();
         } elseif (str_starts_with($this->callbackData, 'wiz_')) {
             $this->processWizard($this->callbackData);
         } elseif (str_starts_with($this->callbackData, 'manual_board_')) {
@@ -103,43 +105,37 @@ class TaskHandler
             return;
         }
 
-        // =========================================================
-        // FIX KUNCI INTERAKTIF TEXT INPUT SAAT DI SESI WAITING TASK SELECTION
-        // =========================================================
+        // PENGECEKAN INTERAKSI TASK VIA MENU SANTAI (BOTH BOARDS 2 & 4)
         if ($this->session && $this->session->step === 'waiting_task_selection') {
-            // Ambil task nunggak penyeimbang context dashboard santai kemarin
-            $context = json_decode($this->session->context_data, true);
-            $activity = $context['activity_type'] ?? 'kerja';
-            $targetBoard = ($activity === 'belajar') ? 4 : 2;
-            $openTasks = Task::where('board_id', $targetBoard)->where('column_key', '!=', 'done')->get();
+            $openTasks = Task::whereIn('board_id', [2, 4])->where('column_key', '!=', 'done')->get();
 
-            // SENSOR 1: Jika user ketik format "{nomor} done" (Contoh: "1 done")
+            // SENSOR 1: Jika user ketik format "{nomor} done"
             if (preg_match('/^(\d+)\s+done$/i', $textLower, $matches)) {
                 $index = (int)$matches[1] - 1;
                 if (isset($openTasks[$index])) {
                     $task = $openTasks[$index];
                     $task->update(['completed_at' => now(), 'column_key' => 'done']);
                     $this->telegram->sendMessage($this->chatId, "✅ Mantap, Bay! Tugas \"<b>" . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . "</b>\" ditutup via text command!");
-                    $this->handlePulseCheck(); // Auto refresh list sisa tugas
+                    $this->handlePulseCheck(); // Auto refresh list
                 } else {
                     $this->telegram->sendMessage($this->chatId, "⚠️ Nomor urutan tugas salah kawan.");
                 }
                 return;
             }
 
-            // SENSOR 2: Jika user HANYA MENGETIK ANGKA (Contoh: ketik "1" untuk buka detail menu)
+            // SENSOR 2: Jika user HANYA MENGETIK ANGKA (Buka detail menu)
             if (is_numeric($textLower)) {
                 $index = (int)$textLower - 1;
                 if (isset($openTasks[$index])) {
                     $task = $openTasks[$index];
-                    $this->renderTaskSensation($task->id, true); // Buka Sesi Atraktif Full Tombol Aksi!
+                    $this->renderTaskSensation($task->id, true);
                 } else {
                     $this->telegram->sendMessage($this->chatId, "⚠️ Nomor urutan tugas salah kawan.");
                 }
                 return;
             }
 
-            // FALLBACK JIKA USER NGASAL SAAT LIHAT LIST TUGAS SANTAI
+            // FALLBACK NGASAL DI LIST TUGAS SANTAI
             $this->telegram->sendMessage(
                 $this->chatId, 
                 "⚠️ <b>Maaf kawan, aku tidak mengenali perintah itu.</b>\n\n" .
@@ -192,50 +188,70 @@ class TaskHandler
     private function handlePulseCheck()
     {
         $activity = str_replace('pulse_', '', $this->callbackData) ?: 'kerja';
-        $targetBoard = ($activity === 'belajar') ? 4 : 2;
-        $label = ($activity === 'belajar') ? 'belajar/kuliah' : 'kerjaan';
-        $openTasks = Task::where('board_id', $targetBoard)->where('column_key', '!=', 'done')->get();
 
-        if ($openTasks->isEmpty()) {
+        // JIKA AKTIVITAS ADALAH KERJA / BELAJAR
+        if ($activity === 'kerja' || $activity === 'belajar') {
+            $targetBoard = ($activity === 'belajar') ? 4 : 2;
+            $label = ($activity === 'belajar') ? 'belajar/kuliah' : 'kerjaan';
+            $openTasks = Task::where('board_id', $targetBoard)->where('column_key', '!=', 'done')->get();
+
+            if ($openTasks->isEmpty()) {
+                $keyboard = [
+                    'inline_keyboard' => [
+                        [
+                            ['text' => '🌐 Aktivitas Lainnya', 'callback_data' => 'pulse_lainnya'],
+                            ['text' => '🔙 Kembali', 'callback_data' => 'pulse_back_to_menu']
+                        ]
+                    ]
+                ];
+                $this->telegram->editMessageText($this->chatId, $this->messageId, "🎉 <b>All Clear, Bay!</b> Gak ada tugas nunggak di board {$label}mu.", ['reply_markup' => $keyboard]);
+                return;
+            }
+
+            $buttons = [];
+            $txt = "📋 <b>Daftar Sisa Tugas Hari Ini (" . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . "):</b>\n\n";
+            
+            foreach ($openTasks as $i => $t) {
+                $txt .= ($i + 1) . ". 📌 <b>" . htmlspecialchars($t->title, ENT_QUOTES, 'UTF-8') . "</b>\n";
+                $buttons[] = [['text' => "🎯 Kelola Tugas " . ($i + 1), 'callback_data' => 'select_task_' . $t->id]];
+            }
+            
+            $txt .= "\n💡 <i>Ketik angka urut (contoh: <code>1</code>) atau klik tombol di bawah untuk mengelola detail & aksi tugas.\n" .
+                    "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
+                    "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
+
+            $buttons[] = [
+                ['text' => '🌐 Aktivitas Lainnya', 'callback_data' => 'pulse_lainnya'],
+                ['text' => '🔙 Kembali', 'callback_data' => 'pulse_back_to_menu']
+            ];
+
+            $this->sessionManager->updateSession($this->chatId, [
+                'step' => 'waiting_task_selection', 
+                'context_data' => json_encode(['activity_type' => $activity])
+            ]);
+            
+            $this->telegram->editMessageText($this->chatId, $this->messageId, $txt, [
+                'reply_markup' => ['inline_keyboard' => $buttons]
+            ]);
+        } 
+        // JIKA USER TENTUKAN PILIHAN AKTIVITAS LAINNYA
+        elseif ($activity === 'lainnya') {
             $keyboard = [
                 'inline_keyboard' => [
                     [
-                        ['text' => '🌐 Aktivitas Lainnya', 'callback_data' => 'pulse_lainnya'],
-                        ['text' => '🔙 Kembali', 'callback_data' => 'pulse_back_to_menu']
+                        ['text' => '🗂️ Masuk Memories', 'callback_data' => 'intercept_target_memories'], 
+                        ['text' => '📋 Masuk Tasks', 'callback_data' => 'intercept_target_tasks']
                     ]
                 ]
             ];
-            $this->telegram->editMessageText($this->chatId, $this->messageId, "🎉 <b>All Clear, Bay!</b> Gak ada tugas nunggak di board {$label}mu.", ['reply_markup' => $keyboard]);
-            return;
+            $this->telegram->editMessageText($this->chatId, $this->messageId, "🌐 <b>Silakan ketik aktivitas Anda saat ini secara manual:</b>\n\nSebelum lanjut, tentukan ke mana sistem harus mengarsipkan aktivitas baru ini, Bay?", ['reply_markup' => $keyboard]);
         }
+    }
 
-        $buttons = [];
-        $txt = "📋 <b>Daftar Sisa Tugas Hari Ini (" . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . "):</b>\n\n";
-        
-        foreach ($openTasks as $i => $t) {
-            $txt .= ($i + 1) . ". 📌 <b>" . htmlspecialchars($t->title, ENT_QUOTES, 'UTF-8') . "</b>\n";
-            // FIX TERPENTING: Inject tombol inline dinamis untuk tiap tugas biar langsung bisa dieksekusi!
-            $buttons[] = [['text' => "🎯 Kelola Tugas " . ($i + 1), 'callback_data' => 'select_task_' . $t->id]];
-        }
-        
-        // UX IMPROVEMENT: Informasi instruksi pengetikan text di bagian paling bawah teks pesan
-        $txt .= "\n💡 <i>Ketik angka urut (contoh: <code>1</code>) atau klik tombol di bawah untuk mengelola detail & aksi tugas.\n" .
-                "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
-                "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
-
-        $buttons[] = [
-            ['text' => '🌐 Aktivitas Lainnya', 'callback_data' => 'pulse_lainnya'],
-            ['text' => '🔙 Kembali', 'callback_data' => 'pulse_back_to_menu']
-        ];
-
-        $this->sessionManager->updateSession($this->chatId, [
-            'step' => 'waiting_task_selection', 
-            'context_data' => json_encode(['activity_type' => $activity])
-        ]);
-        
-        $this->telegram->editMessageText($this->chatId, $this->messageId, $txt, [
-            'reply_markup' => ['inline_keyboard' => $buttons]
-        ]);
+    private function promptForInterruptionTask()
+    {
+        $this->telegram->editMessageText($this->chatId, $this->messageId, "💥 <b>kok ga ngerjain yang di To Do List? lagi ngerjain apa?</b>\n\nKetik aktivitas daruratmu saat ini, sistem akan mencatatnya langsung ke memories kawan:");
+        $this->sessionManager->updateSession($this->chatId, ['step' => 'waiting_interruption_activity_legacy']);
     }
 
     public function startWizard()
@@ -357,7 +373,7 @@ class TaskHandler
                     }
                 }
 
-                $motivations = ["Semangat, lanjutin pengerjaannya kawan! 💪🔥", "Gas terus su, kerja keras takkan mengkhianati hasil! 💵", "Fokus Bay, beresin itu kerjaan biar cepet santai lagi! 🚀"];
+                $motivations = ["Semangat, lanjutin pengerjaannya kawan! 💪🔥", "Gas terus su, kerja keras takkan mengkhianati hasil! 💵🤑", "Fokus Bay, beresin itu kerjaan biar cepet santai lagi! 🚀"];
                 $this->telegram->sendMessage($this->chatId, "💾 <b>Tugas Baru Berhasil Disimpan ke MySQL Database.</b>");
                 $this->telegram->sendMessage($this->chatId, $motivations[array_rand($motivations)]);
                 $this->sessionManager->clearSession($this->chatId);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api; 
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Telegram\Handlers\TaskHandler;
 use App\Telegram\Handlers\HabitHandler;
+use App\Models\Task; // Wajib ditambahkan untuk memanggil model Task
 
 class TelegramWebhookController extends Controller
 {
@@ -93,18 +94,54 @@ class TelegramWebhookController extends Controller
         }
     }
 
-private function handleCallback($callbackQuery)
+    private function handleCallback($callbackQuery)
     {
         $chatId = $callbackQuery['message']['chat']['id'];
         $messageId = $callbackQuery['message']['message_id'];
         $callbackData = $callbackQuery['data'];
 
-        // FIX ROUTING: Deteksi secara langsung tanpa array ribet, jika mengandung kata 'pulse_' atau 'menu_tasks' langsung hantam ke TaskHandler!
+        // =========================================================
+        // 🔥 INTERCEPTOR: TANGKAP TOMBOL DARI PENGINGAT TASK DULU
+        // =========================================================
+
+        // JIKA TOMBOL "SUDAH" DIKLIK
+        if (str_starts_with($callbackData, 'task_done_')) {
+            $taskId = str_replace('task_done_', '', $callbackData);
+            $task = Task::find($taskId);
+
+            if ($task) {
+                $task->update([
+                    'completed_at' => now(),
+                    'reminded' => true
+                ]);
+                $this->telegram->editMessageText($chatId, $messageId, "✅ Sip! Tugas <b>{$task->title}</b> sudah berhasil ditandai selesai. Mantap kerjanya Bay!");
+            } else {
+                $this->telegram->editMessageText($chatId, $messageId, "⚠️ Oops, data tugas tidak ditemukan di database.");
+            }
+            return; // Hentikan script di sini agar tidak dilanjutkan ke TaskHandler
+        }
+
+        // JIKA TOMBOL "BELUM" DIKLIK
+        if (str_starts_with($callbackData, 'task_notdone_')) {
+            $taskId = str_replace('task_notdone_', '', $callbackData);
+            $task = Task::find($taskId);
+
+            if ($task) {
+                $this->telegram->editMessageText($chatId, $messageId, "❌ Oke, tugas <b>{$task->title}</b> masih gantung. Jangan lupa diselesaikan ya!");
+            } else {
+                $this->telegram->editMessageText($chatId, $messageId, "⚠️ Oops, data tugas tidak ditemukan di database.");
+            }
+            return; // Hentikan script di sini
+        }
+
+        // =========================================================
+        // FIX ROUTING (BALIK KE LOGIKA LAMA)
+        // =========================================================
         if (
-            Str::startsWith($callbackData, ['menu_tasks', 'task_', 'waiting_', 'wiz_', 'manual_board_', 'select_task_', 'action_', 'set_prio_', 'sub_', 'intercept_target_']) || 
-            str_contains($callbackData, 'pulse_kerja') || 
-            str_contains($callbackData, 'pulse_belajar') || 
-            str_contains($callbackData, 'pulse_lainnya') || 
+            Str::startsWith($callbackData, ['menu_tasks', 'task_', 'waiting_', 'wiz_', 'manual_board_', 'select_task_', 'action_', 'set_prio_', 'sub_', 'intercept_target_']) ||
+            str_contains($callbackData, 'pulse_kerja') ||
+            str_contains($callbackData, 'pulse_belajar') ||
+            str_contains($callbackData, 'pulse_lainnya') ||
             str_contains($callbackData, 'pulse_back_to_menu')
         ) {
             (new TaskHandler($chatId, null, $callbackData, $messageId))->execute();

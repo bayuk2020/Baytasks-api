@@ -28,8 +28,6 @@ class HabitHandler
         $this->messageId = $messageId;
         $this->telegram = new TelegramService();
         $this->sessionManager = new TelegramSessionManager();
-        
-        // Ambil session secara otomatis lewat chat_id
         $this->session = $this->sessionManager->getSession($chatId);
     }
 
@@ -44,6 +42,22 @@ class HabitHandler
 
     private function handleCallback()
     {
+        // =========================================================
+        // HANDLER ACTIONS TOMBOL INTERAKTIF REMINDER HABIT
+        // =========================================================
+        if (str_starts_with($this->callbackData, 'habit_done_direct_')) {
+            $this->handleHabitDoneDirect();
+            return;
+        }
+
+        if (str_starts_with($this->callbackData, 'habit_snooze_5m_')) {
+            $this->handleHabitSnooze();
+            return;
+        }
+
+        // =========================================================
+        // MENU UTAMA & DASHBOARD
+        // =========================================================
         if ($this->callbackData === 'menu_habit') {
             $this->showHabitList();
         } elseif (str_starts_with($this->callbackData, 'toggle_habit_')) {
@@ -56,14 +70,88 @@ class HabitHandler
             $this->showLeisureHabits();
         } elseif ($this->callbackData === 'leisure_back_dashboard') {
             $this->renderLeisureDashboardMenu();
+        } elseif ($this->callbackData === 'leisure_delay_work') {
+            $this->telegram->sendMessage($this->chatId, "👌 <b>Oke nanti jangan lupa kerjain yaa kawan!</b> Selamat beristirahat sejenak.");
+            $this->sessionManager->clearSession($this->chatId);
         }
     }
 
-private function handleTextInput()
+    // =========================================================
+    // LOGIKA SELESAI HABIT VIA TOMBOL (DENGAN CATATAN TUNDA)
+    // =========================================================
+    private function handleHabitDoneDirect()
+    {
+        $habitId = (int) str_replace('habit_done_direct_', '', $this->callbackData);
+        $habit = Habit::find($habitId);
+        $today = Carbon::today()->toDateString();
+
+        if ($habit) {
+            $totalSnoozeCount = DB::table('memories')
+                ->where('type', 'habit_snooze_log')
+                ->where('title', 'like', "%Habit ID: {$habit->id}%")
+                ->whereDate('created_at', $today)->count();
+
+            $snoozeMinutes = $totalSnoozeCount * 5;
+            $notes = $snoozeMinutes > 0 ? "Tertunda selama {$snoozeMinutes} menit (Total {$totalSnoozeCount}x tunda)." : "Dikerjakan tepat waktu kawan!";
+
+            DB::table('habit_logs')->updateOrInsert(
+                ['habit_id' => $habit->id, 'date' => $today],
+                [
+                    'completed' => 1,
+                    'completed_at' => now(),
+                    'notes' => $notes,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]
+            );
+
+            $habit->update(['snooze_until' => null]);
+            $habit->increment('streak');
+
+            $this->telegram->editMessageText($this->chatId, $this->messageId, "👍 Mantap, Bay! Habit <b>" . htmlspecialchars($habit->title, ENT_QUOTES, 'UTF-8') . "</b> selesai! ({$notes})");
+        }
+        $this->sessionManager->clearSession($this->chatId);
+    }
+
+    // =========================================================
+    // LOGIKA TUNDA 5 MENIT VIA TOMBOL
+    // =========================================================
+    private function handleHabitSnooze()
+    {
+        $habitId = (int) str_replace('habit_snooze_5m_', '', $this->callbackData);
+        $habit = Habit::find($habitId);
+
+        if ($habit) {
+            $dueLimit = $habit->due_time ? Carbon::parse($habit->due_time) : Carbon::parse('23:59:59');
+            $nextSnooze = Carbon::now('Asia/Jakarta')->addMinutes(5);
+
+            if ($nextSnooze->greaterThanOrEqualTo($dueLimit)) {
+                $this->telegram->sendMessage($this->chatId, "⚠️ Waktu tunda sudah mepet batas akhir pengerjaan ({$dueLimit->format('H:i')}), Bay! Selesaikan sekarang atau habit ini akan dianggap gagal!");
+                return;
+            }
+
+            DB::table('memories')->insert([
+                'type' => 'habit_snooze_log',
+                'source' => 'telegram',
+                'title' => "Habit ID: {$habit->id}",
+                'content' => "User menunda pengerjaan habit: {$habit->title}",
+                'tags' => json_encode(['habit', 'snooze']),
+                'occurred_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            $habit->update(['snooze_until' => $nextSnooze->format('H:i:00')]);
+
+            $this->telegram->editMessageText($this->chatId, $this->messageId, "⏳ Oke Bay, aku ingetin lagi 5 menit dari sekarang (Jam: " . $nextSnooze->format('H:i') . ").");
+        }
+        $this->sessionManager->clearSession($this->chatId);
+    }
+
+    private function handleTextInput()
     {
         $textLower = strtolower(trim($this->text));
 
-        // PENGAMAN GLOBAL: Berlaku di seluruh step HabitHandler
         if ($textLower === '/cancel' || $textLower === 'cancel') {
             $this->telegram->sendMessage($this->chatId, "🚫 <b>Sesi dibatalkan.</b> Kembali ke menu standby (Idle) kawan.");
             $this->sessionManager->clearSession($this->chatId);
@@ -76,27 +164,23 @@ private function handleTextInput()
         if ($this->session && $this->session->step === 'leisure_view_tasks') {
             $openTasks = \App\Models\Task::whereIn('board_id', [2, 4])->where('column_key', '!=', 'done')->get();
 
-            // Sensor A: Jika user ketik format "{nomor} done" (Contoh: "1 done")
             if (preg_match('/^(\d+)\s+done$/i', $textLower, $matches)) {
                 $index = (int)$matches[1] - 1;
                 if (isset($openTasks[$index])) {
                     $task = $openTasks[$index];
                     \App\Models\Task::where('id', $task->id)->update(['completed_at' => now(), 'column_key' => 'done']);
                     $this->telegram->sendMessage($this->chatId, "✅ Mantap kawan! Tugas \"<b>" . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . "</b>\" berhasil diselesaikan!");
-                    $this->showLeisureTasks(); // Auto refresh daftar sisa tugas terbaru
+                    $this->showLeisureTasks();
                 } else {
                     $this->telegram->sendMessage($this->chatId, "⚠️ Nomor urutan tugas salah.");
                 }
                 return;
             }
 
-            // Sensor B: Jika HANYA MENGETIK ANGKA (Contoh: ketik "1" untuk buka detail manipulasi tugas)
             if (is_numeric($textLower)) {
                 $index = (int)$textLower - 1;
                 if (isset($openTasks[$index])) {
                     $task = $openTasks[$index];
-                    
-                    // Bypass Dinamis: Oper kendali kontrol ke TaskHandler bawaan
                     $taskHandler = new \App\Telegram\Handlers\TaskHandler($this->chatId, null, null, $this->messageId);
                     $taskHandler->renderTaskSensation($task->id, true);
                 } else {
@@ -105,68 +189,92 @@ private function handleTextInput()
                 return;
             }
 
-            // Jebakan Batman: Jika user mengetik ngasal pas lihat list tugas santai
             $this->telegram->sendMessage(
-                $this->chatId, 
+                $this->chatId,
                 "⚠️ <b>Maaf kawan, aku tidak mengenali perintah itu.</b>\n\n" .
-                "💡 <i>Ketik angka urut <code>{nomor}</code> untuk buka detail & tombol aksi lengkap (Contoh: <code>1</code>).\n" .
-                "💡 Ketik <code>{nomor} done</code> untuk langsung menyelesaikannya.\n" .
-                "💡 Ketik <code>/cancel</code> untuk keluar menu kawan.</i>"
+                    "💡 <i>Ketik angka urut <code>{nomor}</code> untuk buka detail & tombol aksi lengkap (Contoh: <code>1</code>).\n" .
+                    "💡 Ketik <code>{nomor} done</code> untuk langsung menyelesaikannya.\n" .
+                    "💡 Ketik <code>/cancel</code> untuk keluar menu kawan.</i>"
             );
             return;
         }
 
         // =========================================================
-        // MODULE 2: PENGECEKAN INTERAKSI HABIT VIA DASHBOARD SANTAI
+        // FIX KUNCI MODULE 2: INTERAKSI TEKS MANUAL HABIT (SINKRON DENGAN NOTES & SNOOZE)
         // =========================================================
         if ($this->session && $this->session->step === 'leisure_view_habits') {
             $today = Carbon::today()->toDateString();
             $habits = Habit::orderBy('title', 'asc')->get();
 
-            // Cek apakah formatnya bener (misal: "2 done" atau "2 undone")
             if (preg_match('/^(\d+)\s+(done|undone)$/i', $textLower, $matches)) {
                 $index = (int)$matches[1] - 1;
                 $action = strtolower($matches[2]);
 
                 if (isset($habits[$index])) {
                     $habit = $habits[$index];
-                    
+
                     if ($action === 'done') {
+                        // 1. Hitung total tunda hari ini dari tabel memories
+                        $totalSnoozeCount = DB::table('memories')
+                            ->where('type', 'habit_snooze_log')
+                            ->where('title', 'like', "%Habit ID: {$habit->id}%")
+                            ->whereDate('created_at', $today)->count();
+
+                        $snoozeMinutes = $totalSnoozeCount * 5;
+                        $notes = $snoozeMinutes > 0 ? "Tertunda selama {$snoozeMinutes} menit (Total {$totalSnoozeCount}x tunda)." : "Dikerjakan tepat waktu kawan!";
+
+                        // 2. Inject catatan tunda ke log database
                         DB::table('habit_logs')->updateOrInsert(
                             ['habit_id' => $habit->id, 'date' => $today],
-                            ['completed' => 1, 'completed_at' => now(), 'created_at' => now(), 'updated_at' => now()]
+                            [
+                                'completed' => 1,
+                                'completed_at' => now(),
+                                'notes' => $notes,
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]
                         );
-                        $this->telegram->sendMessage($this->chatId, "👍 Habit <b>" . htmlspecialchars($habit->title, ENT_QUOTES, 'UTF-8') . "</b> berhasil dicentang Selesai kawan!");
+
+                        // 3. Reset flag tunda internal & perpanjang streak
+                        $habit->update(['snooze_until' => null]);
+                        $habit->increment('streak');
+
+                        $this->telegram->sendMessage($this->chatId, "👍 Habit <b>" . htmlspecialchars($habit->title, ENT_QUOTES, 'UTF-8') . "</b> berhasil dicentang Selesai kawan! ({$notes})");
                     } else {
                         DB::table('habit_logs')->where('habit_id', $habit->id)->where('date', $today)->delete();
+                        $habit->update(['streak' => 0]); // Reset streak jika dibatalkan kawan
                         $this->telegram->sendMessage($this->chatId, "🔄 Habit <b>" . htmlspecialchars($habit->title, ENT_QUOTES, 'UTF-8') . "</b> diaktifkan kembali!");
                     }
-                    
-                    $this->showLeisureHabits(); // Auto refresh list sisa habit terbaru
+
+                    $this->showLeisureHabits();
                 } else {
                     $this->telegram->sendMessage($this->chatId, "⚠️ Urutan habit salah kawan.");
                 }
-            } 
-            // Blok jebakan batman kalau user ngetik ngasal di menu habit!
-            else {
+            } else {
                 $this->telegram->sendMessage(
-                    $this->chatId, 
+                    $this->chatId,
                     "⚠️ <b>Maaf kawan, aku tidak mengenali perintah itu.</b>\n\n" .
-                    "💡 <i>Ketik format <code>{nomor} done</code> (contoh: <code>1 done</code>).\n" .
-                    "💡 Ketik format <code>{nomor} undone</code> (contoh: <code>1 undone</code>) untuk batal centang.\n" .
-                    "💡 Ketik <code>/cancel</code> untuk keluar.</i>"
+                        "💡 <i>Ketik format <code>{nomor} done</code> (contoh: <code>1 done</code>).\n" .
+                        "💡 Ketik format <code>{nomor} undone</code> (contoh: <code>1 undone</code>) untuk batal centang.\n" .
+                        "💡 Ketik <code>/cancel</code> untuk keluar.</i>"
                 );
             }
             return;
         }
 
         // =========================================================
-        // MODULE 3: PENGARSIPAN MANUAL LOG SANTAI KELAR KEWENANGAN
+        // MODULE 3: PENGARSIPAN MANUAL LOG SANTAI
         // =========================================================
         if ($this->session && $this->session->step === 'leisure_activity') {
             DB::table('memories')->insert([
-                'type' => 'leisure', 'source' => 'telegram', 'title' => 'Santai Log', 'content' => "User sedang santai: {$this->text}",
-                'tags' => json_encode(['leisure', 'telegram']), 'occurred_at' => now(), 'created_at' => now(), 'updated_at' => now()
+                'type' => 'leisure',
+                'source' => 'telegram',
+                'title' => 'Santai Log',
+                'content' => "User sedang santai: {$this->text}",
+                'tags' => json_encode(['leisure', 'telegram']),
+                'occurred_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
             $this->telegram->sendMessage($this->chatId, "👌 <b>Oke siap, Bay!</b> Selamat melanjutkan aktivitasmu kawan, santai aja dulu sejenak.");
             $this->sessionManager->clearSession($this->chatId);
@@ -177,20 +285,18 @@ private function handleTextInput()
     {
         $today = Carbon::today()->toDateString();
         $openTasksCount = Task::whereIn('board_id', [2, 4])->where('column_key', '!=', 'done')->count();
-        
+
         $totalHabits = Habit::count();
         $completedHabits = DB::table('habit_logs')->where('date', $today)->where('completed', 1)->count();
         $pendingHabitsCount = $totalHabits - $completedHabits;
 
-        // JIKA SEMUA BERSIH: Bebas Bersantai
         if ($openTasksCount === 0 && $pendingHabitsCount === 0) {
             $keyboard = ['inline_keyboard' => [[['text' => '🔙 Kembali', 'callback_data' => 'pulse_back_to_menu']]]];
-            $this->telegram->editMessageText($this->chatId, $this->messageId, "Selamat beristirahat bay, semua habbit dan task sudah di kerjakan semua, congrats for your day 🔥\n\nKetik aktivitas santaimu saat ini :", ['reply_markup' => $keyboard]);
+            $this->telegram->editMessageText($this->chatId, $this->messageId, "Selamat beristirahat bay, semua habbit and task sudah di kerjakan semua, congrats for your day 🔥\n\nKetik aktivitas santaimu saat ini :", ['reply_markup' => $keyboard]);
             $this->sessionManager->updateSession($this->chatId, ['step' => 'leisure_activity']);
             return;
         }
 
-        // JIKA ADA YANG NUNGGAK: Tampilkan Peringatan Dashboard Guard
         $this->renderLeisureDashboardMenu();
     }
 
@@ -203,7 +309,7 @@ private function handleTextInput()
             ]
         ];
         $msg = "Selamat beristirahat bay, anyway lagi ngapain emang? aku hanya pengen ngingetin ada beberapa task & habbit yang belum kamu selesaikan hari ini kawan.";
-        
+
         if ($this->messageId) {
             $this->telegram->editMessageText($this->chatId, $this->messageId, $msg, ['reply_markup' => $keyboard]);
         } else {
@@ -212,36 +318,28 @@ private function handleTextInput()
         $this->sessionManager->updateSession($this->chatId, ['step' => 'leisure_dashboard_waiting']);
     }
 
-private function showLeisureTasks()
+    private function showLeisureTasks()
     {
-        // Tarik gabungan sisa tugas aktif dari Board Kerjaan (2) dan Personal (4) sekaligus kawan
         $openTasks = \App\Models\Task::whereIn('board_id', [2, 4])->where('column_key', '!=', 'done')->get();
-        
         $txt = "📋 <b>Daftar Sisa Tugas Hari Ini:</b>\n\n";
         $buttons = [];
-        
+
         foreach ($openTasks as $i => $t) {
             $boardLabel = ($t->board_id == 2) ? 'Kerjaan' : 'Personal';
             $txt .= ($i + 1) . ". 📌 <b>" . htmlspecialchars($t->title, ENT_QUOTES, 'UTF-8') . "</b> (Board {$boardLabel})\n";
-            
-            // FIX KUNCI: Inject barisan tombol inline keyboard biar lu tinggal klik tanpa bingung mau ngapain!
             $buttons[] = [['text' => "🎯 Kelola Tugas " . ($i + 1), 'callback_data' => 'select_task_' . $t->id]];
         }
 
-        // Teks instruksi navigasi pengetikan teks manual
         $txt .= "\n💡 <i>Ketik angka urut (contoh: <code>1</code>) atau klik tombol di bawah untuk mengelola detail & aksi tugas.\n" .
-                "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
-                "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
+            "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
+            "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
 
-        // Tombol navigasi kembali ditaruh di baris paling bawah sendiri kawan
         $buttons[] = [['text' => '🔙 Kembali ke Dashboard', 'callback_data' => 'leisure_back_dashboard']];
-        
-        // Kirim text beserta full inline keyboard markup ke Telegram API
+
         $this->telegram->editMessageText($this->chatId, $this->messageId, $txt, [
             'reply_markup' => ['inline_keyboard' => $buttons]
         ]);
-        
-        // Amankan step session biar controller tahu lu lagi di posisi milih sisa tugas
+
         $this->sessionManager->updateSession($this->chatId, ['step' => 'leisure_view_tasks']);
     }
 
@@ -257,20 +355,19 @@ private function showLeisureTasks()
             $cleanTitle = htmlspecialchars($h->title, ENT_QUOTES, 'UTF-8');
             $txt .= ($i + 1) . ". {$cleanTitle} - {$status}\n";
         }
-        
-        // UX IMPROVEMENT: Informasi navigasi yang jelas biar user gak bingung keluar sesi
+
         $txt .= "\n💡 <i>Ketik <code>{nomor} done</code> untuk mencentang.\n" .
-                "💡 Ketik <code>{nomor} undone</code> untuk membatalkan centang.\n" .
-                "💡 Ketik <code>/cancel</code> atau klik tombol di bawah jika sudah selesai berkelana.</i>";
+            "💡 Ketik <code>{nomor} undone</code> untuk membatalkan centang.\n" .
+            "💡 Ketik <code>/cancel</code> atau klik tombol di bawah jika sudah selesai berkelana.</i>";
 
         $keyboard = ['inline_keyboard' => [[['text' => '🔙 Kembali ke Dashboard', 'callback_data' => 'leisure_back_dashboard']]]];
-        
+
         if ($this->messageId) {
             $this->telegram->editMessageText($this->chatId, $this->messageId, $txt, ['reply_markup' => $keyboard]);
         } else {
             $this->telegram->sendMessage($this->chatId, $txt, ['reply_markup' => $keyboard]);
         }
-        
+
         $this->sessionManager->updateSession($this->chatId, ['step' => 'leisure_view_habits']);
     }
 
@@ -293,15 +390,20 @@ private function showLeisureTasks()
     {
         $habitId = (int) str_replace('toggle_habit_', '', $this->callbackData);
         $today = Carbon::today()->toDateString();
-        
+
         $log = DB::table('habit_logs')->where('habit_id', $habitId)->where('date', $today)->first();
 
-        if ($log) { 
+        if ($log) {
             DB::table('habit_logs')->where('habit_id', $habitId)->where('date', $today)->delete();
-        } else { 
+        } else {
             DB::table('habit_logs')->insert([
-                'habit_id' => $habitId, 'date' => $today, 'completed' => 1, 'completed_at' => now(), 'created_at' => now(), 'updated_at' => now()
-            ]); 
+                'habit_id' => $habitId,
+                'date' => $today,
+                'completed' => 1,
+                'completed_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
         }
         $this->showHabitList();
     }

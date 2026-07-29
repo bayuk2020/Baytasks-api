@@ -1,20 +1,20 @@
 /start (ini jika aku pengen manual)
-keluar pilihan 
+keluar pilihan
 Tasks | Journal | Habit | Finance
 Jika di klik tasks
-pilih tombol boards kerjaan atau personal 
+pilih tombol boards kerjaan atau personal
 tampilkan seluruh tasks yang belum selesai dari boards yang dipilih
-jika di klik salah satu task maka menuju -- SESI Jika  Salah satu Task di Klik --
+jika di klik salah satu task maka menuju -- SESI Jika Salah satu Task di Klik --
 (melanjutkan yang setiap 1 jam tanya)
 Bot: "Halo Bayu, saat ini Anda sedang melakukan aktivitas apa?"[Tombol Inline: 💻 Kerja] [📖 Belajar] [☕ Santai] [🌐 Lainnya]
 Kondisi Logika Setelah Tombol Diklik:
 Jika klik 💻 Kerja atau 📖 Belajar:
 Bot Balas : lagi ngerjain apa?
 tampil daftar tasks dari boards id 2 dalam bentuk tombol dan 1 tombol lainnya
-ketika di klik salah satu, 
-bot balas : 
+ketika di klik salah satu,
+bot balas :
 Oke sip, sampai mana ngerjainnya?
--- SESI Jika  Salah satu Task di Klik --
+-- SESI Jika Salah satu Task di Klik --
 Tampil deskripsi, notes, dan daftar subtask nya (jika yang udah kecentang berarti tampilannya:
 ✅Subtask 1 (dicoret)
 ✅Subtask 2 (dicoret)
@@ -23,7 +23,7 @@ ketika aku ketik 1 atau 2 (yang udah dikerjain) maka
 bot balas "kan udah dikerjain, ada tambahan kah?"
 jika aku : ngetik iya yang kemarin belum selesai soalnya
 bot balas Oke silahkan lanjutkan, Semangat yaa (kasih emot)
-jika aku : ngetik 3 
+jika aku : ngetik 3
 bot balas Oke silahkan lanjutkan, Semangat yaa (kasih emot)
 jika aku : iya ada tambahan blablabla (berarti itu Subtask 4)
 bot : oke aku akan tambahkan (bot membuat subtask 4). silahkan lanjutkan, Semangat yaa (kasih emot)
@@ -36,13 +36,13 @@ misal "Aku lagi ngerjain Komptuter nya Mbak Fitri lagi error chargernya mati, be
 bot : oke aku tambahin ke daftar task mu hari ini, aku ingetin / tanya 10 menit lagi ya udah selesai atau belum
 ada tombol: Oke
 bot : semangat, lanjutin (atau nanti kita bikin array yang bikin kata kata motivasi buat semangat kerja terus bot pilih salah satu dari sana)
--- Setelah 10 menit -- 
+-- Setelah 10 menit --
 bot : Hai, udah selesai kah yang tugas benerin komputer Mbak Fitri nya?
-tombol selesai (jika udah, pindah done dan kirim kalimat dari array jika udah selesai mengerjakan sesuatu) dan belum (jika belum ulangi lagi bertanya setelah 10 menit) 
+tombol selesai (jika udah, pindah done dan kirim kalimat dari array jika udah selesai mengerjakan sesuatu) dan belum (jika belum ulangi lagi bertanya setelah 10 menit)
 #Catatan : inget, 10 menit ini bisa berubah 5 menit, atau 15 menit tergantung aku bilangnya berapa
 -- Akhir SESI Jika di Klik Lainnya --
 simpan ke tabel memories ringkasan tentang percakapan di atas.
-contoh "User sedang mengerjakan tugas ... dengan subtask ... dari jam ... sampai jam ..." 
+contoh "User sedang mengerjakan tugas ... dengan subtask ... dari jam ... sampai jam ..."
 Bot Balas: "Selamat melanjutkan aktivitas. Semoga produktif, Bay!"
 Jika klik ☕ Santai:
 Bot : Wuih lagi santai kawan, lagi ape lu?
@@ -54,3 +54,6 @@ Jika ada tugas nunggak: "Baiklah. Namun, sistem mendeteksi ada tugas yang belum 
 Jika klik 🌐 Lainnya:
 Bot Balas: "Silakan ketik aktivitas Anda saat ini secara manual:"
 Teks ketikan lu selanjutnya akan ditangkap oleh controller dan disimpan ke tabel memories.
+
+
+cloudflared tunnel run 40d9ca83-f273-4751-870b-c87a3b2a4be7

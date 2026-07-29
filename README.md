@@ -65,7 +65,10 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-
 php artisan serve
 ngrok http 8000
+// Task Reminder
 for /l %x in (1,0,2) do (echo [%time%] Running... & php artisan baytasks:reminders & timeout /t 60 /nobreak >nul)
+
+//Habit Reminder
+for /l %x in (1,0,2) do (echo [%time%] Running Habit Reminders... & php artisan baytasks:habit-reminders & timeout /t 60 /nobreak >nul)

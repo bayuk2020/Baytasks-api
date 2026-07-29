@@ -27,7 +27,7 @@ class TaskHandler
         $this->messageId = $messageId;
         $this->telegram = new TelegramService();
         $this->sessionManager = new TelegramSessionManager();
-        
+
         // Ambil data session secara otomatis lewat chat_id yang dikirim controller
         $this->session = $this->sessionManager->getSession($chatId);
     }
@@ -48,7 +48,7 @@ class TaskHandler
             $keyboard = [
                 'inline_keyboard' => [
                     [
-                        ['text' => '💻 Kerjaan (Board 2)', 'callback_data' => 'manual_board_2'], 
+                        ['text' => '💻 Kerjaan (Board 2)', 'callback_data' => 'manual_board_2'],
                         ['text' => '🌱 Personal (Board 4)', 'callback_data' => 'manual_board_4']
                     ]
                 ]
@@ -141,11 +141,11 @@ class TaskHandler
 
             // FALLBACK JIKA USER NGASAL SAAT LIHAT LIST TUGAS SANTAI
             $this->telegram->sendMessage(
-                $this->chatId, 
+                $this->chatId,
                 "⚠️ <b>Maaf kawan, aku tidak mengenali perintah itu.</b>\n\n" .
-                "💡 <i>Ketik angka urut <code>{nomor}</code> untuk buka detail & tombol manipulasi (Contoh: <code>1</code>).\n" .
-                "💡 Ketik <code>{nomor} done</code> untuk langsung menyelesaikannya.\n" .
-                "💡 Ketik <code>/cancel</code> untuk keluar menu.</i>"
+                    "💡 <i>Ketik angka urut <code>{nomor}</code> untuk buka detail & tombol manipulasi (Contoh: <code>1</code>).\n" .
+                    "💡 Ketik <code>{nomor} done</code> untuk langsung menyelesaikannya.\n" .
+                    "💡 Ketik <code>/cancel</code> untuk keluar menu.</i>"
             );
             return;
         }
@@ -154,28 +154,28 @@ class TaskHandler
         if ($this->session && $this->session->step === 'task_wizard_running') {
             $this->processWizard($this->text);
             return;
-        } 
-        
+        }
+
         if ($this->session && $this->session->step === 'waiting_desc_update') {
             $this->updateTaskField('description', 'Deskripsi');
             return;
-        } 
-        
+        }
+
         if ($this->session && $this->session->step === 'waiting_notes_update') {
             $this->updateTaskField('notes', 'Notes');
             return;
-        } 
-        
+        }
+
         if ($this->session && $this->session->step === 'waiting_deadline_input') {
             $this->updateTaskDeadline();
             return;
-        } 
-        
+        }
+
         if ($this->session && $this->session->step === 'waiting_subtask') {
             $this->handleSubtaskInput();
             return;
-        } 
-        
+        }
+
         if ($this->session && $this->session->step === 'waiting_interruption_activity_legacy') {
             $this->createInterruptionTask();
             return;
@@ -183,9 +183,9 @@ class TaskHandler
 
         // FALLBACK BACKUP GLOBAL (JIKA INPUT ASAL DI LUAR STEP APAPUN)
         $this->telegram->sendMessage(
-            $this->chatId, 
+            $this->chatId,
             "⚠️ <b>Maaf kawan, aku tidak mengenali perintah teks itu saat ini.</b>\n\n" .
-            "💡 <i>Gunakan menu tombol di layar navigasi bot Telegram Anda untuk mengelola data, atau ketik <code>/start</code> untuk memanggil ulang Pusat Kendali BayTasks, Bay!</i>"
+                "💡 <i>Gunakan menu tombol di layar navigasi bot Telegram Anda untuk mengelola data, atau ketik <code>/start</code> untuk memanggil ulang Pusat Kendali BayTasks, Bay!</i>"
         );
     }
 
@@ -211,17 +211,17 @@ class TaskHandler
 
         $buttons = [];
         $txt = "📋 <b>Daftar Sisa Tugas Hari Ini (" . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . "):</b>\n\n";
-        
+
         foreach ($openTasks as $i => $t) {
             $txt .= ($i + 1) . ". 📌 <b>" . htmlspecialchars($t->title, ENT_QUOTES, 'UTF-8') . "</b>\n";
             // FIX TERPENTING: Inject tombol inline dinamis untuk tiap tugas biar langsung bisa dieksekusi!
             $buttons[] = [['text' => "🎯 Kelola Tugas " . ($i + 1), 'callback_data' => 'select_task_' . $t->id]];
         }
-        
+
         // UX IMPROVEMENT: Informasi instruksi pengetikan text di bagian paling bawah teks pesan
         $txt .= "\n💡 <i>Ketik angka urut (contoh: <code>1</code>) atau klik tombol di bawah untuk mengelola detail & aksi tugas.\n" .
-                "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
-                "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
+            "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
+            "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
 
         $buttons[] = [
             ['text' => '🌐 Aktivitas Lainnya', 'callback_data' => 'pulse_lainnya'],
@@ -229,10 +229,10 @@ class TaskHandler
         ];
 
         $this->sessionManager->updateSession($this->chatId, [
-            'step' => 'waiting_task_selection', 
+            'step' => 'waiting_task_selection',
             'context_data' => json_encode(['activity_type' => $activity])
         ]);
-        
+
         $this->telegram->editMessageText($this->chatId, $this->messageId, $txt, [
             'reply_markup' => ['inline_keyboard' => $buttons]
         ]);
@@ -300,7 +300,7 @@ class TaskHandler
                 $statusMap = ['wiz_status_backlog' => 'backlog', 'wiz_status_todo' => 'todo', 'wiz_status_in_progress' => 'in_progress', 'wiz_status_review' => 'review', 'wiz_status_done' => 'done'];
                 $state['data']['column_key'] = $statusMap[$input] ?? 'todo';
                 $state['current_step'] = 'wizard_priority';
-                $keyboard = ['inline_keyboard' => [[['text' => 'LOW', 'callback_data' => 'wiz_prio_low'], ['text' => 'MED', 'callback_data' => 'wiz_prio_med']],[['text' => 'HIGH', 'callback_data' => 'wiz_prio_high'], ['text' => 'URGENT', 'callback_data' => 'wiz_prio_urgent']]]];
+                $keyboard = ['inline_keyboard' => [[['text' => 'LOW', 'callback_data' => 'wiz_prio_low'], ['text' => 'MED', 'callback_data' => 'wiz_prio_med']], [['text' => 'HIGH', 'callback_data' => 'wiz_prio_high'], ['text' => 'URGENT', 'callback_data' => 'wiz_prio_urgent']]]];
                 $this->telegram->sendMessage($this->chatId, "<b>[Step 6 / 10] Priority?</b>", ['reply_markup' => $keyboard]);
                 break;
             case 'wizard_priority':
@@ -344,11 +344,19 @@ class TaskHandler
             case 'wizard_tags':
                 $tagsArray = array_map('trim', explode(',', $input));
                 $finalTask = Task::create([
-                    'board_id' => 2, 'user_id' => 1, 'title' => $state['data']['title'],
-                    'description' => $state['data']['description'] ?? null, 'notes' => $state['data']['notes'] ?? null,
-                    'column_key' => $state['data']['column_key'] ?? 'todo', 'priority' => $state['data']['priority'] ?? 'med',
-                    'tags' => $tagsArray, 'due_at' => $state['data']['due_at'] ?? null, 'reminder' => $state['data']['reminder'] ?? null,
-                    'recurring' => $state['data']['recurring'] ?? 'none', 'position' => 0, 'reminded' => false
+                    'board_id' => 2,
+                    'user_id' => 1,
+                    'title' => $state['data']['title'],
+                    'description' => $state['data']['description'] ?? null,
+                    'notes' => $state['data']['notes'] ?? null,
+                    'column_key' => $state['data']['column_key'] ?? 'todo',
+                    'priority' => $state['data']['priority'] ?? 'med',
+                    'tags' => $tagsArray,
+                    'due_at' => $state['data']['due_at'] ?? null,
+                    'reminder' => $state['data']['reminder'] ?? null,
+                    'recurring' => $state['data']['recurring'] ?? 'none',
+                    'position' => 0,
+                    'reminded' => false
                 ]);
 
                 if (!empty($state['data']['subtasks'])) {
@@ -380,7 +388,7 @@ class TaskHandler
 
         $buttons = [];
         $txt = "📋 <b>Daftar Sisa Tugas Hari Ini (Board {$boardId}):</b>\n\n";
-        
+
         foreach ($openTasks as $i => $t) {
             $txt .= ($i + 1) . ". 📌 <b>" . htmlspecialchars($t->title, ENT_QUOTES, 'UTF-8') . "</b>\n";
             $buttons[] = [['text' => "🎯 Kelola Tugas " . ($i + 1), 'callback_data' => 'select_task_' . $t->id]];
@@ -398,6 +406,18 @@ class TaskHandler
         $task = Task::find($taskId);
         if (!$task) return;
 
+        // 1. Mapping Emoji untuk Priority
+        $priorityEmojis = [
+            'low'    => '🟢 Low',
+            'med'    => '🟡 Medium',
+            'high'   => '🟠 High',
+            'urgent' => '🔴 Urgent'
+        ];
+        $priorityText = $priorityEmojis[strtolower($task->priority)] ?? '⚪ ' . ($task->priority ?? '-');
+
+        // 2. Formatting Due Date (Membaca dari cast datetime)
+        $dueDateText = $task->due_at ? $task->due_at->format('d M Y H:i') : '-';
+
         $subtasks = DB::table('subtasks')->where('task_id', $task->id)->orderBy('position', 'asc')->get();
         $subtext = "";
         if ($subtasks->isEmpty()) {
@@ -409,22 +429,26 @@ class TaskHandler
             }
         }
 
+        // 3. Menyusun Pesan dengan tambahan Priority dan Due Date di bawah Task
         $message = "🎯 <b>Sesi Fokus Tugas Atraktif</b>\n\n" .
-                   "• <b>Task:</b> {$task->title}\n" .
-                   "• <b>Description:</b> " . ($task->description ?? '-') . "\n" .
-                   "• <b>Notes:</b> " . ($task->notes ?? '-') . "\n\n" .
-                   "📝 <b>Daftar Subtasks:</b>\n{$subtext}\n" .
-                   "💡 <i>Ketik <code>{nomor} done</code> untuk mencentang (Contoh: <code>1 done</code>).\n" .
-                   "💡 Ketik <code>{nomor} undone</code> untuk mengaktifkan kembali (Contoh: <code>2 undone</code>).\n" .
-                   "💡 Ketik angka urutan jika ingin memulai eksekusi subtask.\n" .
-                   "💡 Ketik langsung jika ada subtask lain untuk menyisipkan subtask baru.</i>";
+            "• <b>Task:</b> {$task->title}\n" .
+            "• <b>Priority:</b> {$priorityText}\n" .
+            "• <b>Due Date:</b> {$dueDateText}\n" .
+            "• <b>Description:</b> " . ($task->description ?? '-') . "\n" .
+            "• <b>Notes:</b> " . ($task->notes ?? '-') . "\n\n" .
+            "📝 <b>Daftar Subtasks:</b>\n{$subtext}\n" .
+            "💡 <i>Ketik <code>{nomor} done</code> untuk mencentang (Contoh: <code>1 done</code>).\n" .
+            "💡 Ketik <code>{nomor} undone</code> untuk mengaktifkan kembali (Contoh: <code>2 undone</code>).\n" .
+            "💡 Ketik angka urutan jika ingin memulai eksekusi subtask.\n" .
+            "💡 Ketik langsung jika ada subtask lain untuk menyisipkan subtask baru.</i>";
 
         $actionButtons = [
             'inline_keyboard' => [
                 [['text' => '🛠️ Kerjakan Tugas', 'callback_data' => 'action_execute_' . $task->id], ['text' => '✅ Selesaikan (Done)', 'callback_data' => 'action_done_' . $task->id]],
                 [['text' => '📅 Mundurkan Deadline', 'callback_data' => 'action_delay_' . $task->id], ['text' => '⚡ Ubah Prioritas', 'callback_data' => 'action_priority_' . $task->id]],
                 [['text' => '📝 Ubah Deskripsi', 'callback_data' => 'action_updatedesc_' . $task->id], ['text' => '📌 Ubah Notes', 'callback_data' => 'action_updatenotes_' . $task->id]],
-                [['text' => '🔙 Ganti Tugas Lain', 'callback_data' => 'action_back_' . $task->id]]
+                [['text' => '🔙 Ganti Tugas Lain', 'callback_data' => 'action_back_' . $task->id]],
+                [['text' => '🏠 Menu Utama (Aktivitas)', 'callback_data' => 'pulse_back_to_menu']]
             ]
         ];
 
@@ -486,7 +510,8 @@ class TaskHandler
     {
         preg_match('/set_prio_([a-z]+)_(\d+)/', $this->callbackData, $matches);
         if (count($matches) === 3) {
-            $priority = $matches[1]; $taskId = $matches[2];
+            $priority = $matches[1];
+            $taskId = $matches[2];
             $task = Task::find($taskId);
             if ($task) {
                 $task->update(['priority' => $priority]);
@@ -601,7 +626,10 @@ class TaskHandler
         DB::table('memories')->insert(['type' => 'interruption', 'source' => 'telegram', 'title' => mb_strimwidth($this->text, 0, 25, "..."), 'content' => "User sedang mengerjakan tugas darurat di luar jadwal: {$this->text}", 'tags' => json_encode(['interruption', 'telegram_sync']), 'occurred_at' => now(), 'created_at' => now(), 'updated_at' => now()]);
 
         DB::table('reminders')->insert([
-            'task_id' => $emergencyTask->id, 'fire_at' => now()->addMinutes($duration), 'channel' => 'telegram', 'sent' => 0
+            'task_id' => $emergencyTask->id,
+            'fire_at' => now()->addMinutes($duration),
+            'channel' => 'telegram',
+            'sent' => 0
         ]);
 
         $this->telegram->sendMessage($this->chatId, "🚀 <b>oke aku tambahin ke daftar task mu hari ini.</b>\naku ingetin / tanya {$duration} menit lagi ya udah selesai atau belum.", ['reply_markup' => json_encode(['inline_keyboard' => [[['text' => '👍 Oke', 'callback_data' => 'clear_notif']]]])]);
@@ -622,18 +650,54 @@ class TaskHandler
     private function parseNaturalLanguageDate($string)
     {
         $string = strtolower(trim($string));
-        $now = Carbon::now('Asia/Jakarta');
-        $baseDate = clone $now;
 
-        if (str_contains($string, 'besok')) $baseDate->addDay();
-        if (preg_match('/tanggal\s*(\d{1,2})/', $string, $dayMatches)) $baseDate->day(intval($dayMatches[1]));
+        // Normalisasi: Ubah tanda titik (.) yang mengapit angka jam menjadi titik dua (:) 
+        // Contoh: "20 july 2026 10.00" -> "20 july 2026 10:00"
+        $normalizedString = preg_replace('/(\d{1,2})\.(\d{2})/', '$1:$2', $string);
 
-        $hour = 9; $minute = 0;
-        if (preg_match('/(?:jam|pukul)\s*(\d{1,2})(?:[\.:](\d{2}))?/', $string, $matches)) {
-            $hour = intval($matches[1]);
-            $minute = isset($matches[2]) ? intval($matches[2]) : 0;
-            if ((str_contains($string, 'malam') || str_contains($string, 'sore')) && $hour < 12) $hour += 12;
+        try {
+            // Coba biarkan Carbon yang memproses format standar terlebih dahulu
+            // (contoh: "20 July 2026 10:00", "tomorrow 15:00", "next monday")
+            $date = Carbon::parse($normalizedString, 'Asia/Jakarta');
+
+            // Jika user hanya ngetik "20 July 2026" tanpa jam, defaultkan ke jam 23:59 (akhir hari)
+            if (!preg_match('/(\d{1,2})[:.](\d{2})/', $normalizedString)) {
+                $date->setTime(23, 59, 0);
+            }
+
+            return $date;
+        } catch (\Exception $e) {
+            // JIKA GAGAL: Masuk ke regex bahasa Indonesia manual Anda
+            $now = Carbon::now('Asia/Jakarta');
+            $baseDate = clone $now;
+
+            if (str_contains($string, 'besok')) $baseDate->addDay();
+            if (str_contains($string, 'lusa')) $baseDate->addDays(2);
+
+            // Cek jika ada kata "tanggal X"
+            if (preg_match('/tanggal\s*(\d{1,2})/', $string, $dayMatches)) {
+                $baseDate->day((int)$dayMatches[1]);
+            }
+
+            $hour = 23; // Default jam akhir hari jika tidak disebutkan
+            $minute = 59;
+
+            // Deteksi jam dengan variasi "jam X", "pukul X", atau angka mentah "XX.XX" di akhir
+            if (
+                preg_match('/(?:jam|pukul)?\s*(\d{1,2})[:\.](\d{2})/', $string, $matches) ||
+                preg_match('/(?:jam|pukul)\s*(\d{1,2})/', $string, $matches)
+            ) {
+
+                $hour = (int)$matches[1];
+                $minute = isset($matches[2]) ? (int)$matches[2] : 0;
+
+                // Konversi ke format 24 jam jika ada konteks waktu sore/malam
+                if ((str_contains($string, 'malam') || str_contains($string, 'sore')) && $hour < 12) {
+                    $hour += 12;
+                }
+            }
+
+            return Carbon::create($baseDate->year, $baseDate->month, $baseDate->day, $hour, $minute, 0, 'Asia/Jakarta');
         }
-        return Carbon::create($baseDate->year, $baseDate->month, $baseDate->day, $hour, $minute, 0, 'Asia/Jakarta');
     }
 }

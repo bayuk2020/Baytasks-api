@@ -18,6 +18,8 @@ class Habit extends Model
         'streak',
         'best_streak',
         'reminder_time',
+        'due_time',
+        'snooze_until',
         'archived',
     ];
 

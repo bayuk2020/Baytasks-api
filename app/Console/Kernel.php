@@ -27,6 +27,11 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/reminders.log'));
 
+        $schedule
+            ->command('baytasks:habit-reminders')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/habit_reminders.log'));
         /**
          * Menjalankan service untuk membuat ulang tugas-tugas yang berulang (recurring).
          * Misalnya, tugas harian atau mingguan.
@@ -57,7 +62,7 @@ class Kernel extends ConsoleKernel
          * Dieksekusi setiap hari pada jam 10:00 pagi.
          */
         $schedule
-            ->call(fn () => app(DailyBriefing::class)->run())
+            ->call(fn() => app(DailyBriefing::class)->run())
             ->name('daily-briefing')
             ->dailyAt('10:00')
             ->withoutOverlapping()
@@ -71,7 +76,7 @@ class Kernel extends ConsoleKernel
     {
         $this->load(
             __DIR__ .
-            '/Commands'
+                '/Commands'
         );
 
         require base_path(

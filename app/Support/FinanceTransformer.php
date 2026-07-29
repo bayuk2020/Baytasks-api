@@ -90,6 +90,18 @@ class FinanceTransformer
         ];
     }
 
+    public static function category($item)
+    {
+        return [
+            'id' => $item->id,
+            'name' => $item->name,
+            'type' => $item->type,
+            'color' => $item->color,
+            'isDefault' => (bool) $item->is_default,
+            'sortOrder' => $item->sort_order,
+        ];
+    }
+
     public static function trade($item)
     {
         return [

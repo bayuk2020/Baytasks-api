@@ -22,7 +22,6 @@ class TransactionController extends Controller
 
     public function index(Request $request)
     {
-        // REVISI TOTAL: Buang total fungsi paginasi hulu agar sinkron dengan client-side pagination
         $transactions = Transaction::query()
             ->where(function ($query) {
                 $query
@@ -30,7 +29,11 @@ class TransactionController extends Controller
                     ->orWhere('type', 'transfer');
             })
             ->orderByDesc('transaction_date')
-            ->get(); // SAKLEK AMBIL SEMUA TANPA POTONGAN PAGINATE
+            ->paginate(50);
+
+        $transactions->getCollection()->transform(
+            fn (Transaction $transaction) => FinanceTransformer::transaction($transaction)
+        );
 
         return response()->json($transactions);
     }
@@ -166,6 +169,7 @@ class TransactionController extends Controller
     private function transactionAttributes(array $payload, bool $includeId = true): array 
     {
         $attributes = [
+            'user_id'          => 1,
             'account_id'       => $payload['accountId'],
             'type'             => $payload['type'],
             'category'         => $payload['category'] ?? 'Transfer',
@@ -194,6 +198,7 @@ class TransactionController extends Controller
         ]);
         $inTransaction = Transaction::create([
             'id' => (string) Str::uuid(),
+            'user_id' => 1,
             'account_id' => $payload['toAccountId'],
             'type' => 'income',
             'category' => 'Transfer In',

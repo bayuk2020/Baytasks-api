@@ -12,7 +12,12 @@ class AnalyticsController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $query = Transaction::query()->whereIn('type', ['income', 'expense']);
+        // whereNull('transfer_group_id'): kaki "in" dari transfer disimpan dengan type='income'
+        // supaya saldo akun tujuan bertambah, tapi ia BUKAN pemasukan riil — harus dikeluarkan
+        // dari perhitungan income/cashflow, sama seperti TransactionController::index() men-filter listnya.
+        $query = Transaction::query()
+            ->whereIn('type', ['income', 'expense'])
+            ->whereNull('transfer_group_id');
 
         // 1. Filter Tahun (SQL)
         if ($request->filled('tahun') && $request->tahun !== 'all') {

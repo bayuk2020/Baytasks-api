@@ -7,25 +7,38 @@ use App\Models\Debt;
 use App\Models\DebtPayment;
 use App\Models\Account;
 use App\Models\Transaction;
+use App\Support\FinanceTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class DebtController extends Controller
 {
+    private function formatDebt(Debt $debt): array
+    {
+        $formatted = FinanceTransformer::debt($debt);
+        $formatted['payments'] = $debt->payments
+            ->map(fn (DebtPayment $payment) => FinanceTransformer::debtPayment($payment))
+            ->values();
+
+        return $formatted;
+    }
+
     public function index()
     {
-        return response()->json(
-            Debt::with('payments')
-                ->latest()
-                ->get()
-        );
+        $debts = Debt::with('payments')
+            ->latest()
+            ->get()
+            ->map(fn (Debt $debt) => $this->formatDebt($debt));
+
+        return response()->json($debts);
     }
 
     public function store(Request $request)
     {
         $debt = Debt::create([
             'id' => Str::uuid(),
+            'user_id' => 1,
             'creditor' => $request->creditor,
             'total_debt' => $request->total_debt,
             'remaining_debt' =>
@@ -40,13 +53,13 @@ class DebtController extends Controller
             'status' => 'active',
         ]);
 
-        return response()->json($debt);
+        return response()->json($this->formatDebt($debt));
     }
 
     public function show(Debt $debt)
     {
         return response()->json(
-            $debt->load('payments')
+            $this->formatDebt($debt->load('payments'))
         );
     }
 
@@ -73,7 +86,7 @@ class DebtController extends Controller
         ]);
 
         return response()->json(
-            $debt->fresh()
+            $this->formatDebt($debt->fresh('payments'))
         );
     }
 
@@ -137,6 +150,7 @@ class DebtController extends Controller
 
                 Transaction::create([
                     'id' => Str::uuid(),
+                    'user_id' => 1,
                     'account_id' =>
                         $request->account_id,
                     'type' => 'expense',
@@ -161,8 +175,8 @@ class DebtController extends Controller
 
             return response()->json([
                 'success' => true,
-                'payment' => $payment,
-                'debt' => $debt->fresh(),
+                'payment' => FinanceTransformer::debtPayment($payment),
+                'debt' => $this->formatDebt($debt->fresh('payments')),
             ]);
 
         } catch (\Exception $e) {

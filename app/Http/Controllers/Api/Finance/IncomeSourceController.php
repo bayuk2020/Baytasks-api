@@ -29,6 +29,7 @@ class IncomeSourceController extends Controller
 
         $source = IncomeSource::create([
             'id' => (string) Str::uuid(),
+            'user_id' => 1,
             'name' => $validated['name'],
             'color' => $validated['color'] ?? 'oklch(0.72 0.16 230)',
             'is_active' => true,

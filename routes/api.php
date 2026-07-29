@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\Finance\DebtController;
 use App\Http\Controllers\Api\Finance\TradeController;
 use App\Http\Controllers\Api\Finance\ContactController;
 use App\Http\Controllers\Api\Finance\AnalyticsController;
+use App\Http\Controllers\Api\Finance\FinanceCategoryController;
 use App\Http\Controllers\Api\TelegramWebhookController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\MilestoneController;
@@ -134,6 +135,8 @@ Route::prefix('finance')->group(function () {
     // 2. DAFTARKAN ROUTE ANALITIK BARU DI SINI
     // Hasil jalurnya otomatis menjadi: /api/finance/analytics-data
     Route::get('analytics-data', AnalyticsController::class);
+
+    Route::get('categories', [FinanceCategoryController::class, 'index']);
 
     Route::get('contacts/analytics', [ContactController::class, 'analytics']);
     Route::get('contacts/{contact}/transactions', [ContactController::class, 'transactions']);

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Telegram\Handlers\TaskHandler;
 use App\Telegram\Handlers\HabitHandler;
+use App\Telegram\Handlers\AiHandler;
 use App\Models\Task; // Wajib ditambahkan untuk memanggil model Task
 
 class TelegramWebhookController extends Controller
@@ -89,7 +90,12 @@ class TelegramWebhookController extends Controller
             (new TaskHandler($chatId, $text, null, null))->execute();
         } elseif (Str::is($habitPrefixes, $step) || str_contains($step, 'leisure')) {
             (new HabitHandler($chatId, $text, null, null))->execute();
+        } elseif ($step === 'idle') {
+            // Sesi benar-benar nganggur & teksnya bukan command dikenal -> lempar ke AI
+            // biar bisa ngerti chat bebas & manggil tools (create_task, log_habit, dst).
+            (new AiHandler($chatId, $text))->execute();
         } else {
+            // Step tidak dikenal (kemungkinan sisa sesi lama) -> fallback ke perilaku lama.
             (new TaskHandler($chatId, $text, null, null))->execute();
         }
     }

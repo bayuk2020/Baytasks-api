@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Finance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Trade;
+use App\Support\FinanceTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -11,17 +12,18 @@ class TradeController extends Controller
 {
     public function index()
     {
-        return response()->json(
-            Trade::with('account')
-                ->latest('opened_at')
-                ->get()
-        );
+        $trades = Trade::latest('opened_at')
+            ->get()
+            ->map(fn (Trade $trade) => FinanceTransformer::trade($trade));
+
+        return response()->json($trades);
     }
 
     public function store(Request $request)
     {
         $trade = Trade::create([
             'id' => Str::uuid(),
+            'user_id' => 1,
             'account_id' => $request->account_id,
             'symbol' => strtoupper($request->symbol),
             'side' => $request->side,
@@ -35,14 +37,12 @@ class TradeController extends Controller
             'notes' => $request->notes,
         ]);
 
-        return response()->json($trade);
+        return response()->json(FinanceTransformer::trade($trade));
     }
 
     public function show(Trade $trade)
     {
-        return response()->json(
-            $trade->load('account')
-        );
+        return response()->json(FinanceTransformer::trade($trade));
     }
 
     public function update(
@@ -64,7 +64,7 @@ class TradeController extends Controller
         ]);
 
         return response()->json(
-            $trade->fresh()
+            FinanceTransformer::trade($trade->fresh())
         );
     }
 

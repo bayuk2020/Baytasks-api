@@ -210,15 +210,15 @@ class TaskHandler
 
             $buttons = [];
             $txt = "📋 <b>Daftar Sisa Tugas Hari Ini (" . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . "):</b>\n\n";
-            
+
             foreach ($openTasks as $i => $t) {
                 $txt .= ($i + 1) . ". 📌 <b>" . htmlspecialchars($t->title, ENT_QUOTES, 'UTF-8') . "</b>\n";
                 $buttons[] = [['text' => "🎯 Kelola Tugas " . ($i + 1), 'callback_data' => 'select_task_' . $t->id]];
             }
-            
+
             $txt .= "\n💡 <i>Ketik angka urut (contoh: <code>1</code>) atau klik tombol di bawah untuk mengelola detail & aksi tugas.\n" .
-                    "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
-                    "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
+                "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
+                "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
 
             $buttons[] = [
                 ['text' => '🌐 Aktivitas Lainnya', 'callback_data' => 'pulse_lainnya'],
@@ -226,20 +226,20 @@ class TaskHandler
             ];
 
             $this->sessionManager->updateSession($this->chatId, [
-                'step' => 'waiting_task_selection', 
+                'step' => 'waiting_task_selection',
                 'context_data' => json_encode(['activity_type' => $activity])
             ]);
-            
+
             $this->telegram->editMessageText($this->chatId, $this->messageId, $txt, [
                 'reply_markup' => ['inline_keyboard' => $buttons]
             ]);
-        } 
+        }
         // JIKA USER TENTUKAN PILIHAN AKTIVITAS LAINNYA
         elseif ($activity === 'lainnya') {
             $keyboard = [
                 'inline_keyboard' => [
                     [
-                        ['text' => '🗂️ Masuk Memories', 'callback_data' => 'intercept_target_memories'], 
+                        ['text' => '🗂️ Masuk Memories', 'callback_data' => 'intercept_target_memories'],
                         ['text' => '📋 Masuk Tasks', 'callback_data' => 'intercept_target_tasks']
                     ]
                 ]
@@ -248,33 +248,10 @@ class TaskHandler
         }
     }
 
-        $buttons = [];
-        $txt = "📋 <b>Daftar Sisa Tugas Hari Ini (" . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . "):</b>\n\n";
-
-        foreach ($openTasks as $i => $t) {
-            $txt .= ($i + 1) . ". 📌 <b>" . htmlspecialchars($t->title, ENT_QUOTES, 'UTF-8') . "</b>\n";
-            // FIX TERPENTING: Inject tombol inline dinamis untuk tiap tugas biar langsung bisa dieksekusi!
-            $buttons[] = [['text' => "🎯 Kelola Tugas " . ($i + 1), 'callback_data' => 'select_task_' . $t->id]];
-        }
-
-        // UX IMPROVEMENT: Informasi instruksi pengetikan text di bagian paling bawah teks pesan
-        $txt .= "\n💡 <i>Ketik angka urut (contoh: <code>1</code>) atau klik tombol di bawah untuk mengelola detail & aksi tugas.\n" .
-            "💡 Ketik <code>{nomor} done</code> untuk menutup tugas langsung.\n" .
-            "💡 Ketik <code>/cancel</code> jika ingin membatalkan.</i>";
-
-        $buttons[] = [
-            ['text' => '🌐 Aktivitas Lainnya', 'callback_data' => 'pulse_lainnya'],
-            ['text' => '🔙 Kembali', 'callback_data' => 'pulse_back_to_menu']
-        ];
-
-        $this->sessionManager->updateSession($this->chatId, [
-            'step' => 'waiting_task_selection',
-            'context_data' => json_encode(['activity_type' => $activity])
-        ]);
-
-        $this->telegram->editMessageText($this->chatId, $this->messageId, $txt, [
-            'reply_markup' => ['inline_keyboard' => $buttons]
-        ]);
+    private function promptForInterruptionTask()
+    {
+        $this->telegram->editMessageText($this->chatId, $this->messageId, "💥 <b>kok ga ngerjain yang di To Do List? lagi ngerjain apa?</b>\n\nKetik aktivitas daruratmu saat ini, sistem akan mencatatnya langsung ke memories kawan:");
+        $this->sessionManager->updateSession($this->chatId, ['step' => 'waiting_interruption_activity_legacy']);
     }
 
     public function startWizard()

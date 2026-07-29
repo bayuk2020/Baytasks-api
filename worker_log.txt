@@ -53,3 +53,110 @@ Access is denied.
 "2026-07-29" // app\Console\Commands\SendTaskReminders.php:200
 [07/29/2026 11:11:00.21] Menjalankan worker... 
 "2026-07-29" // app\Console\Commands\SendTaskReminders.php:200
+[07/29/2026 11:11:30.12] Menjalankan worker... 
+"2026-07-29" // app\Console\Commands\SendTaskReminders.php:200
+[07/29/2026 11:12:00.15] Menjalankan worker... 
+"2026-07-29" // app\Console\Commands\SendTaskReminders.php:200
+[07/29/2026 11:12:30.14] Menjalankan worker... 
+[07/29/2026 11:13:03.11] Menjalankan worker... 
+"2026-07-29" // app\Console\Commands\SendTaskReminders.php:200
+[07/29/2026 11:13:34.19] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:14:04.19] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:14:34.12] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:15:04.11] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:15:34.20] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:16:04.21] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:16:34.20] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:17:04.16] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:17:34.12] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:18:04.18] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:18:34.18] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:19:04.22] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:19:34.13] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:20:04.14] Menjalankan worker... 
+
+In cors.php line 23:
+                                                      
+  syntax error, unexpected token "<<", expecting "]"  
+                                                      
+
+[07/29/2026 11:20:34.21] Menjalankan worker... 
+"2026-07-29" // app\Console\Commands\SendTaskReminders.php:200

@@ -74,7 +74,9 @@ class AiToolRegistry
                 'properties' => [
                     'search' => [
                         'type' => 'string',
-                        'description' => 'Kata kunci judul task untuk dicari (opsional, cocok sebagian/mirip).',
+                        'description' => 'Kata kunci untuk dicari di judul ATAU deskripsi task (opsional, cocok '
+                            .'sebagian/mirip). Kalau task tidak ketemu dengan kata kunci lengkap, coba lagi '
+                            .'dengan kata kunci yang lebih pendek/umum sebelum menyimpulkan task tidak ada.',
                     ],
                     'board_id' => [
                         'type' => 'integer',

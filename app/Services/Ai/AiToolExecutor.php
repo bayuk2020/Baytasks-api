@@ -84,7 +84,11 @@ class AiToolExecutor
         }
 
         if (! empty($args['search'])) {
-            $query->where('title', 'like', '%'.$args['search'].'%');
+            $needle = '%'.$args['search'].'%';
+            $query->where(function ($q) use ($needle) {
+                $q->where('title', 'like', $needle)
+                    ->orWhere('description', 'like', $needle);
+            });
         }
 
         if ($args['only_incomplete'] ?? true) {

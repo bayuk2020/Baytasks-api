@@ -2,12 +2,14 @@
 
 namespace App\Telegram\Handlers;
 
-use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\Finance\TransactionController;
+use App\Http\Controllers\Api\TaskController;
 use App\Models\Account;
 use App\Models\Habit;
 use App\Models\HabitLog;
 use App\Models\Memory;
+use App\Models\Task;
+use App\Models\Transaction;
 use App\Services\Ai\AiToolRegistry;
 use App\Services\AiService;
 use App\Services\TelegramService;
@@ -20,13 +22,18 @@ use Throwable;
  * sedang idle dan teksnya bukan salah satu command/step yang sudah dikenal
  * Handler lain (TaskHandler, HabitHandler, dst).
  *
- * Alurnya: ambil konteks dari tabel memories -> kirim ke AiService::askAi()
- * dengan daftar tools dari AiToolRegistry -> kalau AI memilih memanggil salah
- * satu tool, eksekusi aksinya di sini; kalau cuma teks biasa, balas apa adanya.
+ * Alurnya: ambil konteks dari tabel memories -> serahkan seluruhnya ke
+ * AiService::chat() lengkap dengan daftar tools (AiToolRegistry) dan sebuah
+ * dispatcher (executeTool()) yang tahu cara menjalankan tiap tool. AiService
+ * yang mengurus loop rekursifnya sendiri (panggil tool -> sisipkan hasil ->
+ * panggil AI lagi -- diulang sampai AI membalas teks biasa); AiHandler hanya
+ * perlu tahu CARA mengeksekusi satu tool dan mengembalikan DATA MENTAHNYA.
  */
 class AiHandler
 {
     private const MEMORY_CONTEXT_LIMIT = 5;
+
+    private const MAX_TOOL_ITERATIONS = 5;
 
     protected TelegramService $telegram;
 
@@ -46,28 +53,28 @@ class AiHandler
 
     public function execute(): void
     {
+        $messages = [
+            ['role' => 'system', 'content' => $this->buildSystemPrompt($this->buildMemoryContext())],
+            ['role' => 'user', 'content' => $this->text],
+        ];
+
         try {
-            $result = $this->ai->askAi(
-                $this->buildSystemPrompt($this->buildMemoryContext()),
-                $this->text,
-                AiToolRegistry::all()
+            $result = $this->ai->chat(
+                $messages,
+                AiToolRegistry::all(),
+                fn (string $name, array $args) => $this->executeTool($name, $args),
+                self::MAX_TOOL_ITERATIONS
             );
         } catch (Throwable $e) {
             $this->telegram->sendMessage(
                 $this->chatId,
-                "⚠️ Maaf Bay, semua provider AI lagi bermasalah. Coba lagi sebentar ya.\n\n<i>{$e->getMessage()}</i>"
+                "⚠️ Maaf Bay, AI lagi bermasalah. Coba lagi sebentar ya.\n\n<i>{$e->getMessage()}</i>"
             );
 
             return;
         }
 
-        if ($result['type'] === 'function_call') {
-            $this->handleFunctionCall($result['function']);
-
-            return;
-        }
-
-        $reply = $result['content'] !== '' ? $result['content'] : 'Maaf, aku belum kepikiran balasan yang pas untuk itu.';
+        $reply = ($result['content'] ?? '') !== '' ? $result['content'] : 'Maaf, aku belum kepikiran balasan yang pas untuk itu.';
         $this->telegram->sendMessage($this->chatId, $reply);
         $this->rememberConversation($reply);
     }
@@ -101,10 +108,19 @@ class AiHandler
             Task, Habit, Finance, Goals, dan Journal miliknya. Jawab dengan Bahasa Indonesia
             yang santai tapi jelas dan ringkas.
 
-            Kalau permintaan user cocok dengan salah satu tools yang tersedia (bikin task,
-            catat habit selesai, catat transaksi keuangan, dst), PANGGIL tools itu — jangan
-            cuma menjelaskan lewat teks. Kalau user cuma ngobrol biasa atau menanyakan sesuatu
-            yang tidak butuh aksi apa pun, balas dengan teks biasa saja.
+            Kalau permintaan user cocok dengan salah satu tools yang tersedia, PANGGIL tools
+            itu -- jangan cuma menjelaskan lewat teks. Kalau user cuma ngobrol biasa atau
+            menanyakan sesuatu yang tidak butuh aksi/data apa pun, balas dengan teks biasa saja.
+
+            ATURAN WAJIB anti-duplikat: sebelum membuat data baru (create_task,
+            record_transaction, dsb) untuk sesuatu yang punya kemungkinan sudah ada
+            sebelumnya (misalnya task dengan judul yang mirip), kamu WAJIB memanggil tool
+            Read yang sesuai dulu (misalnya get_tasks) untuk mengecek apakah data serupa
+            sudah ada. Kalau sudah ada, beri tahu user dan JANGAN buat duplikatnya --
+            tanyakan dulu apakah maksud user itu mengubah (update_task) data yang sudah ada,
+            bukan membuat baru. Begitu juga sebelum update_task/delete_task: kamu WAJIB
+            memanggil get_tasks dulu untuk menemukan task_id yang benar -- jangan pernah
+            menebak ID sendiri.
 
             Konteks {$memoryLimit} aktivitas terakhir (dari tabel memories):
             {$memoryContext}
@@ -112,35 +128,76 @@ class AiHandler
     }
 
     /**
-     * Dispatcher function call. `name` di sini WAJIB cocok dengan `name` yang
-     * didefinisikan di AiToolRegistry.
+     * Dispatcher tunggal untuk semua tool. Dipanggil oleh AiService::chat()
+     * setiap kali AI minta eksekusi function.
+     *
+     * PENTING: method (dan semua tool*() di bawah) WAJIB me-return array DATA
+     * MENTAH -- BUKAN string siap-kirim-Telegram -- karena hasilnya akan
+     * di-encode jadi JSON dan disisipkan balik ke riwayat percakapan AI
+     * (role "tool"), supaya AI yang merangkumnya jadi kalimat natural untuk
+     * user di iterasi berikutnya. `name` di sini WAJIB cocok dengan `name`
+     * yang didefinisikan di AiToolRegistry.
      */
-    private function handleFunctionCall(array $function): void
+    private function executeTool(string $name, array $args): array
     {
-        $name = $function['name'];
-        $args = is_array($function['arguments']) ? $function['arguments'] : [];
-
-        try {
-            $resultText = match ($name) {
-                'create_task' => $this->execCreateTask($args),
-                'log_habit' => $this->execLogHabit($args),
-                'record_transaction' => $this->execRecordTransaction($args),
-                default => "⚠️ AI mencoba memanggil aksi yang belum aku kenal: <code>{$name}</code>.",
-            };
-        } catch (Throwable $e) {
-            $resultText = "⚠️ Gagal menjalankan aksi <code>{$name}</code>: {$e->getMessage()}";
-        }
-
-        $this->telegram->sendMessage($this->chatId, $resultText);
-        $this->rememberConversation("[Aksi: {$name}] ".json_encode($args, JSON_UNESCAPED_UNICODE)." -> {$resultText}");
+        return match ($name) {
+            'get_tasks' => $this->toolGetTasks($args),
+            'create_task' => $this->toolCreateTask($args),
+            'update_task' => $this->toolUpdateTask($args),
+            'delete_task' => $this->toolDeleteTask($args),
+            'log_habit' => $this->toolLogHabit($args),
+            'get_balances' => $this->toolGetBalances($args),
+            'get_transactions' => $this->toolGetTransactions($args),
+            'record_transaction' => $this->toolRecordTransaction($args),
+            default => ['error' => "Tool tidak dikenal: {$name}"],
+        };
     }
 
     /**
-     * Modul Tasks — dipanggil lewat TaskController::store() langsung (bukan
-     * ditulis ulang di sini) supaya efek sampingnya (ActivityLog, dst) tetap
-     * konsisten dengan task yang dibuat lewat aplikasi/API biasa.
+     * Modul Tasks -- READ.
      */
-    private function execCreateTask(array $args): string
+    private function toolGetTasks(array $args): array
+    {
+        $query = Task::query();
+
+        if (! empty($args['board_id'])) {
+            $query->where('board_id', $args['board_id']);
+        }
+
+        if (! empty($args['status'])) {
+            $query->where('column_key', $args['status']);
+        }
+
+        if (! empty($args['search'])) {
+            $query->where('title', 'like', '%'.$args['search'].'%');
+        }
+
+        if ($args['only_incomplete'] ?? true) {
+            $query->whereNull('completed_at');
+        }
+
+        $tasks = $query->orderByDesc('created_at')->limit(20)->get();
+
+        return [
+            'count' => $tasks->count(),
+            'tasks' => $tasks->map(fn (Task $t) => [
+                'id' => $t->id,
+                'title' => $t->title,
+                'board_id' => $t->board_id,
+                'column' => $t->column_key,
+                'priority' => $t->priority,
+                'due_at' => $t->due_at?->toDateTimeString(),
+                'completed' => $t->completed_at !== null,
+            ])->values()->all(),
+        ];
+    }
+
+    /**
+     * Modul Tasks -- CREATE. Dipanggil lewat TaskController::store() langsung
+     * (bukan ditulis ulang di sini) supaya efek sampingnya (ActivityLog, dst)
+     * tetap konsisten dengan task yang dibuat lewat aplikasi/API biasa.
+     */
+    private function toolCreateTask(array $args): array
     {
         $request = Request::create('/api/tasks', 'POST', [
             'title' => $args['title'] ?? 'Tanpa judul',
@@ -151,23 +208,69 @@ class AiHandler
 
         $response = (new TaskController())->store($request);
         $data = json_decode($response->getContent(), true);
-        $title = $data['task']['title'] ?? ($args['title'] ?? 'tugas baru');
 
-        return "✅ Sip, tugas <b>{$title}</b> sudah aku tambahkan ke board.";
+        return ['success' => true, 'task' => $data['task'] ?? $data];
     }
 
     /**
-     * Modul Habits — SENGAJA tidak lewat HabitController::toggle(), karena
-     * toggle() itu benar-benar toggle (dipanggil 2x saat habit sudah selesai
-     * hari ini justru akan MEMBATALKANNYA). Di sini pakai firstOrCreate yang
-     * idempotent: aman dipanggil berkali-kali dalam satu hari yang sama.
+     * Modul Tasks -- UPDATE. Dipanggil lewat TaskController::update() supaya
+     * efek samping (ActivityLog "Task updated"/"Moved to ..."/"Priority
+     * changed to ...") tetap konsisten dengan update lewat aplikasi biasa.
      */
-    private function execLogHabit(array $args): string
+    private function toolUpdateTask(array $args): array
+    {
+        $taskId = $args['task_id'] ?? null;
+        $task = $taskId ? Task::find($taskId) : null;
+
+        if (! $task) {
+            return ['error' => "Task dengan id {$taskId} tidak ditemukan. Panggil get_tasks dulu untuk cek ID yang benar."];
+        }
+
+        $fields = array_filter([
+            'title' => $args['title'] ?? null,
+            'priority' => $args['priority'] ?? null,
+            'due_at' => $args['due_at'] ?? null,
+            'column_key' => $args['column_key'] ?? null,
+        ], fn ($v) => $v !== null);
+
+        $request = Request::create("/api/tasks/{$task->id}", 'PATCH', $fields);
+        $response = (new TaskController())->update($request, $task->id);
+        $data = json_decode($response->getContent(), true);
+
+        return ['success' => true, 'task' => $data['task'] ?? $data];
+    }
+
+    /**
+     * Modul Tasks -- DELETE.
+     */
+    private function toolDeleteTask(array $args): array
+    {
+        $taskId = $args['task_id'] ?? null;
+        $task = $taskId ? Task::find($taskId) : null;
+
+        if (! $task) {
+            return ['error' => "Task dengan id {$taskId} tidak ditemukan. Panggil get_tasks dulu untuk cek ID yang benar."];
+        }
+
+        $title = $task->title;
+        (new TaskController())->destroy($task->id);
+
+        return ['success' => true, 'deleted_task_id' => $taskId, 'deleted_title' => $title];
+    }
+
+    /**
+     * Modul Habits -- CREATE (tandai selesai hari ini). SENGAJA tidak lewat
+     * HabitController::toggle(), karena toggle() itu benar-benar toggle
+     * (dipanggil 2x saat habit sudah selesai hari ini justru akan
+     * MEMBATALKANNYA). Di sini pakai firstOrCreate yang idempotent: aman
+     * dipanggil berkali-kali dalam satu hari yang sama.
+     */
+    private function toolLogHabit(array $args): array
     {
         $needle = trim((string) ($args['habit_title'] ?? ''));
 
         if ($needle === '') {
-            return '⚠️ Nama habit-nya tidak jelas, sebutkan lagi ya nama habit yang mau ditandai selesai.';
+            return ['error' => 'Nama habit-nya tidak jelas, minta user menyebutkan lagi nama habit yang mau ditandai selesai.'];
         }
 
         // NOTE: kolom `archived` di sebagian besar baris ternyata NULL, bukan `false`
@@ -178,7 +281,7 @@ class AiHandler
             ->first();
 
         if (! $habit) {
-            return "⚠️ Aku tidak menemukan habit dengan nama mirip \"{$needle}\". Coba sebut nama habit-nya sesuai daftar habit kamu ya.";
+            return ['error' => "Tidak ditemukan habit dengan nama mirip \"{$needle}\"."];
         }
 
         HabitLog::firstOrCreate(
@@ -186,23 +289,82 @@ class AiHandler
             ['completed' => true, 'completed_at' => now(), 'notes' => $args['notes'] ?? null]
         );
 
-        return "🔥 Mantap, habit <b>{$habit->title}</b> sudah aku tandai selesai hari ini!";
+        return ['success' => true, 'habit_title' => $habit->title];
     }
 
     /**
-     * Modul Finance — dipanggil lewat TransactionController::store() langsung
-     * supaya saldo Account ikut ter-update lewat logika applyBalance() yang
-     * sama persis dipakai jalur REST API biasa, bukan implementasi tandingan.
-     * Akun tujuan sengaja default ke akun pertama (aplikasi ini masih 1 akun
-     * per user) -- kalau nanti multi-akun, tools/prompt perlu ditambah
-     * parameter account_name dulu.
+     * Modul Finance -- READ saldo.
      */
-    private function execRecordTransaction(array $args): string
+    private function toolGetBalances(array $args): array
+    {
+        $accounts = Account::all();
+
+        return [
+            'accounts' => $accounts->map(fn (Account $a) => [
+                'id' => $a->id,
+                'name' => $a->name,
+                'type' => $a->type,
+                'balance' => (float) $a->balance,
+            ])->values()->all(),
+            'total_balance' => (float) $accounts->sum('balance'),
+        ];
+    }
+
+    /**
+     * Modul Finance -- READ riwayat transaksi.
+     */
+    private function toolGetTransactions(array $args): array
+    {
+        $query = Transaction::query()->where(function ($q) {
+            $q->whereNull('transfer_group_id')->orWhere('type', 'transfer');
+        });
+
+        if (! empty($args['type'])) {
+            $query->where('type', $args['type']);
+        }
+
+        if (! empty($args['category'])) {
+            $query->where('category', $args['category']);
+        }
+
+        if (! empty($args['from_date'])) {
+            $query->whereDate('transaction_date', '>=', $args['from_date']);
+        }
+
+        if (! empty($args['to_date'])) {
+            $query->whereDate('transaction_date', '<=', $args['to_date']);
+        }
+
+        $limit = min((int) ($args['limit'] ?? 20), 50);
+        $transactions = $query->orderByDesc('transaction_date')->limit($limit)->get();
+
+        return [
+            'count' => $transactions->count(),
+            'transactions' => $transactions->map(fn (Transaction $t) => [
+                'id' => $t->id,
+                'type' => $t->type,
+                'category' => $t->category,
+                'amount' => (float) $t->amount,
+                'description' => $t->description,
+                'date' => $t->transaction_date?->toDateString(),
+            ])->values()->all(),
+        ];
+    }
+
+    /**
+     * Modul Finance -- CREATE transaksi. Dipanggil lewat
+     * TransactionController::store() langsung supaya saldo Account ikut
+     * ter-update lewat logika applyBalance() yang sama persis dipakai jalur
+     * REST API biasa, bukan implementasi tandingan. Akun tujuan sengaja
+     * default ke akun pertama (aplikasi ini masih 1 akun per user) -- kalau
+     * nanti multi-akun, tools/prompt perlu ditambah parameter account_name dulu.
+     */
+    private function toolRecordTransaction(array $args): array
     {
         $account = Account::orderBy('created_at')->first();
 
         if (! $account) {
-            return '⚠️ Belum ada akun finance yang terdaftar, bikin dulu akunnya di aplikasi ya.';
+            return ['error' => 'Belum ada akun finance yang terdaftar, minta user membuat akunnya dulu di aplikasi.'];
         }
 
         $type = $args['type'] ?? 'expense';
@@ -219,11 +381,7 @@ class AiHandler
         $response = (new TransactionController())->store($request);
         $data = json_decode($response->getContent(), true);
 
-        $label = $type === 'income' ? 'Pemasukan' : 'Pengeluaran';
-        $amount = number_format((float) ($data['amount'] ?? $args['amount'] ?? 0), 0, ',', '.');
-        $category = $data['category'] ?? ($args['category'] ?? 'Other');
-
-        return "💸 {$label} Rp{$amount} ({$category}) sudah aku catat di akun {$account->name}.";
+        return ['success' => true, 'account_name' => $account->name, 'transaction' => $data];
     }
 
     private function rememberConversation(string $summary): void

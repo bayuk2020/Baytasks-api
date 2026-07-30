@@ -11,13 +11,20 @@ namespace App\Services\Ai;
  * atau `functionDeclarations` Gemini) — jadi definisi tool di sini tidak perlu
  * peduli provider mana yang akhirnya dipakai.
  *
+ * Full CRUD per modul (bukan cuma Create): tiap modul idealnya punya tool Read
+ * (get_*) supaya AI bisa cek data yang sudah ada / menemukan ID yang benar
+ * sebelum Create/Update/Delete -- lihat instruksi "wajib cek duplikat dulu"
+ * di App\Telegram\Handlers\AiHandler::buildSystemPrompt().
+ *
  * CARA NAMBAH TOOL BARU:
  *   1. Tulis satu method baru di sini yang return array skema (contoh: lihat
- *      createTask()/logHabit()/recordTransaction() di bawah).
+ *      method-method di bawah).
  *   2. Daftarkan method-nya di all().
- *   3. Tambah case baru di switch-case App\Telegram\Handlers\AiHandler::handleFunctionCall()
- *      yang benar-benar mengeksekusi aksinya (create Task, update Habit, dst).
- *   `name` di sini HARUS sama persis dengan nama case di AiHandler.
+ *   3. Tambah case baru di switch-case App\Telegram\Handlers\AiHandler::executeTool()
+ *      yang benar-benar mengeksekusi aksinya (create/read/update/delete Task, dst).
+ *      `name` di sini HARUS sama persis dengan nama case di AiHandler.
+ *   4. Kalau tool-nya tipe Read, method eksekusinya HARUS me-return array data
+ *      mentah (bukan string Telegram) -- lihat catatan di AiService::chat().
  */
 class AiToolRegistry
 {
@@ -30,22 +37,73 @@ class AiToolRegistry
     public static function all(): array
     {
         return [
+            // --- Tasks (Full CRUD) ---
+            self::getTasks(),
             self::createTask(),
+            self::updateTask(),
+            self::deleteTask(),
+
+            // --- Habits ---
             self::logHabit(),
+
+            // --- Finance (Read + Create) ---
+            self::getBalances(),
+            self::getTransactions(),
             self::recordTransaction(),
+
             // self::saveJournal(), dst -- tinggal tambah method + daftarkan di sini.
         ];
     }
 
     /**
-     * Modul: Tasks (Kanban board).
+     * Modul: Tasks (Kanban board) -- READ.
+     */
+    public static function getTasks(): array
+    {
+        return [
+            'name' => 'get_tasks',
+            'description' => 'Membaca daftar task/tugas milik user, bisa difilter berdasarkan kata kunci '
+                .'judul, board, atau status kolom. WAJIB dipanggil dulu sebelum create_task (untuk cek '
+                .'apakah task dengan judul serupa sudah ada, supaya tidak dobel) dan WAJIB dipanggil dulu '
+                .'sebelum update_task/delete_task untuk menemukan task_id yang benar.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'search' => [
+                        'type' => 'string',
+                        'description' => 'Kata kunci judul task untuk dicari (opsional, cocok sebagian/mirip).',
+                    ],
+                    'board_id' => [
+                        'type' => 'integer',
+                        'description' => 'Filter board tertentu: 2=Kerjaan, 4=Personal. Kosongkan untuk semua board.',
+                        'enum' => [2, 4],
+                    ],
+                    'status' => [
+                        'type' => 'string',
+                        'description' => 'Filter status kolom tertentu. Kosongkan untuk semua status.',
+                        'enum' => ['backlog', 'todo', 'in_progress', 'review', 'done'],
+                    ],
+                    'only_incomplete' => [
+                        'type' => 'boolean',
+                        'description' => 'true untuk hanya menampilkan task yang belum selesai. Default true.',
+                    ],
+                ],
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Tasks -- CREATE.
      */
     public static function createTask(): array
     {
         return [
             'name' => 'create_task',
-            'description' => 'Membuat task/tugas baru di salah satu board. Panggil ini kalau user '
-                .'bilang mau nambahin tugas, pekerjaan, atau agenda baru yang perlu dikerjakan.',
+            'description' => 'Membuat task/tugas BARU di salah satu board. Panggil ini kalau user bilang '
+                .'mau nambahin tugas, pekerjaan, atau agenda baru. WAJIB panggil get_tasks dulu untuk '
+                .'memastikan belum ada task dengan judul yang sama/mirip -- kalau sudah ada, beri tahu '
+                .'user dan JANGAN buat duplikatnya.',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [
@@ -75,7 +133,71 @@ class AiToolRegistry
     }
 
     /**
-     * Modul: Habits.
+     * Modul: Tasks -- UPDATE.
+     */
+    public static function updateTask(): array
+    {
+        return [
+            'name' => 'update_task',
+            'description' => 'Mengubah task yang SUDAH ADA (judul, prioritas, deadline, atau status/kolom). '
+                .'WAJIB panggil get_tasks dulu untuk mendapatkan task_id yang benar sebelum memanggil ini -- '
+                .'jangan pernah menebak task_id sendiri.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'task_id' => [
+                        'type' => 'integer',
+                        'description' => 'ID task yang mau diubah, didapat dari hasil get_tasks.',
+                    ],
+                    'title' => [
+                        'type' => 'string',
+                        'description' => 'Judul baru. Kosongkan kalau judul tidak diubah.',
+                    ],
+                    'priority' => [
+                        'type' => 'string',
+                        'enum' => ['low', 'med', 'high', 'urgent'],
+                        'description' => 'Prioritas baru. Kosongkan kalau tidak diubah.',
+                    ],
+                    'due_at' => [
+                        'type' => 'string',
+                        'description' => 'Deadline baru format "YYYY-MM-DD" atau "YYYY-MM-DD HH:MM". Kosongkan kalau tidak diubah.',
+                    ],
+                    'column_key' => [
+                        'type' => 'string',
+                        'enum' => ['backlog', 'todo', 'in_progress', 'review', 'done'],
+                        'description' => 'Status/kolom baru, misalnya "done" kalau user bilang tugasnya sudah selesai.',
+                    ],
+                ],
+                'required' => ['task_id'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Tasks -- DELETE.
+     */
+    public static function deleteTask(): array
+    {
+        return [
+            'name' => 'delete_task',
+            'description' => 'Menghapus sebuah task secara permanen. WAJIB panggil get_tasks dulu untuk '
+                .'memastikan task_id yang benar dan konfirmasikan ke user judul task yang dimaksud sudah '
+                .'sesuai sebelum benar-benar memanggil ini.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'task_id' => [
+                        'type' => 'integer',
+                        'description' => 'ID task yang mau dihapus, didapat dari hasil get_tasks.',
+                    ],
+                ],
+                'required' => ['task_id'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Habits -- CREATE (tandai selesai hari ini).
      */
     public static function logHabit(): array
     {
@@ -102,13 +224,70 @@ class AiToolRegistry
     }
 
     /**
-     * Modul: Finance.
+     * Modul: Finance -- READ saldo.
+     */
+    public static function getBalances(): array
+    {
+        return [
+            'name' => 'get_balances',
+            'description' => 'Membaca saldo semua akun finance (bank, e-wallet, cash, trading) milik user '
+                .'saat ini. Gunakan untuk menjawab pertanyaan seperti "berapa saldo aku sekarang".',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => new \stdClass(),
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- READ riwayat transaksi.
+     */
+    public static function getTransactions(): array
+    {
+        return [
+            'name' => 'get_transactions',
+            'description' => 'Membaca riwayat transaksi keuangan, opsional difilter jenis/kategori/rentang '
+                .'tanggal. Gunakan untuk menjawab pertanyaan seperti "berapa pengeluaran bulan ini" atau '
+                .'"transaksi terakhir apa saja".',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'type' => [
+                        'type' => 'string',
+                        'enum' => ['income', 'expense', 'transfer'],
+                        'description' => 'Filter jenis transaksi. Kosongkan untuk semua jenis.',
+                    ],
+                    'category' => [
+                        'type' => 'string',
+                        'description' => 'Filter kategori tertentu, misalnya Food atau Transport. Kosongkan untuk semua kategori.',
+                    ],
+                    'from_date' => [
+                        'type' => 'string',
+                        'description' => 'Tanggal mulai format YYYY-MM-DD. Kosongkan untuk tanpa batas awal.',
+                    ],
+                    'to_date' => [
+                        'type' => 'string',
+                        'description' => 'Tanggal akhir format YYYY-MM-DD. Kosongkan untuk tanpa batas akhir.',
+                    ],
+                    'limit' => [
+                        'type' => 'integer',
+                        'description' => 'Maksimal jumlah transaksi yang dikembalikan, default 20, maksimal 50.',
+                    ],
+                ],
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- CREATE transaksi.
      */
     public static function recordTransaction(): array
     {
         return [
             'name' => 'record_transaction',
-            'description' => 'Mencatat transaksi keuangan baru (pemasukan atau pengeluaran). Panggil ini '
+            'description' => 'Mencatat transaksi keuangan BARU (pemasukan atau pengeluaran). Panggil ini '
                 .'kalau user cerita habis belanja/bayar sesuatu, atau baru saja menerima uang.',
             'parameters' => [
                 'type' => 'object',

@@ -13,6 +13,11 @@ use Throwable;
  *   1. Antar KEY dalam satu provider (key #1 gagal -> otomatis coba key #2, dst)
  *   2. Antar PROVIDER, urutan sesuai PROVIDER_CHAIN_ORDER di bawah
  *
+ * Plus satu lapis di atasnya yang tidak ada di versi Python: RECURSIVE TOOL
+ * CALLING (lihat chat()) -- kalau AI minta panggil tool, hasilnya dieksekusi,
+ * disisipkan balik ke riwayat percakapan, lalu AI dipanggil lagi sampai dia
+ * akhirnya membalas dengan teks biasa (atau sampai batas iterasi tercapai).
+ *
  * CARA NAMBAH PROVIDER BARU:
  *   1. Kalau providernya OpenAI-compatible (mayoritas provider gratis begini),
  *      tambah satu baris di OPENAI_COMPATIBLE_PROVIDERS (display name, url, model default).
@@ -61,18 +66,87 @@ class AiService
     private const TIMEOUT_SECONDS = 10;
 
     /**
-     * Kirim satu prompt ke AI, lengkap dengan fallback antar key & provider.
+     * Jalankan percakapan dengan AI, otomatis mengeksekusi tool calling secara
+     * REKURSIF: kalau AI minta panggil tool, hasilnya dieksekusi lewat
+     * $executeTool, disisipkan balik ke riwayat percakapan sebagai pesan
+     * beroles "tool", lalu AI dipanggil lagi -- diulang sampai AI akhirnya
+     * membalas dengan teks biasa (jawaban final untuk user), atau sampai
+     * $maxIterations tercapai (pengaman supaya tidak bisa infinite loop).
      *
-     * @param  string  $systemPrompt  Instruksi peran/aturan untuk AI.
-     * @param  string  $userMessage   Pesan/pertanyaan dari user.
+     * @param  array<int, array{role: string, content: ?string, tool_calls?: array, tool_call_id?: string, name?: string}>  $messages
+     *         Riwayat percakapan kanonis, biasanya diawali [role=system, role=user].
+     *         Role yang didukung: system, user, assistant, tool.
      * @param  array<int, array{name: string, description: string, parameters: array}>  $tools
-     *         Daftar tool dalam format kanonis (lihat App\Services\Ai\AiToolRegistry).
-     *         Kosongkan kalau tidak butuh function calling.
-     * @return array{type: 'text'|'function_call', content: ?string, function: ?array{name: string, arguments: array}, provider: string}
+     *         Daftar tool format kanonis (lihat App\Services\Ai\AiToolRegistry). Kosongkan
+     *         kalau tidak butuh function calling sama sekali.
+     * @param  callable(string, array): array  $executeTool
+     *         Dipanggil setiap kali AI minta eksekusi tool: menerima (nama_tool, argumen),
+     *         WAJIB me-return array DATA MENTAH (bukan string siap-kirim-user) karena
+     *         hasilnya akan di-loop balik ke AI dulu untuk dirangkum jadi bahasa natural.
+     * @param  int  $maxIterations  Batas keras jumlah tool call berturut-turut per
+     *         request (default 5) -- begitu tercapai tanpa AI membalas teks, dianggap gagal.
+     * @return array{type: 'text', content: string, provider: string}
      *
-     * @throws RuntimeException Kalau SEMUA key di SEMUA provider gagal, atau tidak ada key sama sekali.
+     * @throws RuntimeException Kalau semua provider gagal, tidak ada key sama sekali,
+     *         atau AI masih minta tool call setelah $maxIterations kali berturut-turut.
      */
-    public function askAi(string $systemPrompt, string $userMessage, array $tools = []): array
+    public function chat(array $messages, array $tools, callable $executeTool, int $maxIterations = 5): array
+    {
+        $conversation = $messages;
+
+        for ($i = 1; $i <= $maxIterations; $i++) {
+            $result = $this->sendConversation($conversation, $tools);
+
+            if ($result['type'] === 'text') {
+                return $result;
+            }
+
+            $callId = $result['function']['id'] ?? "call_{$i}";
+            $toolName = $result['function']['name'];
+            $toolArgs = is_array($result['function']['arguments']) ? $result['function']['arguments'] : [];
+
+            Log::info("[AiService] iterasi {$i}/{$maxIterations}: AI memanggil tool {$toolName}", $toolArgs);
+
+            // Catat giliran assistant yang memanggil tool ini di riwayat percakapan.
+            $conversation[] = [
+                'role' => 'assistant',
+                'content' => null,
+                'tool_calls' => [['id' => $callId, 'name' => $toolName, 'arguments' => $toolArgs]],
+            ];
+
+            try {
+                $toolResult = $executeTool($toolName, $toolArgs);
+            } catch (Throwable $e) {
+                // Kegagalan eksekusi tool TIDAK menghentikan percakapan -- kirim
+                // pesan error-nya balik ke AI, biar AI yang menjelaskan ke user.
+                $toolResult = ['error' => $e->getMessage()];
+            }
+
+            // Sisipkan hasil tool balik ke riwayat sebagai pesan role "tool", lalu
+            // lanjut ke iterasi berikutnya (panggil AI lagi dengan konteks baru ini).
+            $conversation[] = [
+                'role' => 'tool',
+                'tool_call_id' => $callId,
+                'name' => $toolName,
+                'content' => json_encode($toolResult, JSON_UNESCAPED_UNICODE),
+            ];
+        }
+
+        throw new RuntimeException(
+            "AI masih minta panggil tool setelah {$maxIterations}x berturut-turut tanpa membalas teks -- dihentikan untuk mencegah infinite loop."
+        );
+    }
+
+    /**
+     * Kirim SATU snapshot percakapan ke AI (tanpa loop), lengkap dengan
+     * fallback antar key & provider. Dipakai internal oleh chat() di setiap
+     * iterasinya -- rantai fallback dicoba ulang dari awal tiap iterasi
+     * karena tiap provider adalah API stateless (tidak ada sesi yang perlu
+     * "dilanjutkan" di provider yang sama).
+     *
+     * @return array{type: 'text'|'function_call', content: ?string, function: ?array{id: ?string, name: string, arguments: array}, provider: string}
+     */
+    private function sendConversation(array $messages, array $tools): array
     {
         $chain = $this->buildProviderChain();
 
@@ -86,7 +160,7 @@ class AiService
 
         foreach ($chain as [$label, $callback]) {
             try {
-                $result = $callback($systemPrompt, $userMessage, $tools);
+                $result = $callback($messages, $tools);
                 $result['provider'] = $label;
 
                 return $result;
@@ -103,9 +177,9 @@ class AiService
 
     /**
      * Bangun daftar percobaan berurutan: SETIAP key dari SETIAP provider,
-     * sesuai PROVIDER_CHAIN_ORDER. Return list of [label, callback].
+     * sesuai PROVIDER_CHAIN_ORDER. Return list of [label, callback(messages, tools)].
      *
-     * @return array<int, array{0: string, 1: callable(string, string, array): array}>
+     * @return array<int, array{0: string, 1: callable(array, array): array}>
      */
     private function buildProviderChain(): array
     {
@@ -121,7 +195,7 @@ class AiService
             if ($providerKey === 'GEMINI') {
                 foreach ($keys as $i => $key) {
                     $label = 'Gemini (key #'.($i + 1).')';
-                    $chain[] = [$label, fn (string $system, string $user, array $tools) => $this->callGemini($key, $system, $user, $tools)];
+                    $chain[] = [$label, fn (array $messages, array $tools) => $this->callGemini($key, $messages, $tools)];
                 }
 
                 continue;
@@ -137,7 +211,7 @@ class AiService
 
             foreach ($keys as $i => $key) {
                 $label = "{$displayName} (key #".($i + 1).')';
-                $chain[] = [$label, fn (string $system, string $user, array $tools) => $this->callOpenAiCompatible($url, $key, $model, $system, $user, $tools)];
+                $chain[] = [$label, fn (array $messages, array $tools) => $this->callOpenAiCompatible($url, $key, $model, $messages, $tools)];
             }
         }
 
@@ -163,13 +237,15 @@ class AiService
         return array_values(array_filter(array_map('trim', explode(',', $raw)), fn ($k) => $k !== ''));
     }
 
-    private function callGemini(string $apiKey, string $system, string $user, array $tools): array
+    private function callGemini(string $apiKey, array $messages, array $tools): array
     {
         $url = 'https://generativelanguage.googleapis.com/v1beta/models/'.self::GEMINI_MODEL.':generateContent';
 
+        [$systemText, $contents] = $this->toGeminiPayload($messages);
+
         $payload = [
-            'system_instruction' => ['parts' => [['text' => $system]]],
-            'contents' => [['role' => 'user', 'parts' => [['text' => $user]]]],
+            'system_instruction' => ['parts' => [['text' => $systemText]]],
+            'contents' => $contents,
         ];
 
         if (! empty($tools)) {
@@ -193,6 +269,7 @@ class AiService
                 'type' => 'function_call',
                 'content' => null,
                 'function' => [
+                    'id' => null, // Gemini tidak menerbitkan call-id, chat() yang generate sendiri.
                     'name' => $part['functionCall']['name'],
                     'arguments' => $part['functionCall']['args'] ?? [],
                 ],
@@ -206,14 +283,11 @@ class AiService
         ];
     }
 
-    private function callOpenAiCompatible(string $url, string $apiKey, string $model, string $system, string $user, array $tools): array
+    private function callOpenAiCompatible(string $url, string $apiKey, string $model, array $messages, array $tools): array
     {
         $payload = [
             'model' => $model,
-            'messages' => [
-                ['role' => 'system', 'content' => $system],
-                ['role' => 'user', 'content' => $user],
-            ],
+            'messages' => $this->toOpenAiMessages($messages),
         ];
 
         if (! empty($tools)) {
@@ -232,16 +306,17 @@ class AiService
             throw new RuntimeException('Response provider tidak berisi choices[0].message: '.$this->shortenBody($response->body()));
         }
 
-        $toolCall = $message['tool_calls'][0]['function'] ?? null;
+        $toolCall = $message['tool_calls'][0] ?? null;
 
         if ($toolCall !== null) {
-            $arguments = json_decode($toolCall['arguments'] ?? '{}', true);
+            $arguments = json_decode($toolCall['function']['arguments'] ?? '{}', true);
 
             return [
                 'type' => 'function_call',
                 'content' => null,
                 'function' => [
-                    'name' => $toolCall['name'],
+                    'id' => $toolCall['id'] ?? null,
+                    'name' => $toolCall['function']['name'],
                     'arguments' => is_array($arguments) ? $arguments : [],
                 ],
             ];
@@ -252,6 +327,110 @@ class AiService
             'content' => $message['content'] ?? '',
             'function' => null,
         ];
+    }
+
+    /**
+     * Ubah riwayat percakapan kanonis jadi `messages` OpenAI-compatible.
+     */
+    private function toOpenAiMessages(array $messages): array
+    {
+        $out = [];
+
+        foreach ($messages as $m) {
+            if ($m['role'] === 'system' || $m['role'] === 'user') {
+                $out[] = ['role' => $m['role'], 'content' => $m['content'] ?? ''];
+
+                continue;
+            }
+
+            if ($m['role'] === 'assistant') {
+                if (! empty($m['tool_calls'])) {
+                    $out[] = [
+                        'role' => 'assistant',
+                        'content' => null,
+                        'tool_calls' => array_map(fn (array $tc) => [
+                            'id' => $tc['id'],
+                            'type' => 'function',
+                            'function' => [
+                                'name' => $tc['name'],
+                                'arguments' => json_encode($tc['arguments'], JSON_UNESCAPED_UNICODE),
+                            ],
+                        ], $m['tool_calls']),
+                    ];
+                } else {
+                    $out[] = ['role' => 'assistant', 'content' => $m['content'] ?? ''];
+                }
+
+                continue;
+            }
+
+            if ($m['role'] === 'tool') {
+                $out[] = [
+                    'role' => 'tool',
+                    'tool_call_id' => $m['tool_call_id'],
+                    'content' => $m['content'] ?? '',
+                ];
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * Ubah riwayat percakapan kanonis jadi [system_text, contents] ala Gemini.
+     * Gemini memisahkan system_instruction dari contents, dan tidak punya role
+     * "tool" -- functionResponse dikirim sebagai giliran role "user".
+     *
+     * @return array{0: string, 1: array}
+     */
+    private function toGeminiPayload(array $messages): array
+    {
+        $systemParts = [];
+        $contents = [];
+
+        foreach ($messages as $m) {
+            if ($m['role'] === 'system') {
+                $systemParts[] = $m['content'] ?? '';
+
+                continue;
+            }
+
+            if ($m['role'] === 'user') {
+                $contents[] = ['role' => 'user', 'parts' => [['text' => $m['content'] ?? '']]];
+
+                continue;
+            }
+
+            if ($m['role'] === 'assistant') {
+                if (! empty($m['tool_calls'])) {
+                    // Desain kita: satu tool call per giliran assistant.
+                    $tc = $m['tool_calls'][0];
+                    $contents[] = [
+                        'role' => 'model',
+                        'parts' => [['functionCall' => ['name' => $tc['name'], 'args' => $tc['arguments']]]],
+                    ];
+                } else {
+                    $contents[] = ['role' => 'model', 'parts' => [['text' => $m['content'] ?? '']]];
+                }
+
+                continue;
+            }
+
+            if ($m['role'] === 'tool') {
+                $decoded = json_decode($m['content'] ?? '{}', true);
+                $contents[] = [
+                    'role' => 'user',
+                    'parts' => [[
+                        'functionResponse' => [
+                            'name' => $m['name'] ?? 'unknown',
+                            'response' => is_array($decoded) ? $decoded : ['result' => $decoded],
+                        ],
+                    ]],
+                ];
+            }
+        }
+
+        return [implode("\n\n", $systemParts), $contents];
     }
 
     /**

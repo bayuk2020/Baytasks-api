@@ -27,11 +27,13 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/reminders.log'));
 
-        $schedule
-            ->command('baytasks:habit-reminders')
-            ->everyMinute()
-            ->withoutOverlapping()
-            ->appendOutputTo(storage_path('logs/habit_reminders.log'));
+        // CATATAN: `baytasks:habit-reminders` SENGAJA tidak lagi dijadwalkan di sini.
+        // Logikanya sudah digabung ke dalam `baytasks:reminders` (SendTaskReminders.php,
+        // "PENGKONDISIAN C"). Command HabitReminders.php sebelumnya TIDAK punya
+        // cache-lock sama sekali, jadi menjadwalkan keduanya bersamaan setiap menit
+        // berisiko mengirim reminder habit yang sama berkali-kali dalam window
+        // toleransi 60 detik. File & signature-nya masih ada untuk dipanggil manual
+        // (`php artisan baytasks:habit-reminders`) kalau perlu debug terpisah.
         /**
          * Menjalankan service untuk membuat ulang tugas-tugas yang berulang (recurring).
          * Misalnya, tugas harian atau mingguan.
@@ -65,8 +67,31 @@ class Kernel extends ConsoleKernel
             ->call(fn() => app(DailyBriefing::class)->run())
             ->name('daily-briefing')
             ->dailyAt('10:00')
+            ->timezone('Asia/Jakarta')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/daily.log'));
+
+        /**
+         * Morning Quest Log (habit + task hari ini) -- setiap hari jam 08:00 WIB.
+         */
+        $schedule
+            ->command('baytasks:morning-brief')
+            ->dailyAt('08:00')
+            ->timezone('Asia/Jakarta')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/morning_brief.log'));
+
+        /**
+         * Nightly Summary (rekap habit/task/subtask selesai hari ini) -- setiap
+         * hari jam 21:00 WIB. NOTE: signature command-nya `baytasks:nightly-summary`
+         * (SendNightlySummary.php) -- bukan `baytasks:nightly-brief`, yang tidak ada.
+         */
+        $schedule
+            ->command('baytasks:nightly-summary')
+            ->dailyAt('21:00')
+            ->timezone('Asia/Jakarta')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/nightly_summary.log'));
     }
 
     /**

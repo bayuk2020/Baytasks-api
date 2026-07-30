@@ -25,6 +25,9 @@ use App\Http\Controllers\Api\TelegramWebhookController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\MilestoneController;
 use App\Http\Controllers\Api\QuarterlyPlanController;
+use App\Http\Controllers\Api\StoryController;
+use App\Http\Controllers\Api\MemoryController;
+use App\Http\Controllers\Api\AiWebController;
 
 /*
 |--------------------------------------------------------------------------
@@ -118,6 +121,26 @@ Route::post('/books/upload-pdf', [BookController::class, 'uploadPdf']);
 Route::post('/book-notes', [BookNoteController::class, 'store']);
 Route::put('/book-notes/{bookNote}', [BookNoteController::class, 'update']);
 Route::delete('/book-notes/{bookNote}', [BookNoteController::class, 'destroy']);
+
+// =========================
+// STORY (Personal Facebook Feed)
+// =========================
+
+Route::get('/stories', [StoryController::class, 'index']);
+Route::post('/stories', [StoryController::class, 'store']);
+Route::delete('/stories/{story}', [StoryController::class, 'destroy']);
+
+// =========================
+// MEMORIES (Log aktivitas dari bot Telegram / AI)
+// =========================
+
+Route::get('/memories', [MemoryController::class, 'index']);
+
+// =========================
+// AI WEB CHAT (widget FloatingAiChat -- pipeline SAMA PERSIS dengan bot Telegram)
+// =========================
+
+Route::post('/ai/chat', [AiWebController::class, 'chat']);
 
 // =========================
 // AUTH USER

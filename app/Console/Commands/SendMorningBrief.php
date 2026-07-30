@@ -7,6 +7,7 @@ use App\Models\Habit;
 use App\Models\Task;
 use App\Models\TelegramSetting;
 use App\Services\TelegramService;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class SendMorningBrief extends Command
@@ -16,11 +17,23 @@ class SendMorningBrief extends Command
 
     public function handle()
     {
+        Log::info('[baytasks:morning-brief] START');
+
         $setting = TelegramSetting::first();
-        if (!$setting || !$setting->chat_id) return 0;
+        if (!$setting || !$setting->chat_id) {
+            Log::warning('[baytasks:morning-brief] ABORT: telegram_settings tidak ada / chat_id kosong');
+            return 0;
+        }
+
+        if ($setting->is_sleeping) {
+            Log::info('[baytasks:morning-brief] SKIP: is_sleeping=true');
+            return 0;
+        }
 
         // 1. Ambil Data Habit
-        $habits = Habit::where('archived', false)
+        // NULL di kolom `archived` harus dianggap belum diarsip -- lihat catatan
+        // panjang soal bug ini di SendTaskReminders.php.
+        $habits = Habit::where(fn ($q) => $q->where('archived', false)->orWhereNull('archived'))
             ->where('frequency', 'daily')
             ->orderBy('reminder_time', 'asc')
             ->get();
@@ -80,6 +93,7 @@ class SendMorningBrief extends Command
         $telegram = new TelegramService();
         $telegram->sendMessage($setting->chat_id, $msg);
 
+        Log::info('[baytasks:morning-brief] DONE -- terkirim.', ['habit_count' => $targetHabit, 'task_count' => $targetTask]);
         $this->info('Morning brief sent successfully!');
         return 0;
     }

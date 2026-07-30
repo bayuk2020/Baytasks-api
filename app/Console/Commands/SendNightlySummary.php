@@ -9,6 +9,7 @@ use App\Models\Task;
 use App\Models\Subtask;
 use App\Models\TelegramSetting;
 use App\Services\TelegramService;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class SendNightlySummary extends Command
@@ -18,20 +19,35 @@ class SendNightlySummary extends Command
 
     public function handle()
     {
+        Log::info('[baytasks:nightly-summary] START');
+
         $setting = TelegramSetting::first();
-        if (!$setting || !$setting->chat_id) return 0;
+        if (!$setting || !$setting->chat_id) {
+            Log::warning('[baytasks:nightly-summary] ABORT: telegram_settings tidak ada / chat_id kosong');
+            return 0;
+        }
+
+        if ($setting->is_sleeping) {
+            Log::info('[baytasks:nightly-summary] SKIP: is_sleeping=true');
+            return 0;
+        }
 
         $today = Carbon::today('Asia/Jakarta');
 
         // 1. Data Habit
-        $habits = Habit::where('archived', false)
+        // NULL di kolom `archived` harus dianggap belum diarsip -- lihat catatan
+        // panjang soal bug ini di SendTaskReminders.php.
+        $habits = Habit::where(fn ($q) => $q->where('archived', false)->orWhereNull('archived'))
             ->where('frequency', 'daily')
             ->orderBy('reminder_time', 'asc')
             ->get();
 
-        // Cek log habit yang dikerjakan hari ini
+        // BUG LAMA: tabel `habit_logs` tidak punya kolom `status` sama sekali
+        // (kolomnya `completed` boolean) -- query ini sebelumnya SELALU melempar
+        // SQL error "Unknown column 'status'" dan bikin seluruh command crash
+        // sebelum sempat mengirim apa pun.
         $doneHabitIds = HabitLog::whereDate('completed_at', $today)
-            ->where('status', 'completed')
+            ->where('completed', true)
             ->pluck('habit_id')
             ->toArray();
 
@@ -49,9 +65,11 @@ class SendNightlySummary extends Command
                 $habitText .= "❌ {$habit->emoji} {$habit->title}\n";
             }
 
-            // Render streak jika habit punya streak lebih dari 0
-            if ($habit->current_streak > 0) {
-                $streakText .= "{$habit->emoji} {$habit->title}\n{$habit->current_streak} Hari\n\n";
+            // Render streak jika habit punya streak lebih dari 0.
+            // BUG LAMA: kolom modelnya `streak`, bukan `current_streak` (yang tidak
+            // pernah ada) -- baris ini sebelumnya selalu null/diam-diam skip.
+            if ($habit->streak > 0) {
+                $streakText .= "{$habit->emoji} {$habit->title}\n{$habit->streak} Hari\n\n";
             }
         }
 
@@ -113,6 +131,7 @@ class SendNightlySummary extends Command
         $telegram = new TelegramService();
         $telegram->sendMessage($setting->chat_id, $msg);
 
+        Log::info('[baytasks:nightly-summary] DONE -- terkirim.', ['habit_done' => $habitDoneCount, 'habit_total' => $totalHabit]);
         $this->info('Nightly summary sent successfully!');
         return 0;
     }

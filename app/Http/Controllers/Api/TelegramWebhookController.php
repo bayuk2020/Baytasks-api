@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\TelegramService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Telegram\Handlers\TaskHandler;
 use App\Telegram\Handlers\HabitHandler;
 use App\Telegram\Handlers\AiHandler;
+use App\Models\Story;
 use App\Models\Task; // Wajib ditambahkan untuk memanggil model Task
 
 class TelegramWebhookController extends Controller
@@ -37,8 +41,21 @@ class TelegramWebhookController extends Controller
     private function handleMessage($message)
     {
         $chatId = $message['chat']['id'];
+
+        // Pesan foto (dengan/tanpa caption) DITANGANI DULU, sebelum guard
+        // `empty($text)` di bawah -- pesan foto dari Telegram tidak punya field
+        // `text` sama sekali (captionnya ada di `caption`), jadi kalau dibiarkan
+        // lewat guard itu, pesan foto akan selalu ke-skip diam-diam.
+        if (!empty($message['photo']) && is_array($message['photo'])) {
+            $this->handlePhotoMessage($chatId, $message);
+            return;
+        }
+
         $text = $message['text'] ?? '';
 
+        // Pesan teks biasa (termasuk "ping") TIDAK disentuh di sini sama sekali --
+        // tetap lanjut ke routing lama di bawah, yang pada akhirnya melempar ke
+        // AiHandler kalau sesi sedang idle.
         if (empty($text)) return;
 
         $textLower = strtolower(trim($text));
@@ -97,6 +114,67 @@ class TelegramWebhookController extends Controller
         } else {
             // Step tidak dikenal (kemungkinan sisa sesi lama) -> fallback ke perilaku lama.
             (new TaskHandler($chatId, $text, null, null))->execute();
+        }
+    }
+
+    /**
+     * Tangkap foto yang dikirim user ke bot, unduh lewat Telegram Bot API
+     * (getFile -> download), simpan ke storage/app/public/stories, lalu catat
+     * sebagai satu Story baru (dengan caption-nya kalau ada).
+     */
+    private function handlePhotoMessage($chatId, array $message): void
+    {
+        $sizes = $message['photo'];
+        // Array `photo` diurutkan dari resolusi terkecil ke terbesar --
+        // elemen TERAKHIR adalah resolusi tertinggi yang tersedia.
+        $largest = end($sizes);
+        $fileId = $largest['file_id'] ?? null;
+        $caption = $message['caption'] ?? null;
+
+        if (!$fileId) {
+            Log::warning('[TelegramWebhook] Pesan foto tanpa file_id yang valid.', ['message' => $message]);
+            $this->telegram->sendMessage($chatId, '⚠️ Gagal membaca foto yang dikirim.');
+            return;
+        }
+
+        try {
+            $token = env('TELEGRAM_BOT_TOKEN');
+
+            // 1. Minta lokasi file asli dari Telegram lewat endpoint getFile.
+            $fileInfo = Http::get("https://api.telegram.org/bot{$token}/getFile", [
+                'file_id' => $fileId,
+            ])->json();
+
+            $filePath = $fileInfo['result']['file_path'] ?? null;
+
+            if (!$filePath) {
+                throw new \RuntimeException('Telegram getFile tidak mengembalikan file_path: ' . json_encode($fileInfo));
+            }
+
+            // 2. Download file gambar aslinya dari server file Telegram.
+            $downloadUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
+            $imageResponse = Http::get($downloadUrl);
+
+            if ($imageResponse->failed()) {
+                throw new \RuntimeException("Gagal mengunduh file dari Telegram (HTTP {$imageResponse->status()}).");
+            }
+
+            // 3. Simpan ke disk public (storage/app/public/stories -> public/storage/stories).
+            $extension = pathinfo($filePath, PATHINFO_EXTENSION) ?: 'jpg';
+            $filename = 'stories/' . Str::uuid() . '.' . $extension;
+            Storage::disk('public')->put($filename, $imageResponse->body());
+
+            // 4. Catat sebagai Story baru.
+            Story::create([
+                'image_path' => $filename,
+                'caption' => $caption,
+            ]);
+
+            Log::info('[TelegramWebhook] Story baru tersimpan dari foto Telegram.', ['image_path' => $filename]);
+            $this->telegram->sendMessage($chatId, '📸 Sip, foto sudah aku simpan ke Story kamu!');
+        } catch (\Throwable $e) {
+            Log::error('[TelegramWebhook] Gagal memproses foto: ' . $e->getMessage());
+            $this->telegram->sendMessage($chatId, "⚠️ Gagal menyimpan foto: {$e->getMessage()}");
         }
     }
 

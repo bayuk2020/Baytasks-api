@@ -67,8 +67,10 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 php artisan serve
 ngrok http 8000
-// Task Reminder
+// Task + Habit Reminder (SUDAH DIGABUNG jadi satu command -- lihat run_worker.bat)
 for /l %x in (1,0,2) do (echo [%time%] Running... & php artisan baytasks:reminders & timeout /t 60 /nobreak >nul)
 
-//Habit Reminder
-for /l %x in (1,0,2) do (echo [%time%] Running Habit Reminders... & php artisan baytasks:habit-reminders & timeout /t 60 /nobreak >nul)
+// CATATAN: loop terpisah untuk `baytasks:habit-reminders` SUDAH TIDAK DIPAKAI LAGI.
+// Logikanya sudah masuk ke dalam `baytasks:reminders` di atas (SendTaskReminders.php).
+// JANGAN jalankan loop habit-reminders terpisah lagi -- risiko reminder habit
+// terkirim dobel karena HabitReminders.php tidak punya cache-lock.

@@ -21,6 +21,10 @@ class DailyBriefing
             return;
         }
 
+        if ($setting->is_sleeping) {
+            return;
+        }
+
         $open =
             Task::whereNull(
                 'completed_at'

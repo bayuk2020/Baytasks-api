@@ -51,6 +51,9 @@ class AiToolRegistry
             self::getTransactions(),
             self::recordTransaction(),
 
+            // --- Pengaturan Bot ---
+            self::toggleSleepMode(),
+
             // self::saveJournal(), dst -- tinggal tambah method + daftarkan di sini.
         ];
     }
@@ -311,6 +314,33 @@ class AiToolRegistry
                     ],
                 ],
                 'required' => ['type', 'amount', 'category'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Pengaturan Bot -- Sleep Mode. Saat aktif, semua reminder
+     * proaktif (task/habit/morning brief/nightly summary/daily briefing)
+     * dibungkam sampai dinyalakan lagi -- lihat guard `is_sleeping` di
+     * app/Console/Commands/*.php dan app/Services/DailyBriefing.php.
+     */
+    public static function toggleSleepMode(): array
+    {
+        return [
+            'name' => 'toggle_sleep_mode',
+            'description' => 'Menyalakan atau mematikan Sleep Mode. Saat Sleep Mode menyala, bot BERHENTI '
+                .'mengirim semua reminder proaktif (task, habit, morning brief, nightly summary) sampai '
+                .'dimatikan lagi. Panggil dengan status=true kalau user bilang mau tidur/selamat tidur, '
+                .'dan status=false kalau user menyapa pagi/bilang sudah bangun.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'status' => [
+                        'type' => 'boolean',
+                        'description' => 'true untuk mengaktifkan Sleep Mode (bungkam reminder), false untuk mematikannya (reminder normal lagi).',
+                    ],
+                ],
+                'required' => ['status'],
             ],
         ];
     }

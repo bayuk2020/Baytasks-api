@@ -7,8 +7,18 @@ use App\Models\Habit;
 use App\Services\TelegramService;
 use App\Models\TelegramSetting;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
+/**
+ * CATATAN: logika command ini SUDAH DIGABUNG ke SendTaskReminders.php
+ * (baytasks:reminders) -- lihat "PENGKONDISIAN C" di sana. Command ini TIDAK
+ * lagi didaftarkan di Kernel.php agar tidak jalan dobel/race dengan versi
+ * gabungannya (file ini sebelumnya tidak punya cache-lock sama sekali, jadi
+ * kalau tetap dijadwalkan bersamaan bisa kirim reminder yang sama berkali-kali
+ * dalam window toleransi 60 detik). Dibiarkan tetap ada untuk dipanggil manual
+ * (`php artisan baytasks:habit-reminders`) kalau suatu saat perlu debug terpisah.
+ */
 class HabitReminders extends Command
 {
   protected $signature = 'baytasks:habit-reminders';
@@ -16,6 +26,8 @@ class HabitReminders extends Command
 
   public function handle()
   {
+    Log::info('[baytasks:habit-reminders] START (manual run -- command ini tidak lagi dijadwalkan otomatis)');
+
     $telegram = new TelegramService();
 
     // =========================================================
@@ -23,8 +35,14 @@ class HabitReminders extends Command
     // =========================================================
     $setting = TelegramSetting::first();
     if (!$setting || !$setting->enabled || !$setting->chat_id) {
+      Log::warning('[baytasks:habit-reminders] ABORT: telegram_settings tidak ada / enabled=false / chat_id kosong');
       dump('ERROR: NO TELEGRAM CHAT ID OR INTEGRATION DISABLED');
       return 1;
+    }
+
+    if ($setting->is_sleeping) {
+      Log::info('[baytasks:habit-reminders] SKIP: is_sleeping=true');
+      return 0;
     }
 
     $chatId = $setting->chat_id;
@@ -35,8 +53,12 @@ class HabitReminders extends Command
     $now = time();
     $todayStr = Carbon::now('Asia/Jakarta')->toDateString();
 
+    // NULL di kolom `archived` (bukan hanya `false`) harus tetap dianggap belum
+    // diarsip -- lihat catatan panjang soal ini di SendTaskReminders.php.
+    $notArchived = fn ($q) => $q->where('archived', false)->orWhereNull('archived');
+
     // 1. EVALUASI HABIT YANG TERLEWAT
-    $expiredHabits = Habit::where('archived', false)
+    $expiredHabits = Habit::where($notArchived)
       ->whereNotNull('due_time')
       ->whereNotExists(function ($query) use ($todayStr) {
         $query->select(DB::raw(1))
@@ -73,7 +95,7 @@ class HabitReminders extends Command
     }
 
     // 2. TRIGGER KIRIM NOTIFIKASI REMINDER UTAMA ATAU HASIL TUNDA
-    $activeHabits = Habit::where('archived', false)
+    $activeHabits = Habit::where($notArchived)
       ->whereNotExists(function ($query) use ($todayStr) {
         $query->select(DB::raw(1))
           ->from('habit_logs')

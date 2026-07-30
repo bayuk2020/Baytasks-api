@@ -9,6 +9,7 @@ use App\Services\TelegramService;
 use App\Models\TelegramSetting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache; // Wajib tambah ini buat fitur Gembok
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class SendTaskReminders extends Command
@@ -18,6 +19,8 @@ class SendTaskReminders extends Command
 
     public function handle()
     {
+        Log::info('[baytasks:reminders] START');
+
         $telegram = new TelegramService();
 
         // =========================================================
@@ -25,8 +28,18 @@ class SendTaskReminders extends Command
         // =========================================================
         $setting = TelegramSetting::first();
         if (!$setting || !$setting->enabled || !$setting->chat_id) {
+            Log::warning('[baytasks:reminders] ABORT: telegram_settings tidak ada / enabled=false / chat_id kosong', [
+                'setting_exists' => (bool) $setting,
+                'enabled' => $setting->enabled ?? null,
+                'chat_id' => $setting->chat_id ?? null,
+            ]);
             dump('ERROR: NO TELEGRAM CHAT ID OR INTEGRATION DISABLED');
             return 1;
+        }
+
+        if ($setting->is_sleeping) {
+            Log::info('[baytasks:reminders] SKIP: is_sleeping=true, semua reminder dibungkam sampai bangun.');
+            return 0;
         }
 
         $chatId = $setting->chat_id;
@@ -90,6 +103,8 @@ class SendTaskReminders extends Command
             ->where('reminded', false)
             ->whereNotNull('due_at')
             ->get();
+
+        Log::info('[baytasks:reminders] Task candidates dengan due_at & belum reminded: ' . $tasks->count());
 
         foreach ($tasks as $task) {
             $due = strtotime($task->due_at);
@@ -162,9 +177,16 @@ class SendTaskReminders extends Command
         // =========================================================
         // PENGKONDISIAN C: JALUR REMINDER & EVALUASI HABIT DENGAN GEMBOK CACHE
         // =========================================================
+        // PENTING: kolom `archived` di banyak baris habit ternyata NULL, bukan `false`
+        // (bukan diisi lewat toggle archive di aplikasi). `where('archived', false)`
+        // polos di semantik SQL TIDAK menganggap NULL = false, jadi diam-diam
+        // MENGECUALIKAN semua habit yang belum pernah disentuh kolom archived-nya --
+        // inilah akar kenapa reminder habit terasa "tidak pernah jalan". Anggap NULL
+        // sama dengan belum diarsip di SEMUA query habit di bawah.
+        $notArchived = fn ($q) => $q->where('archived', false)->orWhereNull('archived');
 
         // 1. EVALUASI HABIT YANG TERLEWAT
-        $expiredHabits = Habit::where('archived', false)
+        $expiredHabits = Habit::where($notArchived)
             ->whereNotNull('due_time')
             ->whereNotExists(function ($query) use ($todayStr) {
                 $query->select(DB::raw(1))
@@ -172,6 +194,8 @@ class SendTaskReminders extends Command
                     ->whereRaw('habit_logs.habit_id = habits.id')
                     ->where('habit_logs.date', $todayStr);
             })->get();
+
+        Log::info('[baytasks:reminders] Habit kandidat "terlewat" (due_time sudah lewat, belum ada log hari ini): ' . $expiredHabits->count());
 
         foreach ($expiredHabits as $exHabit) {
             $dueTimestamp = strtotime($todayStr . ' ' . $exHabit->due_time);
@@ -199,14 +223,22 @@ class SendTaskReminders extends Command
         }
         dump($todayStr);
         // 2. TRIGGER KIRIM NOTIFIKASI REMINDER UTAMA ATAU HASIL TUNDA
-        $activeHabits = Habit::where('archived', false)
+        //
+        // BUG LAMA: baris ini sebelumnya dibangun dengan whereNotExists (skip habit
+        // yang sudah ada log hari ini), TAPI langsung ditimpa baris berikutnya yang
+        // query ulang TANPA filter itu sama sekali -- efeknya habit yang sudah
+        // ditandai selesai pun tetap kebagian reminder lagi. Sudah digabung jadi
+        // satu query yang benar di bawah (filter whereNotExists tetap dipakai).
+        $activeHabits = Habit::where($notArchived)
             ->whereNotExists(function ($query) use ($todayStr) {
                 $query->select(DB::raw(1))
                     ->from('habit_logs')
                     ->whereRaw('habit_logs.habit_id = habits.id')
                     ->where('habit_logs.date', $todayStr);
             })->get();
-        $activeHabits = Habit::where('archived', false)->get();
+
+        Log::info('[baytasks:reminders] Habit aktif (belum diarsip, belum ada log hari ini): ' . $activeHabits->count());
+
         foreach ($activeHabits as $habit) {
             $send = false;
             $isSnoozed = false;
@@ -250,6 +282,7 @@ class SendTaskReminders extends Command
             Cache::put($cacheKey, true, 86400);
             // =========================================================
 
+            Log::info("[baytasks:reminders] Kirim reminder habit: {$habit->title}", ['habit_id' => $habit->id, 'snoozed' => $isSnoozed]);
             dump("MATCH HABIT PROCESSOR TELEGRAM ACTIVED: " . $habit->title);
 
             $dueLimit = $habit->due_time ? Carbon::parse($habit->due_time) : Carbon::parse('23:59:59');
@@ -280,6 +313,8 @@ class SendTaskReminders extends Command
                 'reply_markup' => json_encode($habitMarkup)
             ]);
         }
+
+        Log::info('[baytasks:reminders] DONE');
 
         return 0;
     }

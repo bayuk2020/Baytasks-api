@@ -20,6 +20,7 @@ class TelegramSetting extends Model
         'chat_id',
         'enabled',
         'daily_briefing',
+        'is_sleeping',
     ];
 
     protected $casts = [
@@ -27,6 +28,9 @@ class TelegramSetting extends Model
             'boolean',
 
         'daily_briefing' =>
+            'boolean',
+
+        'is_sleeping' =>
             'boolean',
     ];
 }

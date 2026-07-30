@@ -102,6 +102,7 @@ class AiToolExecutor
             'tasks' => $tasks->map(fn (Task $t) => [
                 'id' => $t->id,
                 'title' => $t->title,
+                'description' => $t->description,
                 'board_id' => $t->board_id,
                 'column' => $t->column_key,
                 'priority' => $t->priority,
@@ -147,6 +148,7 @@ class AiToolExecutor
 
         $fields = array_filter([
             'title' => $args['title'] ?? null,
+            'description' => $args['description'] ?? null,
             'priority' => $args['priority'] ?? null,
             'due_at' => $args['due_at'] ?? null,
             'column_key' => $args['column_key'] ?? null,

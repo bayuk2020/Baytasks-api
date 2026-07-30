@@ -65,18 +65,26 @@ class AiToolRegistry
     {
         return [
             'name' => 'get_tasks',
-            'description' => 'Membaca daftar task/tugas milik user, bisa difilter berdasarkan kata kunci '
-                .'judul, board, atau status kolom. WAJIB dipanggil dulu sebelum create_task (untuk cek '
-                .'apakah task dengan judul serupa sudah ada, supaya tidak dobel) dan WAJIB dipanggil dulu '
-                .'sebelum update_task/delete_task untuk menemukan task_id yang benar.',
+            'description' => 'Membaca daftar task/tugas milik user (hasilnya termasuk field "description" '
+                .'lengkap tiap task), bisa difilter berdasarkan kata kunci judul, board, atau status kolom. '
+                .'WAJIB dipanggil dulu sebelum create_task (untuk cek apakah task dengan judul serupa sudah '
+                .'ada, supaya tidak dobel) dan WAJIB dipanggil dulu sebelum update_task/delete_task untuk '
+                .'menemukan task_id yang benar (dan, kalau mau menambah subtask, untuk mendapatkan isi '
+                .'description lama yang harus dipertahankan).',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [
                     'search' => [
                         'type' => 'string',
                         'description' => 'Kata kunci untuk dicari di judul ATAU deskripsi task (opsional, cocok '
-                            .'sebagian/mirip). Kalau task tidak ketemu dengan kata kunci lengkap, coba lagi '
-                            .'dengan kata kunci yang lebih pendek/umum sebelum menyimpulkan task tidak ada.',
+                            .'sebagian/mirip, query SQL LIKE). PENTING: gunakan MAKSIMAL 1 atau 2 kata kunci '
+                            .'PALING UNIK saja -- misalnya kalau user bilang "edit task web LPPM registrasi '
+                            .'Lewis Unimus", gunakan search="LPPM" atau search="Lewis", JANGAN kirim kalimat '
+                            .'panjangnya utuh ("web LPPM registrasi Lewis Unimus") karena LIKE mencari '
+                            .'kecocokan STRING BERURUTAN, jadi kalimat panjang yang urutan katanya sedikit '
+                            .'beda dari judul/deskripsi asli tidak akan ketemu sama sekali. Kalau hasil '
+                            .'pencarian kosong, coba lagi dengan kata kunci lain yang lebih pendek/unik '
+                            .'sebelum menyimpulkan task tidak ada.',
                     ],
                     'board_id' => [
                         'type' => 'integer',
@@ -144,9 +152,11 @@ class AiToolRegistry
     {
         return [
             'name' => 'update_task',
-            'description' => 'Mengubah task yang SUDAH ADA (judul, prioritas, deadline, atau status/kolom). '
-                .'WAJIB panggil get_tasks dulu untuk mendapatkan task_id yang benar sebelum memanggil ini -- '
-                .'jangan pernah menebak task_id sendiri.',
+            'description' => 'Mengubah task yang SUDAH ADA (judul, deskripsi/subtask, prioritas, deadline, '
+                .'atau status/kolom). WAJIB panggil get_tasks dulu untuk mendapatkan task_id yang benar '
+                .'sebelum memanggil ini -- jangan pernah menebak task_id sendiri. Untuk MENAMBAH SUBTASK: '
+                .'ambil field "description" dari hasil get_tasks, tambahkan baris subtask baru di bawah '
+                .'teks lama (jangan hapus isi lama), lalu kirim hasil gabungannya lewat parameter description.',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [
@@ -157,6 +167,13 @@ class AiToolRegistry
                     'title' => [
                         'type' => 'string',
                         'description' => 'Judul baru. Kosongkan kalau judul tidak diubah.',
+                    ],
+                    'description' => [
+                        'type' => 'string',
+                        'description' => 'Deskripsi/catatan/daftar subtask baru (menggantikan seluruh isi '
+                            .'description lama) -- kalau tujuannya MENAMBAH subtask, kirim gabungan description '
+                            .'lama (dari get_tasks) + baris subtask baru, BUKAN cuma subtask barunya saja. '
+                            .'Kosongkan parameter ini kalau description tidak diubah sama sekali.',
                     ],
                     'priority' => [
                         'type' => 'string',

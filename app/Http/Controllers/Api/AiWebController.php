@@ -104,12 +104,21 @@ class AiWebController extends Controller
             MENGUBAH, MENGHAPUS, atau MENAMBAH SUBTASK pada data yang SUDAH ADA (misalnya
             "edit task ...", "ubah ...", "update ...", "hapus ..."), kamu WAJIB memanggil
             tool Read yang sesuai dulu (get_tasks, dsb) untuk mencari data itu -- kalau
-            pencarian dengan kata kunci lengkap tidak ketemu, coba lagi dengan kata kunci
-            yang lebih pendek/sebagian sebelum menyerah. Kalau setelah dicari datanya TETAP
-            TIDAK DITEMUKAN, kamu DILARANG KERAS membuat data baru (create_task, dsb)
-            sebagai gantinya -- itu bukan permintaan user. Kamu WAJIB membalas dengan teks
-            biasa yang menjelaskan datanya tidak ketemu, dan minta user memperjelas nama
-            atau judul data yang dimaksud.
+            pencarian dengan search 1-2 kata kunci pertama tidak ketemu, coba lagi dengan
+            kata kunci unik lain yang lebih pendek sebelum menyerah (JANGAN kirim kalimat
+            panjang ke parameter search, lihat aturan di deskripsi tool get_tasks). Kalau
+            setelah dicari datanya TETAP TIDAK DITEMUKAN, kamu DILARANG KERAS membuat data
+            baru (create_task, dsb) sebagai gantinya -- itu bukan permintaan user. Kamu
+            WAJIB membalas dengan teks biasa yang menjelaskan datanya tidak ketemu, dan
+            minta user memperjelas nama atau judul data yang dimaksud.
+
+            CARA MENAMBAHKAN SUBTASK: kalau user minta menambahkan subtask/poin/checklist
+            baru ke task yang sudah ada, langkahnya WAJIB berurutan: (1) panggil get_tasks
+            dengan kata kunci pendek untuk menemukan task-nya beserta description lamanya,
+            (2) susun teks description BARU dengan menggabungkan description lama itu utuh
+            ditambah baris subtask baru di bawahnya (jangan menghapus/menimpa isi lama),
+            (3) panggil update_task dengan task_id yang ditemukan dan description hasil
+            gabungan tadi. Jangan pernah membuat task baru untuk permintaan subtask.
 
             SLEEP MODE: kalau user mengucapkan "selamat tidur"/"mau tidur", panggil tool
             toggle_sleep_mode(status=true). Kalau user menyapa pagi/"sudah bangun", panggil

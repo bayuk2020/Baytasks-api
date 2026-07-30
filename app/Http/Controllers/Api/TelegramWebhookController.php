@@ -164,9 +164,10 @@ class TelegramWebhookController extends Controller
             $filename = 'stories/' . Str::uuid() . '.' . $extension;
             Storage::disk('public')->put($filename, $imageResponse->body());
 
-            // 4. Catat sebagai Story baru.
+            // 4. Catat sebagai Story baru. image_path WAJIB full absolute URL
+            // ke domain publik (bukan filename relatif) -- lihat Story::publicStorageUrl().
             Story::create([
-                'image_path' => $filename,
+                'image_path' => Story::publicStorageUrl($filename),
                 'caption' => $caption,
             ]);
 

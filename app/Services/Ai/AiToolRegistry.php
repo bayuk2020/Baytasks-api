@@ -44,17 +44,34 @@ class AiToolRegistry
             self::deleteTask(),
 
             // --- Habits ---
+            self::getHabits(),
+            self::createHabit(),
             self::logHabit(),
 
-            // --- Finance (Read + Create) ---
+            // --- Finance: kategori, akun & transaksi ---
+            self::getFinanceCategories(),
             self::getBalances(),
+            self::createAccount(),
             self::getTransactions(),
             self::recordTransaction(),
 
+            // --- Finance: kontak, budget, utang, analitik ---
+            self::getContacts(),
+            self::createContact(),
+            self::getBudgets(),
+            self::createBudget(),
+            self::getDebts(),
+            self::createDebt(),
+            self::recordDebtPayment(),
+            self::getAnalytics(),
+
+            // --- Journal & Story ---
+            self::getJournals(),
+            self::createJournal(),
+            self::createStory(),
+
             // --- Pengaturan Bot ---
             self::toggleSleepMode(),
-
-            // self::saveJournal(), dst -- tinggal tambah method + daftarkan di sini.
         ];
     }
 
@@ -310,7 +327,9 @@ class AiToolRegistry
         return [
             'name' => 'record_transaction',
             'description' => 'Mencatat transaksi keuangan BARU (pemasukan atau pengeluaran). Panggil ini '
-                .'kalau user cerita habis belanja/bayar sesuatu, atau baru saja menerima uang.',
+                .'kalau user cerita habis belanja/bayar sesuatu, atau baru saja menerima uang. WAJIB panggil '
+                .'get_finance_categories DULU untuk tahu daftar kategori resmi, karena parameter category '
+                .'HANYA boleh diisi salah satu nama dari daftar itu.',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [
@@ -321,18 +340,431 @@ class AiToolRegistry
                     ],
                     'amount' => [
                         'type' => 'number',
-                        'description' => 'Nominal uang dalam Rupiah (angka polos, tanpa titik/koma pemisah ribuan).',
-                    ],
-                    'category' => [
-                        'type' => 'string',
-                        'description' => 'Kategori transaksi, misalnya Food, Transport, Bills, Salary.',
+                        'description' => 'Nominal uang dalam Rupiah (angka polos, tanpa titik/koma pemisah ribuan). '
+                            .'Contoh: user bilang "18.000" atau "18rb" -> kirim 18000.',
                     ],
                     'description' => [
                         'type' => 'string',
-                        'description' => 'Keterangan singkat opsional tentang transaksinya.',
+                        'description' => 'WAJIB DIISI. Apa barang/jasa yang dibeli, atau dari mana uangnya datang -- '
+                            .'ditulis apa adanya sesuai kata user. CONTOH BENAR: user bilang "aku habis beli rokok '
+                            .'18.000" -> description="Beli rokok". User bilang "dapat gaji 5 juta" -> '
+                            .'description="Gaji bulanan". JANGAN PERNAH mengosongkan parameter ini, dan JANGAN '
+                            .'memindahkan detail barangnya ke parameter category.',
+                    ],
+                    'category' => [
+                        'type' => 'string',
+                        'description' => 'WAJIB salah satu nama kategori PERSIS dari hasil get_finance_categories. '
+                            .'Ini adalah pengelompokan umum (mis. "Consumption", "Food", "Transport"), BUKAN nama '
+                            .'barangnya. CONTOH BENAR: user beli rokok -> description="Beli rokok", '
+                            .'category="Consumption". CONTOH SALAH (JANGAN DITIRU): category="rokok" dengan '
+                            .'description kosong -- "rokok" itu nama barang, bukan kategori. Kalau tidak ada '
+                            .'kategori yang benar-benar pas, pilih yang paling umum/mendekati dari daftar; '
+                            .'JANGAN mengarang nama kategori baru.',
+                    ],
+                    'account_name' => [
+                        'type' => 'string',
+                        'description' => 'Nama akun/dompet sumber atau tujuan uang (mis. "BCA", "Dana", "Cash"). '
+                            .'Kosongkan kalau user tidak menyebut -- otomatis pakai akun pertama.',
+                    ],
+                    'contact_name' => [
+                        'type' => 'string',
+                        'description' => 'Nama orang yang terkait transaksi ini, kalau user menyebutkannya '
+                            .'(mis. "bayar utang ke Irfan"). Kosongkan kalau tidak relevan.',
+                    ],
+                    'date' => [
+                        'type' => 'string',
+                        'description' => 'Tanggal transaksi format "YYYY-MM-DD". Kosongkan untuk hari ini.',
                     ],
                 ],
-                'required' => ['type', 'amount', 'category'],
+                'required' => ['type', 'amount', 'description', 'category'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- READ daftar kategori resmi. Wajib dibaca AI sebelum
+     * record_transaction supaya tidak mengarang kategori sendiri.
+     */
+    public static function getFinanceCategories(): array
+    {
+        return [
+            'name' => 'get_finance_categories',
+            'description' => 'Membaca DAFTAR RESMI kategori transaksi keuangan yang tersedia (dipisah income & '
+                .'expense). WAJIB dipanggil sebelum record_transaction supaya kategori yang dipakai benar-benar '
+                .'ada di sistem, bukan karangan sendiri.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => new \stdClass(),
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- CREATE akun/dompet baru.
+     */
+    public static function createAccount(): array
+    {
+        return [
+            'name' => 'create_account',
+            'description' => 'Membuat akun keuangan BARU (rekening bank, e-wallet, uang cash, atau akun trading). '
+                .'Panggil get_balances dulu untuk memastikan akun dengan nama serupa belum ada.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => [
+                        'type' => 'string',
+                        'description' => 'Nama akun, mis. "BCA", "Dana", "Dompet Cash".',
+                    ],
+                    'type' => [
+                        'type' => 'string',
+                        'enum' => ['bank', 'ewallet', 'cash', 'trading'],
+                        'description' => 'Jenis akun. Default "bank" kalau user tidak menyebut.',
+                    ],
+                    'balance' => [
+                        'type' => 'number',
+                        'description' => 'Saldo awal dalam Rupiah. Default 0.',
+                    ],
+                    'notes' => [
+                        'type' => 'string',
+                        'description' => 'Catatan opsional.',
+                    ],
+                ],
+                'required' => ['name', 'type'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- READ kontak.
+     */
+    public static function getContacts(): array
+    {
+        return [
+            'name' => 'get_contacts',
+            'description' => 'Membaca daftar kontak keuangan (orang/keluarga/karyawan/vendor/pelanggan) milik user. '
+                .'WAJIB dipanggil dulu sebelum create_contact untuk cek apakah orangnya sudah terdaftar.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'search' => [
+                        'type' => 'string',
+                        'description' => 'Kata kunci nama/nomor HP (1-2 kata unik saja). Kosongkan untuk semua kontak.',
+                    ],
+                ],
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- CREATE kontak.
+     */
+    public static function createContact(): array
+    {
+        return [
+            'name' => 'create_contact',
+            'description' => 'Menambah kontak keuangan BARU. Panggil get_contacts dulu supaya tidak dobel.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => ['type' => 'string', 'description' => 'Nama lengkap kontak.'],
+                    'type' => [
+                        'type' => 'string',
+                        'enum' => ['person', 'family', 'employee', 'vendor', 'customer', 'other'],
+                        'description' => 'Jenis relasi. Default "person" kalau user tidak menyebut.',
+                    ],
+                    'phone' => ['type' => 'string', 'description' => 'Nomor HP opsional.'],
+                    'notes' => ['type' => 'string', 'description' => 'Catatan opsional.'],
+                ],
+                'required' => ['name', 'type'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- READ budget + realisasi bulan berjalan.
+     */
+    public static function getBudgets(): array
+    {
+        return [
+            'name' => 'get_budgets',
+            'description' => 'Membaca semua budget bulanan per kategori BESERTA realisasi pengeluaran bulan '
+                .'berjalan dan sisanya. Gunakan untuk menjawab "budget makan bulan ini sisa berapa" atau '
+                .'"aku sudah over budget belum".',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => new \stdClass(),
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- CREATE budget.
+     */
+    public static function createBudget(): array
+    {
+        return [
+            'name' => 'create_budget',
+            'description' => 'Membuat budget/anggaran bulanan BARU untuk satu kategori. Satu kategori hanya boleh '
+                .'punya satu budget -- panggil get_budgets dulu untuk cek. Nama kategori sebaiknya diambil dari '
+                .'get_finance_categories.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'category' => ['type' => 'string', 'description' => 'Nama kategori yang mau dibatasi.'],
+                    'monthly_limit' => [
+                        'type' => 'number',
+                        'description' => 'Batas pengeluaran per bulan dalam Rupiah (angka polos).',
+                    ],
+                    'notes' => ['type' => 'string', 'description' => 'Catatan opsional.'],
+                ],
+                'required' => ['category', 'monthly_limit'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- READ utang.
+     */
+    public static function getDebts(): array
+    {
+        return [
+            'name' => 'get_debts',
+            'description' => 'Membaca semua utang/cicilan user beserta sisa yang belum lunas. WAJIB dipanggil '
+                .'sebelum record_debt_payment untuk memastikan krediturnya benar-benar ada.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => new \stdClass(),
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- CREATE utang.
+     */
+    public static function createDebt(): array
+    {
+        return [
+            'name' => 'create_debt',
+            'description' => 'Mencatat utang/cicilan BARU. Panggil get_debts dulu supaya tidak dobel.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'creditor' => [
+                        'type' => 'string',
+                        'description' => 'Nama pemberi pinjaman / lembaga cicilan.',
+                    ],
+                    'total_debt' => [
+                        'type' => 'number',
+                        'description' => 'Total utang dalam Rupiah (angka polos).',
+                    ],
+                    'remaining_debt' => [
+                        'type' => 'number',
+                        'description' => 'Sisa yang belum dibayar. Kosongkan kalau sama dengan total_debt.',
+                    ],
+                    'monthly_payment' => [
+                        'type' => 'number',
+                        'description' => 'Cicilan per bulan. Kosongkan kalau tidak ada.',
+                    ],
+                    'due_date' => [
+                        'type' => 'string',
+                        'description' => 'Tanggal jatuh tempo format "YYYY-MM-DD". Opsional.',
+                    ],
+                    'notes' => ['type' => 'string', 'description' => 'Catatan opsional.'],
+                ],
+                'required' => ['creditor', 'total_debt'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- bayar cicilan utang.
+     */
+    public static function recordDebtPayment(): array
+    {
+        return [
+            'name' => 'record_debt_payment',
+            'description' => 'Mencatat PEMBAYARAN cicilan untuk utang yang SUDAH ADA. Otomatis mengurangi sisa '
+                .'utang, memotong saldo akun, dan mencatatnya sebagai transaksi pengeluaran. WAJIB panggil '
+                .'get_debts dulu -- kalau krediturnya tidak ada di daftar, JANGAN membuat utang baru, tanya user.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'creditor' => [
+                        'type' => 'string',
+                        'description' => 'Nama kreditur (1-2 kata unik saja), didapat dari hasil get_debts.',
+                    ],
+                    'amount' => [
+                        'type' => 'number',
+                        'description' => 'Nominal yang dibayar dalam Rupiah (angka polos).',
+                    ],
+                    'account_name' => [
+                        'type' => 'string',
+                        'description' => 'Nama akun sumber dana. Kosongkan untuk pakai akun pertama.',
+                    ],
+                    'paid_at' => [
+                        'type' => 'string',
+                        'description' => 'Tanggal bayar format "YYYY-MM-DD". Kosongkan untuk hari ini.',
+                    ],
+                    'notes' => ['type' => 'string', 'description' => 'Catatan opsional.'],
+                ],
+                'required' => ['creditor', 'amount'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Finance -- READ analitik ringkas.
+     */
+    public static function getAnalytics(): array
+    {
+        return [
+            'name' => 'get_analytics',
+            'description' => 'Membaca ringkasan analitik keuangan: total pemasukan, pengeluaran, cashflow, net '
+                .'worth, total kas, sisa utang, plus rincian per kategori dan tren bulanan. Gunakan untuk '
+                .'pertanyaan seperti "gimana keuangan aku bulan ini" atau "pengeluaran terbesar aku apa".',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'year' => [
+                        'type' => 'string',
+                        'description' => 'Filter tahun, mis. "2026". Kosongkan untuk semua tahun.',
+                    ],
+                    'month' => [
+                        'type' => 'string',
+                        'description' => 'Filter bulan angka 1-12. Kosongkan untuk setahun penuh.',
+                    ],
+                ],
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Habits -- READ.
+     */
+    public static function getHabits(): array
+    {
+        return [
+            'name' => 'get_habits',
+            'description' => 'Membaca daftar habit/kebiasaan aktif milik user, termasuk status sudah/belum '
+                .'dikerjakan HARI INI. WAJIB dipanggil dulu sebelum create_habit (cek duplikat) dan berguna '
+                .'sebelum log_habit untuk tahu nama habit yang benar.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => new \stdClass(),
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Habits -- CREATE.
+     */
+    public static function createHabit(): array
+    {
+        return [
+            'name' => 'create_habit',
+            'description' => 'Membuat habit/kebiasaan rutin BARU. Panggil get_habits dulu supaya tidak dobel.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'title' => ['type' => 'string', 'description' => 'Nama habit, mis. "Olahraga pagi".'],
+                    'description' => ['type' => 'string', 'description' => 'Penjelasan opsional.'],
+                    'emoji' => ['type' => 'string', 'description' => 'Satu emoji yang mewakili habit ini.'],
+                    'frequency' => [
+                        'type' => 'string',
+                        'enum' => ['daily', 'weekly'],
+                        'description' => 'Frekuensi. Default "daily".',
+                    ],
+                    'reminder_time' => [
+                        'type' => 'string',
+                        'description' => 'Jam pengingat format "HH:MM" (24 jam). Opsional.',
+                    ],
+                    'due_time' => [
+                        'type' => 'string',
+                        'description' => 'Batas jam pengerjaan format "HH:MM". Opsional.',
+                    ],
+                ],
+                'required' => ['title'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Journal -- READ.
+     */
+    public static function getJournals(): array
+    {
+        return [
+            'name' => 'get_journals',
+            'description' => 'Membaca catatan jurnal/diary user (judul, cuplikan isi, mood, tanggal). Gunakan '
+                .'untuk menjawab pertanyaan tentang apa yang pernah user tulis atau rasakan.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'search' => [
+                        'type' => 'string',
+                        'description' => 'Kata kunci pencarian (1-2 kata unik saja). Kosongkan untuk yang terbaru.',
+                    ],
+                ],
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Journal -- CREATE.
+     */
+    public static function createJournal(): array
+    {
+        return [
+            'name' => 'create_journal',
+            'description' => 'Menulis entri jurnal/diary BARU. Panggil ini kalau user minta "catat di jurnal", '
+                .'"tulis diary", atau menceritakan refleksi panjang yang layak disimpan.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'title' => ['type' => 'string', 'description' => 'Judul singkat entri jurnal.'],
+                    'content' => [
+                        'type' => 'string',
+                        'description' => 'Isi jurnal dalam teks biasa. Pisahkan paragraf dengan baris baru.',
+                    ],
+                    'mood' => [
+                        'type' => 'string',
+                        'enum' => ['great', 'good', 'neutral', 'low', 'bad'],
+                        'description' => 'Suasana hati user. Default "neutral".',
+                    ],
+                    'tags' => [
+                        'type' => 'array',
+                        'items' => ['type' => 'string'],
+                        'description' => 'Daftar tag opsional, mis. ["kerjaan", "refleksi"].',
+                    ],
+                ],
+                'required' => ['title', 'content'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Story -- CREATE (teks saja).
+     */
+    public static function createStory(): array
+    {
+        return [
+            'name' => 'create_story',
+            'description' => 'Memposting Story teks BARU ke feed pribadi user (semacam status Facebook). Panggil '
+                .'kalau user bilang "post ke story", "update status", atau ingin mengabadikan momen singkat. '
+                .'Untuk Story BERGAMBAR, user harus mengirim fotonya langsung ke bot -- tidak lewat tool ini.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'caption' => ['type' => 'string', 'description' => 'Teks Story yang mau diposting.'],
+                ],
+                'required' => ['caption'],
             ],
         ];
     }

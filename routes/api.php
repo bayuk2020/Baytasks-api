@@ -29,6 +29,8 @@ use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\MemoryController;
 use App\Http\Controllers\Api\AiWebController;
 use App\Http\Controllers\Api\PomodoroController;
+use App\Http\Controllers\Api\AnalyticsOverviewController;
+use App\Http\Controllers\Api\AnalyticsAdviceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -145,6 +147,19 @@ Route::get('/pomodoro/sessions', [PomodoroController::class, 'index']);
 Route::post('/pomodoro/sessions', [PomodoroController::class, 'store']);
 Route::get('/pomodoro/today', [PomodoroController::class, 'today']);
 Route::get('/pomodoro/stats', [PomodoroController::class, 'stats']);
+
+// Sesi "terbuka" -- dipakai bersama oleh web, bot Telegram, dan chat AI
+// supaya sesi yang dimulai di satu tempat bisa dilihat/dihentikan di tempat lain.
+Route::get('/pomodoro/active', [PomodoroController::class, 'active']);
+Route::post('/pomodoro/start', [PomodoroController::class, 'start']);
+Route::post('/pomodoro/stop', [PomodoroController::class, 'stop']);
+
+// =========================
+// ANALYTICS (rekap lintas modul + saran AI)
+// =========================
+
+Route::get('/analytics/overview', AnalyticsOverviewController::class);
+Route::post('/analytics/advice', AnalyticsAdviceController::class);
 
 // =========================
 // AI WEB CHAT (widget FloatingAiChat -- pipeline SAMA PERSIS dengan bot Telegram)

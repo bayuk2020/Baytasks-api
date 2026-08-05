@@ -5,6 +5,7 @@ namespace App\Services\Ai;
 use App\Http\Controllers\Api\Finance\AnalyticsController;
 use App\Http\Controllers\Api\Finance\DebtController;
 use App\Http\Controllers\Api\Finance\TransactionController;
+use App\Http\Controllers\Api\PomodoroController;
 use App\Http\Controllers\Api\SubtaskController;
 use App\Http\Controllers\Api\TaskController;
 use App\Models\Account;
@@ -22,6 +23,7 @@ use App\Models\Subtask;
 use App\Models\Task;
 use App\Models\TelegramSetting;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -77,6 +79,12 @@ class AiToolExecutor
             'create_debt' => $this->toolCreateDebt($args),
             'record_debt_payment' => $this->toolRecordDebtPayment($args),
             'get_analytics' => $this->toolGetAnalytics($args),
+
+            // --- Pomodoro / Focus ---
+            'start_focus_session' => $this->toolStartFocusSession($args),
+            'stop_focus_session' => $this->toolStopFocusSession($args),
+            'log_focus_session' => $this->toolLogFocusSession($args),
+            'get_focus_stats' => $this->toolGetFocusStats($args),
 
             // --- Journal & Story ---
             'get_journals' => $this->toolGetJournals($args),
@@ -171,6 +179,10 @@ class AiToolExecutor
     {
         $request = Request::create('/api/tasks', 'POST', [
             'title' => $args['title'] ?? 'Tanpa judul',
+            // BUG LAMA: description tidak pernah diteruskan (bahkan tidak ada
+            // di skema tool), jadi AI mustahil mengisinya walau user sudah
+            // menceritakan detailnya panjang lebar -- deskripsi selalu kosong.
+            'description' => $args['description'] ?? null,
             'board_id' => $args['board_id'] ?? 1,
             'priority' => $args['priority'] ?? 'med',
             'due_at' => $args['due_at'] ?? null,
@@ -203,6 +215,25 @@ class AiToolExecutor
             'due_at' => $args['due_at'] ?? null,
             'column_key' => $args['column_key'] ?? null,
         ], fn ($v) => $v !== null);
+
+        // BUG LAMA: TaskController::update() hanya mengisi `completed_at` kalau
+        // dikirim EKSPLISIT. Frontend Kanban memang mengirimnya (lihat
+        // KanbanBoard.tsx: `targetCol === "done" ? Date.now() : undefined`),
+        // tapi jalur AI ini tidak -- akibatnya task yang ditandai selesai oleh
+        // AI punya completed_at NULL, sehingga TIDAK terhitung di kolom "task
+        // selesai" rekap Pomodoro, streak, maupun Weekly Momentum.
+        // Di sini perilakunya disamakan dengan Kanban.
+        if (array_key_exists('column_key', $fields)) {
+            if ($fields['column_key'] === 'done') {
+                // Jangan timpa kalau memang sudah pernah diselesaikan.
+                $fields['completed_at'] = $task->completed_at
+                    ? $task->completed_at->toIso8601String()
+                    : now()->toIso8601String();
+            } else {
+                // Dipindah keluar dari kolom done -> status selesainya dicabut.
+                $fields['completed_at'] = null;
+            }
+        }
 
         $request = Request::create("/api/tasks/{$task->id}", 'PATCH', $fields);
         $response = (new TaskController())->update($request, $task->id);
@@ -903,6 +934,170 @@ class AiToolExecutor
         $response = (new AnalyticsController())->__invoke($request);
 
         return json_decode($response->getContent(), true) ?? [];
+    }
+
+    // =====================================================================
+    // Modul Pomodoro / Focus
+    // =====================================================================
+
+    /**
+     * Mulai sesi fokus. Sesi disimpan sebagai baris TERBUKA (ended_at NULL)
+     * lewat PomodoroController::start(), jadi timer yang dinyalakan dari sini
+     * juga terlihat di widget header web -- bukan timer terpisah.
+     */
+    private function toolStartFocusSession(array $args): array
+    {
+        $mode = $args['mode'] ?? 'focus';
+
+        $request = Request::create('/api/pomodoro/start', 'POST', ['mode' => $mode]);
+        $response = (new PomodoroController())->start($request);
+        $data = json_decode($response->getContent(), true);
+
+        return [
+            'success' => true,
+            'mode' => $mode,
+            'started_at' => $data['session']['startedAt'] ?? null,
+            'closed_previous' => $data['closedPrevious'] ?? null,
+            'note' => 'Timer sudah berjalan. Panggil stop_focus_session kalau user bilang sudah selesai.',
+        ];
+    }
+
+    /**
+     * Hentikan sesi yang sedang berjalan & catat durasinya.
+     */
+    private function toolStopFocusSession(array $args): array
+    {
+        $response = (new PomodoroController())->stop(Request::create('/api/pomodoro/stop', 'POST'));
+        $data = json_decode($response->getContent(), true);
+
+        if (! ($data['success'] ?? false)) {
+            return ['error' => 'Tidak ada sesi fokus yang sedang berjalan. Mulai dulu dengan start_focus_session.'];
+        }
+
+        $seconds = (int) ($data['session']['durationSeconds'] ?? 0);
+
+        return [
+            'success' => true,
+            'mode' => $data['session']['mode'] ?? null,
+            'duration_seconds' => $seconds,
+            'duration_human' => $this->humanDuration($seconds),
+        ];
+    }
+
+    /**
+     * Catat sesi fokus yang SUDAH LEWAT dari rentang jam yang disebut user
+     * (mis. "tadi jam 09.00-11.20 aku pasang jaringan"). Tanpa ini, kerja
+     * yang tidak dipandu timer tidak akan pernah masuk hitungan fokus.
+     */
+    private function toolLogFocusSession(array $args): array
+    {
+        $start = $args['start_time'] ?? null;
+        $end = $args['end_time'] ?? null;
+
+        if (! $start || ! $end) {
+            return ['error' => 'Parameter start_time dan end_time wajib diisi, format "YYYY-MM-DD HH:MM".'];
+        }
+
+        try {
+            $startedAt = Carbon::parse($start);
+            $endedAt = Carbon::parse($end);
+        } catch (\Throwable $e) {
+            return ['error' => 'Format waktu tidak dikenali. Pakai "YYYY-MM-DD HH:MM", mis. "2026-08-05 09:00".'];
+        }
+
+        if ($endedAt->lessThanOrEqualTo($startedAt)) {
+            return ['error' => 'end_time harus setelah start_time.'];
+        }
+
+        $request = Request::create('/api/pomodoro/sessions', 'POST', [
+            'mode' => $args['mode'] ?? 'focus',
+            'startedAt' => $startedAt->toIso8601String(),
+            'endedAt' => $endedAt->toIso8601String(),
+            'completed' => true,
+        ]);
+
+        $response = (new PomodoroController())->store($request);
+        $data = json_decode($response->getContent(), true);
+        $seconds = (int) ($data['session']['durationSeconds'] ?? 0);
+
+        return [
+            'success' => true,
+            'mode' => $data['session']['mode'] ?? 'focus',
+            'duration_seconds' => $seconds,
+            'duration_human' => $this->humanDuration($seconds),
+        ];
+    }
+
+    /**
+     * Ringkasan fokus: total hari ini + Score, plus beberapa hari terakhir.
+     */
+    private function toolGetFocusStats(array $args): array
+    {
+        $controller = new PomodoroController();
+
+        $today = json_decode(
+            $controller->today(Request::create('/api/pomodoro/today', 'GET'))->getContent(),
+            true
+        );
+
+        $days = min(max((int) ($args['days'] ?? 7), 1), 30);
+        $stats = json_decode(
+            $controller->stats(Request::create('/api/pomodoro/stats', 'GET', ['days' => $days]))->getContent(),
+            true
+        );
+
+        $rows = $stats['rows'] ?? [];
+        $todayRow = collect($rows)->firstWhere('date', $today['date'] ?? null);
+
+        $activeResponse = json_decode($controller->active()->getContent(), true);
+
+        return [
+            'today' => [
+                'date' => $today['date'] ?? null,
+                'focus_seconds' => $today['focusSeconds'] ?? 0,
+                'focus_human' => $this->humanDuration((int) ($today['focusSeconds'] ?? 0)),
+                'short_break_human' => $this->humanDuration((int) ($today['shortBreakSeconds'] ?? 0)),
+                'long_break_human' => $this->humanDuration((int) ($today['longBreakSeconds'] ?? 0)),
+                'session_count' => $today['sessionCount'] ?? 0,
+                'score' => $todayRow['score'] ?? 0,
+                'tasks_added' => $todayRow['tasksAdded'] ?? 0,
+                'tasks_completed' => $todayRow['tasksCompleted'] ?? 0,
+            ],
+            'score_explanation' => 'Score 0-100 = 45% volume fokus (target 4 jam/hari) '
+                .'+ 25% rasio fokus vs istirahat + 30% rasio task selesai.',
+            'session_running_now' => $activeResponse['active'] ?? null,
+            'recent_days' => array_map(fn ($r) => [
+                'date' => $r['date'],
+                'focus_human' => $this->humanDuration((int) $r['focusSeconds']),
+                'score' => $r['score'],
+                'tasks_completed' => $r['tasksCompleted'],
+            ], $rows),
+        ];
+    }
+
+    /** Detik -> "2 jam 20 menit" untuk dibacakan AI ke user. */
+    private function humanDuration(int $seconds): string
+    {
+        if ($seconds <= 0) {
+            return '0 menit';
+        }
+
+        $h = intdiv($seconds, 3600);
+        $m = intdiv($seconds % 3600, 60);
+        $s = $seconds % 60;
+
+        $parts = [];
+        if ($h > 0) {
+            $parts[] = "{$h} jam";
+        }
+        if ($m > 0) {
+            $parts[] = "{$m} menit";
+        }
+        if ($h === 0 && $s > 0) {
+            $parts[] = "{$s} detik";
+        }
+
+        return implode(' ', $parts);
     }
 
     // =====================================================================

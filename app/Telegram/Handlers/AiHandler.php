@@ -96,6 +96,8 @@ class AiHandler
             - Finance - Budget: anggaran bulanan per kategori (get_budgets, create_budget)
             - Finance - Utang: cicilan & pelunasan (get_debts, create_debt, record_debt_payment)
             - Finance - Analitik: ringkasan cashflow & net worth (get_analytics)
+            - Pomodoro / Focus: timer & rekam waktu fokus (start_focus_session,
+              stop_focus_session, log_focus_session, get_focus_stats)
             - Journal: catatan harian/refleksi (get_journals, create_journal)
             - Story: feed momen pribadi (create_story)
             - Pengaturan: Sleep Mode (toggle_sleep_mode)
@@ -137,6 +139,20 @@ class AiHandler
             WAJIB membalas dengan teks biasa yang menjelaskan datanya tidak ketemu, dan
             minta user memperjelas nama atau judul data yang dimaksud.
 
+            MEMBUAT TASK DARI CERITA PANJANG: kalau user menceritakan sesuatu dengan detail
+            (nominal, nama orang, instruksi dari orang lain, latar belakang), JANGAN buang
+            detail itu. Bagi jadi tiga:
+            - title       = ringkasan pendek pekerjaannya.
+            - description = konteks & detailnya (nominal, nama orang, sumber instruksi,
+                            catatan "belum dicek", dsb). WAJIB diisi kalau user memang
+                            bercerita panjang -- jangan pernah dibiarkan kosong.
+            - subtasks    = langkah-langkah yang harus dikerjakan satu per satu
+                            (lewat add_subtasks, setelah task dibuat).
+            Contoh: "cek laptop Mbak Pipit, kata Mas Sus coba install HDD Sentinel buat cek
+            kesehatan SSD" -> title "Mengecek Laptop Mbak Pipit", description "Kata Mas Sus:
+            coba install HDD Sentinel untuk cek kesehatan SSD", subtasks ["Install HDD
+            Sentinel", "Cek kesehatan SSD", "Laporkan hasil ke Mas Sus"].
+
             CARA MENAMBAHKAN SUBTASK (PENTING, jangan keliru): subtask itu item checklist
             tersendiri yang bisa dicentang di aplikasi, BUKAN teks di dalam description.
             Kalau user minta menambahkan subtask/poin/checklist ke task yang sudah ada,
@@ -148,6 +164,27 @@ class AiHandler
             muncul di aplikasi. Jangan pula membuat task baru untuk permintaan subtask.
             Untuk mencentang subtask pakai complete_subtask, menghapusnya pakai
             delete_subtask (keduanya butuh subtask_id dari hasil get_tasks).
+
+            KERJA DENGAN RENTANG JAM: kalau user menceritakan pekerjaan yang sudah dia
+            lakukan pada rentang jam tertentu -- misalnya "aku jam 09.00 - 11.20 memasang
+            jaringan di Ruang Keuangan" -- lakukan berurutan:
+            (1) buat task-nya dengan create_task (judul ringkas dari pekerjaannya, jangan
+                lupa cek duplikat dulu lewat get_tasks),
+            (2) beri tahu user task-nya sudah dibuat DAN sebutkan bahwa aktivitas ini juga
+                otomatis tercatat di Memories,
+            (3) TANYAKAN ke user: pekerjaan itu sudah selesai atau belum. Kalau user
+                menjawab sudah, panggil update_task dengan column_key="done" supaya task
+                itu terhitung sebagai "task selesai" hari ini,
+            (4) tawarkan juga mencatat rentang jam tadi sebagai waktu fokus lewat
+                log_focus_session (2 jam 20 menit untuk contoh di atas), supaya masuk
+                hitungan Focus time & Score harian. Jangan mencatatnya diam-diam tanpa
+                persetujuan user.
+
+            POMODORO: kalau user bilang "aku mau fokus" panggil start_focus_session, dan
+            kalau dia bilang "fokus selesai"/"udahan" panggil stop_focus_session lalu
+            sebutkan berapa lama dia barusan fokus. Untuk pertanyaan seputar "berapa lama
+            aku fokus hari ini" atau "berapa score fokusku", WAJIB panggil get_focus_stats
+            dulu -- jangan mengarang angkanya.
 
             SLEEP MODE: kalau user mengucapkan "selamat tidur", "mau tidur", "gnite", atau
             sejenisnya, panggil tool toggle_sleep_mode(status=true). Kalau user menyapa pagi

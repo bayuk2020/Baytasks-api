@@ -69,6 +69,107 @@ class PomodoroController extends Controller
     }
 
     /**
+     * Mulai sesi baru DI SERVER (sesi "terbuka": ended_at masih NULL).
+     *
+     * Ini yang membuat sesi bisa dimulai lewat chat AI / Telegram lalu
+     * terlihat & bisa dihentikan dari web -- satu sumber kebenaran, bukan
+     * timer terpisah di masing-masing tempat.
+     */
+    public function start(Request $request)
+    {
+        $validated = $request->validate([
+            'mode' => ['nullable', Rule::in(PomodoroSession::MODES)],
+        ]);
+
+        // Kalau masih ada sesi menggantung, tutup dulu supaya tidak menumpuk.
+        $closed = $this->closeOpenSession();
+
+        $session = PomodoroSession::create([
+            'user_id' => 1,
+            'mode' => $validated['mode'] ?? 'focus',
+            'started_at' => now(),
+            'ended_at' => null,
+            'duration_seconds' => null,
+            'completed' => false,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'session' => $this->transform($session),
+            'closedPrevious' => $closed ? $this->transform($closed) : null,
+        ], 201);
+    }
+
+    /**
+     * Tutup sesi yang sedang berjalan dan hitung durasinya.
+     */
+    public function stop(Request $request)
+    {
+        $session = $this->closeOpenSession();
+
+        if (! $session) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada sesi Pomodoro yang sedang berjalan.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'session' => $this->transform($session),
+        ]);
+    }
+
+    /**
+     * Sesi yang sedang berjalan (atau null). Dipakai web untuk mengadopsi
+     * sesi yang dimulai dari tempat lain.
+     */
+    public function active()
+    {
+        $session = $this->openSession();
+
+        return response()->json([
+            'active' => $session ? $this->transform($session) : null,
+            'serverTime' => now()->toIso8601String(),
+        ]);
+    }
+
+    private function openSession(): ?PomodoroSession
+    {
+        return PomodoroSession::whereNull('ended_at')
+            ->orderByDesc('started_at')
+            ->first();
+    }
+
+    /**
+     * Tutup semua sesi terbuka (harusnya cuma satu; sisanya jaring pengaman
+     * kalau sempat ada balapan request). Mengembalikan yang paling baru.
+     */
+    private function closeOpenSession(): ?PomodoroSession
+    {
+        $sessions = PomodoroSession::whereNull('ended_at')
+            ->orderByDesc('started_at')
+            ->get();
+
+        if ($sessions->isEmpty()) {
+            return null;
+        }
+
+        $now = now();
+        $latest = null;
+
+        foreach ($sessions as $session) {
+            $session->ended_at = $now;
+            $session->duration_seconds = max(0, $now->diffInSeconds($session->started_at));
+            $session->save();
+
+            $latest ??= $session;
+        }
+
+        return $latest;
+    }
+
+    /**
      * Total per mode untuk SATU hari (default hari ini). Dipakai kartu
      * "Focus time" di Dashboard.
      */
@@ -87,7 +188,9 @@ class PomodoroController extends Controller
             'focusSeconds' => $totals['focus'],
             'shortBreakSeconds' => $totals['short'],
             'longBreakSeconds' => $totals['long'],
-            'sessionCount' => PomodoroSession::whereDate('started_at', $date)->count(),
+            'sessionCount' => PomodoroSession::whereDate('started_at', $date)
+                ->whereNotNull('ended_at')
+                ->count(),
         ]);
     }
 
@@ -101,6 +204,7 @@ class PomodoroController extends Controller
             : now()->toDateString();
 
         $sessions = PomodoroSession::whereDate('started_at', $date)
+            ->whereNotNull('ended_at')
             ->orderByDesc('started_at')
             ->limit(100)
             ->get()
@@ -176,6 +280,9 @@ class PomodoroController extends Controller
         }
 
         $rows = PomodoroSession::selectRaw('DATE(started_at) as d, mode, SUM(duration_seconds) as total')
+            // Sesi yang MASIH BERJALAN belum punya durasi final -- jangan
+            // ikut dijumlahkan, nanti dihitung setelah ditutup.
+            ->whereNotNull('ended_at')
             ->whereBetween(DB::raw('DATE(started_at)'), [$dates[0], end($dates)])
             ->groupBy('d', 'mode')
             ->get();
@@ -226,8 +333,9 @@ class PomodoroController extends Controller
             'mode' => $s->mode,
             'startedAt' => $s->started_at?->toIso8601String(),
             'endedAt' => $s->ended_at?->toIso8601String(),
-            'durationSeconds' => (int) $s->duration_seconds,
+            'durationSeconds' => $s->duration_seconds === null ? null : (int) $s->duration_seconds,
             'completed' => (bool) $s->completed,
+            'running' => $s->ended_at === null,
         ];
     }
 }

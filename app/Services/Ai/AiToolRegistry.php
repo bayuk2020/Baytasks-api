@@ -70,6 +70,12 @@ class AiToolRegistry
             self::recordDebtPayment(),
             self::getAnalytics(),
 
+            // --- Pomodoro / Focus ---
+            self::startFocusSession(),
+            self::stopFocusSession(),
+            self::logFocusSession(),
+            self::getFocusStats(),
+
             // --- Journal & Story ---
             self::getJournals(),
             self::createJournal(),
@@ -146,6 +152,16 @@ class AiToolRegistry
                         'type' => 'string',
                         'description' => 'Judul singkat & jelas untuk tugasnya.',
                     ],
+                    'description' => [
+                        'type' => 'string',
+                        'description' => 'Deskripsi/konteks lengkap tugasnya. ISI INI kalau user menceritakan '
+                            .'detail, angka, nama orang, atau latar belakang -- jangan dibuang. Contoh: user '
+                            .'bilang "cek laptop Mbak Pipit, kata Mas Sus coba install HDD Sentinel buat cek '
+                            .'kesehatan SSD" -> title="Mengecek Laptop Mbak Pipit", description="Kata Mas Sus: '
+                            .'coba install HDD Sentinel untuk cek kesehatan SSD". Rincian bertahap yang harus '
+                            .'dikerjakan satu per satu tetap masuk add_subtasks, tapi konteks/nominal/nama '
+                            .'orang taruh di sini.',
+                    ],
                     'board_id' => [
                         'type' => 'integer',
                         'description' => 'ID board tujuan: 2 untuk Kerjaan, 4 untuk Personal.',
@@ -191,10 +207,10 @@ class AiToolRegistry
                     ],
                     'description' => [
                         'type' => 'string',
-                        'description' => 'Deskripsi/catatan/daftar subtask baru (menggantikan seluruh isi '
-                            .'description lama) -- kalau tujuannya MENAMBAH subtask, kirim gabungan description '
-                            .'lama (dari get_tasks) + baris subtask baru, BUKAN cuma subtask barunya saja. '
-                            .'Kosongkan parameter ini kalau description tidak diubah sama sekali.',
+                        'description' => 'Deskripsi/konteks baru. Nilai ini MENGGANTIKAN seluruh isi description '
+                            .'lama, jadi kalau maksudnya cuma menambah, ambil dulu description lama dari '
+                            .'get_tasks lalu kirim gabungannya. Kosongkan kalau description tidak diubah. '
+                            .'JANGAN dipakai untuk menaruh daftar subtask -- itu tugas add_subtasks.',
                     ],
                     'priority' => [
                         'type' => 'string',
@@ -777,6 +793,111 @@ class AiToolRegistry
                     ],
                 ],
                 'required' => ['title'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Pomodoro -- mulai sesi fokus.
+     */
+    public static function startFocusSession(): array
+    {
+        return [
+            'name' => 'start_focus_session',
+            'description' => 'Menyalakan timer Pomodoro dan mulai menghitung waktu fokus SEKARANG. Panggil '
+                .'kalau user bilang "aku mau fokus", "mulai fokus", "gas kerja", atau sejenisnya. Timer ini '
+                .'sama dengan yang tampil di header aplikasi web, jadi user bisa melihat & menghentikannya '
+                .'dari sana juga. Untuk mencatat kerja yang SUDAH LEWAT, jangan pakai ini -- pakai '
+                .'log_focus_session.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'mode' => [
+                        'type' => 'string',
+                        'enum' => ['focus', 'short', 'long'],
+                        'description' => 'Jenis sesi. Default "focus". Pakai "short"/"long" kalau user bilang '
+                            .'mau istirahat sebentar / istirahat panjang.',
+                    ],
+                ],
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Pomodoro -- hentikan sesi berjalan.
+     */
+    public static function stopFocusSession(): array
+    {
+        return [
+            'name' => 'stop_focus_session',
+            'description' => 'Menghentikan sesi Pomodoro yang sedang berjalan dan MENYIMPAN durasinya ke '
+                .'database. Panggil kalau user bilang "fokus selesai", "udahan dulu", "stop", atau sejenisnya. '
+                .'Setelah ini, sebutkan ke user berapa lama dia barusan fokus.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => new \stdClass(),
+                'required' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Pomodoro -- catat sesi yang sudah lewat.
+     */
+    public static function logFocusSession(): array
+    {
+        return [
+            'name' => 'log_focus_session',
+            'description' => 'Mencatat waktu fokus yang SUDAH TERJADI dari rentang jam yang disebut user, '
+                .'tanpa perlu timer berjalan. Panggil kalau user cerita mengerjakan sesuatu pada rentang jam '
+                .'tertentu, misalnya "jam 09.00 sampai 11.20 aku memasang jaringan di Ruang Keuangan" -- itu '
+                .'2 jam 20 menit waktu fokus yang layak masuk hitungan. Tanyakan konfirmasi ke user dulu '
+                .'sebelum mencatat kalau dia tidak eksplisit minta dihitung sebagai waktu fokus.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'start_time' => [
+                        'type' => 'string',
+                        'description' => 'Waktu mulai format "YYYY-MM-DD HH:MM". Kalau user cuma menyebut jam '
+                            .'tanpa tanggal, anggap hari ini.',
+                    ],
+                    'end_time' => [
+                        'type' => 'string',
+                        'description' => 'Waktu selesai format "YYYY-MM-DD HH:MM".',
+                    ],
+                    'mode' => [
+                        'type' => 'string',
+                        'enum' => ['focus', 'short', 'long'],
+                        'description' => 'Default "focus". Pakai "long" kalau yang diceritakan justru istirahat panjang.',
+                    ],
+                ],
+                'required' => ['start_time', 'end_time'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Pomodoro -- baca statistik fokus.
+     */
+    public static function getFocusStats(): array
+    {
+        return [
+            'name' => 'get_focus_stats',
+            'description' => 'Membaca statistik fokus: total waktu fokus hari ini, total istirahat, jumlah '
+                .'sesi, Score produktivitas 0-100, jumlah task masuk & selesai, plus rekap beberapa hari '
+                .'terakhir. WAJIB dipanggil untuk menjawab pertanyaan seperti "berapa lama aku fokus hari '
+                .'ini", "berapa score fokusku", atau "gimana produktivitasku minggu ini". Hasilnya juga '
+                .'memberitahu apakah ada sesi yang sedang berjalan sekarang.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'days' => [
+                        'type' => 'integer',
+                        'description' => 'Berapa hari terakhir yang ikut dirangkum (1-30). Default 7.',
+                    ],
+                ],
+                'required' => [],
             ],
         ];
     }

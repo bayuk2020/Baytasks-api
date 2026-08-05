@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\QuarterlyPlanController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\MemoryController;
 use App\Http\Controllers\Api\AiWebController;
+use App\Http\Controllers\Api\PomodoroController;
 
 /*
 |--------------------------------------------------------------------------
@@ -135,6 +136,15 @@ Route::delete('/stories/{story}', [StoryController::class, 'destroy']);
 // =========================
 
 Route::get('/memories', [MemoryController::class, 'index']);
+
+// =========================
+// POMODORO (rekaman tiap segmen sesi fokus / istirahat)
+// =========================
+
+Route::get('/pomodoro/sessions', [PomodoroController::class, 'index']);
+Route::post('/pomodoro/sessions', [PomodoroController::class, 'store']);
+Route::get('/pomodoro/today', [PomodoroController::class, 'today']);
+Route::get('/pomodoro/stats', [PomodoroController::class, 'stats']);
 
 // =========================
 // AI WEB CHAT (widget FloatingAiChat -- pipeline SAMA PERSIS dengan bot Telegram)

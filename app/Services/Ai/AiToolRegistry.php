@@ -43,6 +43,11 @@ class AiToolRegistry
             self::updateTask(),
             self::deleteTask(),
 
+            // --- Subtasks (checklist di dalam task) ---
+            self::addSubtasks(),
+            self::completeSubtask(),
+            self::deleteSubtask(),
+
             // --- Habits ---
             self::getHabits(),
             self::createHabit(),
@@ -169,11 +174,10 @@ class AiToolRegistry
     {
         return [
             'name' => 'update_task',
-            'description' => 'Mengubah task yang SUDAH ADA (judul, deskripsi/subtask, prioritas, deadline, '
-                .'atau status/kolom). WAJIB panggil get_tasks dulu untuk mendapatkan task_id yang benar '
-                .'sebelum memanggil ini -- jangan pernah menebak task_id sendiri. Untuk MENAMBAH SUBTASK: '
-                .'ambil field "description" dari hasil get_tasks, tambahkan baris subtask baru di bawah '
-                .'teks lama (jangan hapus isi lama), lalu kirim hasil gabungannya lewat parameter description.',
+            'description' => 'Mengubah task yang SUDAH ADA (judul, deskripsi, prioritas, deadline, atau '
+                .'status/kolom). WAJIB panggil get_tasks dulu untuk mendapatkan task_id yang benar sebelum '
+                .'memanggil ini -- jangan pernah menebak task_id sendiri. CATATAN: untuk menambah SUBTASK/'
+                .'checklist, JANGAN pakai tool ini -- pakai add_subtasks.',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [
@@ -231,6 +235,89 @@ class AiToolRegistry
                     ],
                 ],
                 'required' => ['task_id'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Subtasks -- CREATE (bisa banyak sekaligus).
+     */
+    public static function addSubtasks(): array
+    {
+        return [
+            'name' => 'add_subtasks',
+            'description' => 'Menambahkan satu atau BANYAK subtask (item checklist) ke dalam task yang SUDAH ADA. '
+                .'INI SATU-SATUNYA cara yang benar untuk menambah subtask -- JANGAN PERNAH menulis daftar '
+                .'subtask ke dalam parameter description milik update_task, karena subtask disimpan sebagai '
+                .'baris tersendiri yang bisa dicentang di aplikasi, bukan sebagai teks biasa. WAJIB panggil '
+                .'get_tasks dulu (pakai 1-2 kata kunci) untuk mendapatkan task_id yang benar.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'task_id' => [
+                        'type' => 'integer',
+                        'description' => 'ID task induk, didapat dari hasil get_tasks.',
+                    ],
+                    'titles' => [
+                        'type' => 'array',
+                        'items' => ['type' => 'string'],
+                        'description' => 'Daftar judul subtask yang mau ditambahkan. Kalau user menyebut '
+                            .'beberapa poin bernomor, masukkan SEMUANYA sekaligus dalam satu array ini '
+                            .'(cukup satu kali panggil tool), mis. ["Rancang web sesuai design", '
+                            .'"Masukkan konten video sesuai tema", "Follow up Pak Sayono"]. Tulis tiap poin '
+                            .'apa adanya sesuai kata user, tanpa nomor urut di depannya.',
+                    ],
+                ],
+                'required' => ['task_id', 'titles'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Subtasks -- centang/batal-centang.
+     */
+    public static function completeSubtask(): array
+    {
+        return [
+            'name' => 'complete_subtask',
+            'description' => 'Menandai satu subtask sebagai SELESAI (atau membatalkan centangnya). WAJIB panggil '
+                .'get_tasks dulu untuk mendapatkan subtask_id yang benar -- hasil get_tasks sudah memuat daftar '
+                .'subtask tiap task beserta id-nya.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'subtask_id' => [
+                        'type' => 'integer',
+                        'description' => 'ID subtask, didapat dari field subtasks[].id di hasil get_tasks.',
+                    ],
+                    'done' => [
+                        'type' => 'boolean',
+                        'description' => 'true untuk menandai selesai (default), false untuk membatalkan centang.',
+                    ],
+                ],
+                'required' => ['subtask_id'],
+            ],
+        ];
+    }
+
+    /**
+     * Modul: Subtasks -- DELETE.
+     */
+    public static function deleteSubtask(): array
+    {
+        return [
+            'name' => 'delete_subtask',
+            'description' => 'Menghapus satu subtask dari sebuah task. WAJIB panggil get_tasks dulu untuk '
+                .'mendapatkan subtask_id yang benar, dan pastikan ke user subtask yang dimaksud sudah sesuai.',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'subtask_id' => [
+                        'type' => 'integer',
+                        'description' => 'ID subtask yang mau dihapus, dari field subtasks[].id di hasil get_tasks.',
+                    ],
+                ],
+                'required' => ['subtask_id'],
             ],
         ];
     }

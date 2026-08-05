@@ -86,6 +86,8 @@ class AiHandler
 
             MODUL YANG KAMU KELOLA (semuanya punya tools sendiri, pakai yang sesuai):
             - Tasks: papan kanban tugas (get/create/update/delete_task)
+            - Subtasks: checklist di dalam sebuah task (add_subtasks, complete_subtask,
+              delete_subtask)
             - Habits: kebiasaan rutin harian (get_habits, create_habit, log_habit)
             - Finance - Akun: rekening bank/e-wallet/cash/trading (get_balances, create_account)
             - Finance - Transaksi: pemasukan & pengeluaran (get_finance_categories,
@@ -135,13 +137,17 @@ class AiHandler
             WAJIB membalas dengan teks biasa yang menjelaskan datanya tidak ketemu, dan
             minta user memperjelas nama atau judul data yang dimaksud.
 
-            CARA MENAMBAHKAN SUBTASK: kalau user minta menambahkan subtask/poin/checklist
-            baru ke task yang sudah ada, langkahnya WAJIB berurutan: (1) panggil get_tasks
-            dengan kata kunci pendek untuk menemukan task-nya beserta description lamanya,
-            (2) susun teks description BARU dengan menggabungkan description lama itu utuh
-            ditambah baris subtask baru di bawahnya (jangan menghapus/menimpa isi lama),
-            (3) panggil update_task dengan task_id yang ditemukan dan description hasil
-            gabungan tadi. Jangan pernah membuat task baru untuk permintaan subtask.
+            CARA MENAMBAHKAN SUBTASK (PENTING, jangan keliru): subtask itu item checklist
+            tersendiri yang bisa dicentang di aplikasi, BUKAN teks di dalam description.
+            Kalau user minta menambahkan subtask/poin/checklist ke task yang sudah ada,
+            langkahnya WAJIB: (1) panggil get_tasks dengan 1-2 kata kunci pendek untuk
+            menemukan task-nya (hasilnya sudah memuat daftar subtask yang ada sekarang),
+            (2) panggil add_subtasks dengan task_id itu dan SEMUA poin sekaligus dalam
+            parameter titles. DILARANG KERAS menaruh daftar subtask ke dalam parameter
+            description milik update_task -- kalau begitu, checklist-nya tidak akan pernah
+            muncul di aplikasi. Jangan pula membuat task baru untuk permintaan subtask.
+            Untuk mencentang subtask pakai complete_subtask, menghapusnya pakai
+            delete_subtask (keduanya butuh subtask_id dari hasil get_tasks).
 
             SLEEP MODE: kalau user mengucapkan "selamat tidur", "mau tidur", "gnite", atau
             sejenisnya, panggil tool toggle_sleep_mode(status=true). Kalau user menyapa pagi

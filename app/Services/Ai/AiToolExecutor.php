@@ -5,6 +5,7 @@ namespace App\Services\Ai;
 use App\Http\Controllers\Api\Finance\AnalyticsController;
 use App\Http\Controllers\Api\Finance\DebtController;
 use App\Http\Controllers\Api\Finance\TransactionController;
+use App\Http\Controllers\Api\SubtaskController;
 use App\Http\Controllers\Api\TaskController;
 use App\Models\Account;
 use App\Models\Budget;
@@ -17,6 +18,7 @@ use App\Models\Journal;
 use App\Models\JournalTag;
 use App\Models\Memory;
 use App\Models\Story;
+use App\Models\Subtask;
 use App\Models\Task;
 use App\Models\TelegramSetting;
 use App\Models\Transaction;
@@ -50,6 +52,9 @@ class AiToolExecutor
             'create_task' => $this->toolCreateTask($args),
             'update_task' => $this->toolUpdateTask($args),
             'delete_task' => $this->toolDeleteTask($args),
+            'add_subtasks' => $this->toolAddSubtasks($args),
+            'complete_subtask' => $this->toolCompleteSubtask($args),
+            'delete_subtask' => $this->toolDeleteSubtask($args),
 
             // --- Habits ---
             'get_habits' => $this->toolGetHabits($args),
@@ -132,7 +137,7 @@ class AiToolExecutor
             $query->whereNull('completed_at');
         }
 
-        $tasks = $query->orderByDesc('created_at')->limit(20)->get();
+        $tasks = $query->with('subtasks')->orderByDesc('created_at')->limit(20)->get();
 
         return [
             'count' => $tasks->count(),
@@ -145,6 +150,14 @@ class AiToolExecutor
                 'priority' => $t->priority,
                 'due_at' => $t->due_at?->toDateTimeString(),
                 'completed' => $t->completed_at !== null,
+                // Subtask ikut dikirim supaya AI tahu checklist yang SUDAH ada
+                // (tidak menambah yang dobel) dan tahu subtask_id untuk
+                // complete_subtask/delete_subtask.
+                'subtasks' => $t->subtasks->map(fn (Subtask $s) => [
+                    'id' => $s->id,
+                    'title' => $s->title,
+                    'done' => (bool) $s->done,
+                ])->values()->all(),
             ])->values()->all(),
         ];
     }
@@ -214,6 +227,124 @@ class AiToolExecutor
         (new TaskController())->destroy($task->id);
 
         return ['success' => true, 'deleted_task_id' => $taskId, 'deleted_title' => $title];
+    }
+
+    /**
+     * Modul Tasks -- tambah SUBTASK (checklist) ke task yang sudah ada.
+     *
+     * CATATAN: subtask itu baris sendiri di tabel `subtasks` (punya id, done,
+     * position), BUKAN teks yang ditempel ke kolom description task. Kalau
+     * ditulis ke description, checklist-nya tidak akan muncul & tidak bisa
+     * dicentang di UI aplikasi.
+     */
+    private function toolAddSubtasks(array $args): array
+    {
+        $taskId = $args['task_id'] ?? null;
+        $task = $taskId ? Task::find($taskId) : null;
+
+        if (! $task) {
+            return ['error' => "Task dengan id {$taskId} tidak ditemukan. Panggil get_tasks dulu untuk cek ID yang benar."];
+        }
+
+        $titles = $args['titles'] ?? [];
+
+        if (! is_array($titles)) {
+            $titles = [$titles];
+        }
+
+        $titles = array_values(array_filter(
+            array_map(fn ($t) => trim((string) $t), $titles),
+            fn ($t) => $t !== ''
+        ));
+
+        if (empty($titles)) {
+            return ['error' => 'Parameter titles wajib berisi minimal satu judul subtask.'];
+        }
+
+        $existing = $task->subtasks()->pluck('title')->map(fn ($t) => mb_strtolower($t))->all();
+        $position = (int) $task->subtasks()->max('position');
+
+        $created = [];
+        $skipped = [];
+
+        foreach ($titles as $title) {
+            // Anti-dobel: kalau subtask dengan judul sama sudah ada, lewati.
+            if (in_array(mb_strtolower($title), $existing, true)) {
+                $skipped[] = $title;
+
+                continue;
+            }
+
+            $position++;
+
+            $request = Request::create('/api/subtasks', 'POST', [
+                'task_id' => $task->id,
+                'title' => $title,
+                'position' => $position,
+            ]);
+
+            $response = (new SubtaskController())->store($request);
+            $data = json_decode($response->getContent(), true);
+
+            $created[] = [
+                'id' => $data['subtask']['id'] ?? null,
+                'title' => $title,
+            ];
+            $existing[] = mb_strtolower($title);
+        }
+
+        return [
+            'success' => true,
+            'task_id' => $task->id,
+            'task_title' => $task->title,
+            'created' => $created,
+            'skipped_because_duplicate' => $skipped,
+        ];
+    }
+
+    /**
+     * Modul Tasks -- centang/batal-centang satu subtask.
+     */
+    private function toolCompleteSubtask(array $args): array
+    {
+        $subtaskId = $args['subtask_id'] ?? null;
+        $subtask = $subtaskId ? Subtask::find($subtaskId) : null;
+
+        if (! $subtask) {
+            return ['error' => "Subtask dengan id {$subtaskId} tidak ditemukan. Panggil get_tasks dulu untuk lihat daftar subtask beserta id-nya."];
+        }
+
+        $done = array_key_exists('done', $args)
+            ? (filter_var($args['done'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true)
+            : true;
+
+        $request = Request::create("/api/subtasks/{$subtask->id}", 'PATCH', ['done' => $done]);
+        (new SubtaskController())->update($request, $subtask->id);
+
+        return [
+            'success' => true,
+            'subtask_id' => $subtask->id,
+            'title' => $subtask->title,
+            'done' => $done,
+        ];
+    }
+
+    /**
+     * Modul Tasks -- hapus satu subtask.
+     */
+    private function toolDeleteSubtask(array $args): array
+    {
+        $subtaskId = $args['subtask_id'] ?? null;
+        $subtask = $subtaskId ? Subtask::find($subtaskId) : null;
+
+        if (! $subtask) {
+            return ['error' => "Subtask dengan id {$subtaskId} tidak ditemukan. Panggil get_tasks dulu untuk lihat daftar subtask beserta id-nya."];
+        }
+
+        $title = $subtask->title;
+        $subtask->delete();
+
+        return ['success' => true, 'deleted_subtask_id' => $subtaskId, 'deleted_title' => $title];
     }
 
     /**

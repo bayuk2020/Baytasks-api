@@ -51,7 +51,7 @@ class SendTaskReminders extends Command
         // =========================================================
         // PENGKONDISIAN A: TRIGGER INTERUPSI AKTIVITAS TIAP 15 MENIT (PULSE CHECKER)
         // =========================================================
-        if ((int)date('i') % 15 === 0) {
+        if ((int)date('i') % 60 === 0) {
 
             // Kunci unik berdasarkan tahun, bulan, tanggal, jam, dan menit (misal: pulse_sent_202607210830)
             $pulseKey = "pulse_sent_" . date('YmdHi');
@@ -183,7 +183,7 @@ class SendTaskReminders extends Command
         // MENGECUALIKAN semua habit yang belum pernah disentuh kolom archived-nya --
         // inilah akar kenapa reminder habit terasa "tidak pernah jalan". Anggap NULL
         // sama dengan belum diarsip di SEMUA query habit di bawah.
-        $notArchived = fn ($q) => $q->where('archived', false)->orWhereNull('archived');
+        $notArchived = fn($q) => $q->where('archived', false)->orWhereNull('archived');
 
         // 1. EVALUASI HABIT YANG TERLEWAT
         $expiredHabits = Habit::where($notArchived)

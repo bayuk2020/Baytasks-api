@@ -32,6 +32,7 @@ class Task extends Model
         'position',
         'completed_at',
         'reminded',
+        'hidden',
     ];
 
     // =========================
@@ -42,6 +43,7 @@ class Task extends Model
         'due_at' => 'datetime',
         'completed_at' => 'datetime',
         'reminded' => 'boolean',
+        'hidden' => 'boolean',
     ];
 
     // =========================

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Models\ActivityLog;
+use App\Models\Memory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -30,6 +31,7 @@ class TaskController extends Controller
             'recurring' => $task->recurring,
             'completedAt' => $task->completed_at ? strtotime($task->completed_at) * 1000 : null,
             'reminded' => (bool) $task->reminded,
+            'hidden' => (bool) $task->hidden,
             'order' => $task->position,
             'createdAt' => strtotime($task->created_at) * 1000,
 
@@ -84,6 +86,24 @@ class TaskController extends Controller
     }
 
     // =========================
+    // LOG MEMORY (Daily Log di halaman Calendar)
+    // =========================
+    // Dipanggil dari SEMUA jalur perubahan task (drag Kanban, TaskModal, AI
+    // via AiToolExecutor -- yang keduanya-duanya memanggil method di
+    // controller ini) supaya "user menambahkan/mengedit/menyelesaikan tugas
+    // X" tercatat satu tempat, tidak perlu ditulis ulang di tiap pemanggil.
+    private function logMemory(string $title, string $content): void
+    {
+        Memory::create([
+            'type' => 'task_activity',
+            'source' => 'task_board',
+            'title' => $title,
+            'content' => $content,
+            'occurred_at' => now(),
+        ]);
+    }
+
+    // =========================
     // GET ALL TASKS
     // =========================
     public function index()
@@ -129,6 +149,7 @@ class TaskController extends Controller
         ]);
 
         $this->logActivity($task->id, 'Task created');
+        $this->logMemory('Task ditambahkan', "User menambahkan tugas \"{$task->title}\"");
         Log::info(['REMINDER_INCOMING' => $request->reminder]);
 
         return response()->json([
@@ -146,6 +167,15 @@ class TaskController extends Controller
         $oldColumn = $task->column_key;
         $oldPriority = $task->priority;
 
+        // Snapshot field lain SEBELUM update, dipakai untuk membedakan
+        // "task diedit" vs "cuma direorder/di-drag ke kolom yang sama"
+        // (kalau tidak ada satu pun field ini berubah, jangan tulis Memory --
+        // supaya drag-reorder sehari-hari tidak membanjiri Daily Log).
+        $oldTitle = $task->title;
+        $oldDescription = $task->description;
+        $oldDueAt = optional($task->due_at)->toIso8601String();
+        $oldTags = $task->tags;
+
         $task->update([
             'title' => $request->has('title') ? $request->title : $task->title,
             'description' => $request->has('description') ? $request->description : $task->description,
@@ -158,6 +188,7 @@ class TaskController extends Controller
             'recurring' => $request->has('recurring') ? $request->recurring : $task->recurring,
             'position' => $request->has('position') ? $request->position : $task->position,
             'completed_at' => $request->has('completed_at') ? ($request->completed_at ? date('Y-m-d H:i:s', strtotime($request->completed_at)) : null) : $task->completed_at,
+            'hidden' => $request->has('hidden') ? filter_var($request->hidden, FILTER_VALIDATE_BOOLEAN) : $task->hidden,
         ]);
 
         $this->logActivity($task->id, 'Task updated');
@@ -168,6 +199,29 @@ class TaskController extends Controller
 
         if ($oldPriority !== $task->priority) {
             $this->logActivity($task->id, 'Priority changed to ' . $task->priority);
+        }
+
+        // BUKAN pakai completed_at sebagai penanda "baru saja selesai" --
+        // field itu kadang ikut ter-null-kan oleh pemanggil yang tidak
+        // menyertakannya (lihat store.ts:updateTask, selalu mengirim
+        // completed_at:null kecuali eksplisit diisi). Kolom (column_key)
+        // yang benar-benar berubah ke/dari "done" jauh lebih bisa diandalkan
+        // karena itulah yang sungguh-sungguh digerakkan drag Kanban & dropdown
+        // Status di TaskModal.
+        $becameCompleted = $oldColumn !== 'done' && $task->column_key === 'done';
+
+        $newDueAt = optional($task->due_at)->toIso8601String();
+        $fieldsChanged = $oldTitle !== $task->title
+            || $oldDescription !== $task->description
+            || $oldDueAt !== $newDueAt
+            || $oldPriority !== $task->priority
+            || $oldTags !== $task->tags
+            || ($oldColumn !== $task->column_key && $task->column_key !== 'done');
+
+        if ($becameCompleted) {
+            $this->logMemory('Task selesai', "User menyelesaikan tugas \"{$task->title}\"");
+        } elseif ($fieldsChanged) {
+            $this->logMemory('Task diedit', "User mengedit tugas \"{$task->title}\"");
         }
 
         Log::info([

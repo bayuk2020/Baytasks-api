@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Memory;
 use App\Models\Subtask;
 use Illuminate\Http\Request;
 
@@ -33,6 +34,7 @@ class SubtaskController extends Controller
     public function update(Request $request, $id)
     {
         $subtask = Subtask::findOrFail($id);
+        $wasDone = (bool) $subtask->done;
 
         $updateData = [];
 
@@ -63,6 +65,27 @@ class SubtaskController extends Controller
         }
 
         $subtask->update($updateData);
+
+        // Catat ke Memories HANYA saat transisi belum->sudah selesai, per
+        // poin -- ceklis B, C, D berurutan menghasilkan 3 entri Daily Log
+        // terpisah (satu per klik), bukan digabung jadi satu baris. Ini
+        // pilihan sengaja: menunggu & mengelompokkan beberapa centang jadi
+        // satu entri butuh window waktu/debounce yang rapuh (kapan dianggap
+        // "masih dalam satu sesi"?), sementara satu entri per poin sudah
+        // cukup jelas dibaca di Daily Log dan tidak butuh state tambahan.
+        if ($wasDone === false && (bool) $subtask->done === true) {
+            $task = $subtask->task;
+
+            if ($task) {
+                Memory::create([
+                    'type' => 'task_activity',
+                    'source' => 'task_board',
+                    'title' => 'Subtask selesai',
+                    'content' => "User menyelesaikan subtask tugas \"{$task->title}\" poin \"{$subtask->title}\"",
+                    'occurred_at' => now(),
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => true,

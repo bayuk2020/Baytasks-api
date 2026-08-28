@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\MilestoneController;
 use App\Http\Controllers\Api\QuarterlyPlanController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\MemoryController;
+use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\AiWebController;
 use App\Http\Controllers\Api\PomodoroController;
 use App\Http\Controllers\Api\AnalyticsOverviewController;
@@ -138,6 +139,12 @@ Route::delete('/stories/{story}', [StoryController::class, 'destroy']);
 // =========================
 
 Route::get('/memories', [MemoryController::class, 'index']);
+
+// =========================
+// ACTIVITY LOG (timeline Task/Subtask lintas board -- seksi Calendar)
+// =========================
+
+Route::get('/activity-log', [ActivityLogController::class, 'index']);
 
 // =========================
 // POMODORO (rekaman tiap segmen sesi fokus / istirahat)

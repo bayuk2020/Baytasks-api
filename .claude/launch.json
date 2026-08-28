@@ -5,7 +5,8 @@
       "name": "frontend-dev",
       "runtimeExecutable": "cmd",
       "runtimeArgs": ["/c", "cd /d C:\\laragon\\www\\baytasks-smart-productivity && npm run dev"],
-      "port": 8080
+      "port": 8080,
+      "autoPort": true
     }
   ]
 }

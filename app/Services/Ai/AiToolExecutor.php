@@ -216,25 +216,11 @@ class AiToolExecutor
             'column_key' => $args['column_key'] ?? null,
         ], fn ($v) => $v !== null);
 
-        // BUG LAMA: TaskController::update() hanya mengisi `completed_at` kalau
-        // dikirim EKSPLISIT. Frontend Kanban memang mengirimnya (lihat
-        // KanbanBoard.tsx: `targetCol === "done" ? Date.now() : undefined`),
-        // tapi jalur AI ini tidak -- akibatnya task yang ditandai selesai oleh
-        // AI punya completed_at NULL, sehingga TIDAK terhitung di kolom "task
-        // selesai" rekap Pomodoro, streak, maupun Weekly Momentum.
-        // Di sini perilakunya disamakan dengan Kanban.
-        if (array_key_exists('column_key', $fields)) {
-            if ($fields['column_key'] === 'done') {
-                // Jangan timpa kalau memang sudah pernah diselesaikan.
-                $fields['completed_at'] = $task->completed_at
-                    ? $task->completed_at->toIso8601String()
-                    : now()->toIso8601String();
-            } else {
-                // Dipindah keluar dari kolom done -> status selesainya dicabut.
-                $fields['completed_at'] = null;
-            }
-        }
-
+        // CATATAN: tidak perlu mengurus `completed_at` di sini.
+        // TaskController::update() sekarang menentukannya sendiri dari
+        // `column_key` (masuk "done" = selesai, keluar = batal selesai),
+        // jadi semua jalur -- Kanban, TaskModal, AI, Telegram -- konsisten
+        // tanpa logika kembar yang bisa berbeda satu sama lain.
         $request = Request::create("/api/tasks/{$task->id}", 'PATCH', $fields);
         $response = (new TaskController())->update($request, $task->id);
         $data = json_decode($response->getContent(), true);

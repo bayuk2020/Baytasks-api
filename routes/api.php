@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\QuarterlyPlanController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\MemoryController;
 use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\Api\MindMapController;
 use App\Http\Controllers\Api\AiWebController;
 use App\Http\Controllers\Api\PomodoroController;
 use App\Http\Controllers\Api\AnalyticsOverviewController;
@@ -139,6 +140,23 @@ Route::delete('/stories/{story}', [StoryController::class, 'destroy']);
 // =========================
 
 Route::get('/memories', [MemoryController::class, 'index']);
+
+// =========================
+// MIND MAP (pohon topik & task, opsional tertaut ke task papan)
+// =========================
+
+Route::get('/mind-maps', [MindMapController::class, 'index']);
+Route::post('/mind-maps', [MindMapController::class, 'store']);
+Route::get('/mind-maps/{mindMap}', [MindMapController::class, 'show']);
+Route::patch('/mind-maps/{mindMap}', [MindMapController::class, 'update']);
+Route::delete('/mind-maps/{mindMap}', [MindMapController::class, 'destroy']);
+
+Route::post('/mind-map-nodes', [MindMapController::class, 'storeNode']);
+Route::patch('/mind-map-nodes/{node}', [MindMapController::class, 'updateNode']);
+Route::patch('/mind-map-nodes/{node}/move', [MindMapController::class, 'moveNode']);
+Route::delete('/mind-map-nodes/{node}', [MindMapController::class, 'destroyNode']);
+Route::post('/mind-map-nodes/{node}/link', [MindMapController::class, 'linkNode']);
+Route::delete('/mind-map-nodes/{node}/link', [MindMapController::class, 'unlinkNode']);
 
 // =========================
 // ACTIVITY LOG (timeline Task/Subtask lintas board -- seksi Calendar)

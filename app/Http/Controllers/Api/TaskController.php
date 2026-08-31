@@ -176,6 +176,40 @@ class TaskController extends Controller
         $oldDueAt = optional($task->due_at)->toIso8601String();
         $oldTags = $task->tags;
 
+        // ==========================================================
+        // completed_at DITENTUKAN OLEH KOLOM, bukan cuma oleh payload
+        // ==========================================================
+        // BUG LAMA: baris ini dulu hanya `$request->has('completed_at') ? ...`,
+        // padahal store.ts SELALU mengirim `completed_at` -- bernilai null
+        // kalau pemanggilnya tidak menyertakannya (lihat updateTask():
+        // `patch.completedAt ? new Date(...) : null`). Akibatnya:
+        //   - Menyelesaikan task lewat TaskModal (halaman /calendar maupun
+        //     dropdown Status) mengubah kolom jadi "done" TAPI menulis
+        //     completed_at = NULL, sehingga task itu tidak pernah terhitung
+        //     di "Task Selesai" rekap Pomodoro, streak, & Weekly Momentum.
+        //   - Sekadar mengedit judul task yang SUDAH selesai malah
+        //     menghapus tanda selesainya.
+        // Hanya drag di Kanban yang benar, karena ia satu-satunya pemanggil
+        // yang mengirim timestamp secara eksplisit.
+        //
+        // Sekarang kolom (`column_key`) jadi sumber kebenaran: masuk "done"
+        // berarti selesai, keluar dari "done" berarti batal selesai.
+        $newColumn = $request->has('column_key') ? $request->column_key : $task->column_key;
+
+        $explicitCompletedAt = $request->has('completed_at') && $request->completed_at
+            ? date('Y-m-d H:i:s', strtotime($request->completed_at))
+            : null;
+
+        if ($newColumn === 'done') {
+            // Prioritas: timestamp kiriman klien -> waktu selesai yang sudah
+            // tercatat sebelumnya (jangan ditimpa saat task cuma diedit) -> sekarang.
+            $resolvedCompletedAt = $explicitCompletedAt
+                ?? optional($task->completed_at)->format('Y-m-d H:i:s')
+                ?? now()->format('Y-m-d H:i:s');
+        } else {
+            $resolvedCompletedAt = null;
+        }
+
         $task->update([
             'title' => $request->has('title') ? $request->title : $task->title,
             'description' => $request->has('description') ? $request->description : $task->description,
@@ -187,7 +221,7 @@ class TaskController extends Controller
             'reminder' => $request->has('reminder') ? $request->reminder : $task->reminder,
             'recurring' => $request->has('recurring') ? $request->recurring : $task->recurring,
             'position' => $request->has('position') ? $request->position : $task->position,
-            'completed_at' => $request->has('completed_at') ? ($request->completed_at ? date('Y-m-d H:i:s', strtotime($request->completed_at)) : null) : $task->completed_at,
+            'completed_at' => $resolvedCompletedAt,
             'hidden' => $request->has('hidden') ? filter_var($request->hidden, FILTER_VALIDATE_BOOLEAN) : $task->hidden,
         ]);
 

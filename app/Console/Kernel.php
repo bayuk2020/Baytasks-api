@@ -21,11 +21,22 @@ class Kernel extends ConsoleKernel
          * Logika di dalam command (SendTaskReminders.php) akan menentukan
          * apakah pulse check (tiap 15 menit) atau reminder tugas perlu dikirim.
          */
-        $schedule
-            ->command('baytasks:reminders')
-            ->everyMinute()
-            ->withoutOverlapping()
-            ->appendOutputTo(storage_path('logs/reminders.log'));
+        // DIHAPUS DARI SCHEDULER DENGAN SENGAJA — jangan dipasang ulang di sini.
+        //
+        // `run_worker.bat` sudah menjalankan `php artisan baytasks:reminders` dalam
+        // loop sendiri setiap ~60 detik, dan itu jalur yang benar-benar bekerja
+        // (lihat worker_log.txt + reminders.log). Entri scheduler ini adalah SALINAN
+        // KEDUA dari command yang sama, dan ia merugikan:
+        //
+        //   `->command()` menjalankan command sebagai PROSES ANAK. Di mesin ini
+        //   CreateProcess gagal secara sporadis (~11 dari 60 percobaan per jam),
+        //   dan setiap kegagalan menulis stacktrace ~4,5 KB "Unable to launch a new
+        //   process" ke laravel.log. Itulah yang menggelembungkan laravel.log sampai
+        //   500 MB — sekitar 6,5 MB per hari dari error yang tidak berguna.
+        //
+        // Reminder-nya sendiri tidak hilang: run_worker.bat tetap pemiliknya.
+        // Kalau nanti ingin reminder dikembalikan ke scheduler, hentikan dulu
+        // run_worker.bat supaya tidak dobel.
 
         // CATATAN: `baytasks:habit-reminders` SENGAJA tidak lagi dijadwalkan di sini.
         // Logikanya sudah digabung ke dalam `baytasks:reminders` (SendTaskReminders.php,

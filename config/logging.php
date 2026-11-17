@@ -69,7 +69,9 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            // Jumlah hari log yang disimpan. Dibuat bisa diatur dari .env
+            // (LOG_DAILY_DAYS) supaya rotasi tidak perlu ubah file config.
+            'days' => (int) env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
         ],
 

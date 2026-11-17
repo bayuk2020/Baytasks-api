@@ -22,14 +22,60 @@ class TransactionController extends Controller
 
     public function index(Request $request)
     {
-        $transactions = Transaction::query()
+        $query = Transaction::query()
+            // Hanya kolom yang dipakai FinanceTransformer — memangkas payload JSON
+            // (description bisa sampai 500 char) tanpa mengubah bentuk response.
+            ->select([
+                'id',
+                'account_id',
+                'type',
+                'category',
+                'amount',
+                'description',
+                'transaction_date',
+                'income_source_id',
+                'contact_id',
+                'transfer_group_id',
+                'to_account_id',
+                'created_at',
+                'updated_at',
+            ])
             ->where(function ($query) {
                 $query
                     ->whereNull('transfer_group_id')
                     ->orWhere('type', 'transfer');
             })
+            // transaction_date bertipe DATE (tanpa jam), jadi puluhan baris bisa
+            // punya nilai urut yang sama. Tanpa tiebreaker, MySQL bebas menukar
+            // urutan baris kembar antar query — akibatnya satu transaksi muncul
+            // di dua halaman sementara yang lain hilang. created_at + id membuat
+            // urutannya deterministik sehingga paginasi konsisten.
             ->orderByDesc('transaction_date')
-            ->paginate(50);
+            ->orderByDesc('created_at')
+            ->orderBy('id');
+
+        $perPage = (int) $request->input('per_page', 50);
+
+        // Mode borongan: `?all=1` (atau per_page<=0) mengembalikan SELURUH riwayat
+        // dalam satu response. Frontend butuh data penuh untuk filter, rekap, export
+        // dan grafik; sebelumnya ia menambal itu dengan menembak ~23 request paginasi
+        // sekaligus, yang menumpuk di origin single-process `artisan serve`.
+        if ($request->boolean('all') || $perPage <= 0) {
+            $items = $query
+                ->get()
+                ->map(fn (Transaction $transaction) => FinanceTransformer::transaction($transaction))
+                ->all();
+
+            return response()->json([
+                'data' => $items,
+                'current_page' => 1,
+                'last_page' => 1,
+                'per_page' => count($items),
+                'total' => count($items),
+            ]);
+        }
+
+        $transactions = $query->paginate(min(max($perPage, 1), 500));
 
         $transactions->getCollection()->transform(
             fn (Transaction $transaction) => FinanceTransformer::transaction($transaction)

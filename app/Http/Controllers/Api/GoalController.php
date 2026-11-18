@@ -60,8 +60,16 @@ class GoalController extends Controller
                     'current_value'=> (float) $m->current_value,
                     'targetValue'  => (float) $m->target_value,
                     'currentValue' => (float) $m->current_value,
+                    // due_date dikirim apa adanya (YYYY-MM-DD) selain dueAt dalam
+                    // milidetik: form edit di frontend butuh bentuk string untuk
+                    // <input type="date">, dan mengubah dueAt balik ke string di
+                    // sisi klien rawan geser sehari karena zona waktu.
+                    'due_date'     => $m->due_date ? $m->due_date->format('Y-m-d') : null,
                     'dueAt'        => $m->due_date ? strtotime($m->due_date) * 1000 : null,
                     'completed'    => (bool) $m->completed,
+                    'weight'       => (int) $m->weight,
+                    'sort_order'   => (int) $m->sort_order,
+                    'order'        => (int) $m->sort_order,
                 ];
             }),
 

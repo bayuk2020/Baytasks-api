@@ -79009,3 +79009,3164 @@
       PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
 
 [13/11/2026  5.33.30,23] Menjalankan worker... 
+[17/11/2026 10.39.45,36] Menjalankan worker... 
+[17/11/2026 10.39.53,69] Menjalankan worker... 
+[17/11/2026 10.40.02,46] Menjalankan worker... 
+[17/11/2026 10.40.02,57] Menjalankan worker... 
+[17/11/2026 10.40.16,81] Menjalankan worker... 
+[17/11/2026 10.40.22,02] Menjalankan worker... 
+[17/11/2026 10.40.22,15] Menjalankan worker... 
+[17/11/2026 10.40.34,16] Menjalankan worker... 
+[17/11/2026 10.40.42,98] Menjalankan worker... 
+[17/11/2026 10.40.46,24] Menjalankan worker... 
+[17/11/2026 10.40.49,51] Menjalankan worker... 
+[17/11/2026 10.40.49,57] Menjalankan worker... 
+[17/11/2026 10.40.55,67] Menjalankan worker... 
+[17/11/2026 10.41.00,75] Menjalankan worker... 
+[17/11/2026 10.41.08,69] Menjalankan worker... 
+[17/11/2026 10.41.17,81] Menjalankan worker... 
+[17/11/2026 10.41.17,89] Menjalankan worker... 
+[17/11/2026 10.41.30,71] Menjalankan worker... 
+[17/11/2026 10.41.34,93] Menjalankan worker... 
+[17/11/2026 10.41.41,34] Menjalankan worker... 
+[17/11/2026 10.41.58,51] Menjalankan worker... 
+[17/11/2026 10.42.00,38] Menjalankan worker... 
+[17/11/2026 10.42.07,42] Menjalankan worker... 
+[17/11/2026 10.43.33,69] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.44.12,68] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.44.51,48] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.45.30,33] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.46.09,14] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.46.47,93] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.47.26,73] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.48.05,53] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.48.44,41] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.49.23,22] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.50.02,12] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.50.40,95] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.51.19,77] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.51.58,60] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.52.37,40] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.53.24,37] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.54.03,60] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.54.42,75] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.55.21,56] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.56.00,35] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.56.39,31] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.57.18,24] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.57.57,09] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.58.35,84] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.59.14,70] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 10.59.53,48] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.00.32,28] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.01.11,13] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.01.49,90] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.02.28,73] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.03.07,52] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.03.46,27] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.04.25,19] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.05.03,95] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.05.42,79] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.06.21,59] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.07.00,31] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.07.39,24] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.08.18,04] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.08.56,80] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.09.35,60] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.10.14,38] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.10.53,21] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.11.32,04] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.12.10,85] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.12.49,60] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.13.28,24] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.14.07,05] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.14.45,90] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.15.24,76] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.16.03,51] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.16.42,32] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.17.21,15] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.17.59,95] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.18.38,77] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.19.17,55] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.19.56,36] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.20.35,23] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.21.14,06] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.21.52,87] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.22.31,75] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.23.10,52] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.23.49,21] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.24.28,01] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.25.06,81] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.25.45,59] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.26.24,38] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.27.03,22] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.27.42,04] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.28.20,81] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.28.59,61] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.29.38,43] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.30.17,22] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.30.56,01] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.31.34,80] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.32.13,61] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.32.52,51] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.33.31,37] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.34.10,05] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.34.48,91] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.35.27,73] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.36.06,56] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.36.45,40] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.37.24,21] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.38.03,04] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.38.41,89] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.39.20,65] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.39.59,46] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.40.38,21] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.41.17,03] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.41.55,76] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.42.34,56] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.43.13,41] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.43.52,20] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.44.30,94] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.45.09,71] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.45.48,50] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.46.27,26] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.47.06,13] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.47.44,92] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.48.23,76] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.49.02,57] Menjalankan worker... 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+[17/11/2026 11.50.11,22] Menjalankan worker... 
+[17/11/2026 11.51.17,74] Menjalankan worker... 
+[17/11/2026 11.51.48,77] Menjalankan worker... 
+[17/11/2026 11.52.19,44] Menjalankan worker... 
+[17/11/2026 11.52.50,11] Menjalankan worker... 
+[17/11/2026 11.53.20,86] Menjalankan worker... 
+[17/11/2026 11.53.51,57] Menjalankan worker... 
+[17/11/2026 11.54.22,34] Menjalankan worker... 
+[17/11/2026 11.54.53,08] Menjalankan worker... 
+[17/11/2026 11.55.23,79] Menjalankan worker... 
+[17/11/2026 11.55.54,72] Menjalankan worker... 
+[17/11/2026 11.56.25,48] Menjalankan worker... 
+[17/11/2026 11.56.56,16] Menjalankan worker... 
+[17/11/2026 11.57.26,83] Menjalankan worker... 
+[17/11/2026 11.57.57,57] Menjalankan worker... 
+[17/11/2026 11.58.28,29] Menjalankan worker... 
+[17/11/2026 11.58.59,00] Menjalankan worker... 
+[17/11/2026 11.59.29,71] Menjalankan worker... 
+[17/11/2026 12.00.00,43] Menjalankan worker... 
+[17/11/2026 12.00.31,21] Menjalankan worker... 
+[17/11/2026 12.01.02,03] Menjalankan worker... 
+[17/11/2026 12.01.32,97] Menjalankan worker... 
+[17/11/2026 12.02.03,65] Menjalankan worker... 
+[17/11/2026 12.02.34,34] Menjalankan worker... 
+[17/11/2026 12.03.05,07] Menjalankan worker... 
+[17/11/2026 12.03.35,77] Menjalankan worker... 
+[17/11/2026 12.04.06,49] Menjalankan worker... 
+[17/11/2026 12.04.37,88] Menjalankan worker... 
+[17/11/2026 12.05.08,72] Menjalankan worker... 
+[17/11/2026 12.05.39,45] Menjalankan worker... 
+[17/11/2026 12.06.10,26] Menjalankan worker... 
+[17/11/2026 12.06.41,00] Menjalankan worker... 
+[17/11/2026 12.07.11,79] Menjalankan worker... 
+[17/11/2026 12.07.42,52] Menjalankan worker... 
+[17/11/2026 12.08.13,30] Menjalankan worker... 
+[17/11/2026 12.08.44,00] Menjalankan worker... 
+[17/11/2026 12.09.14,83] Menjalankan worker... 
+[17/11/2026 12.09.45,64] Menjalankan worker... 
+[17/11/2026 12.10.16,39] Menjalankan worker... 
+[17/11/2026 12.10.47,12] Menjalankan worker... 
+[17/11/2026 12.11.17,88] Menjalankan worker... 
+[17/11/2026 12.11.48,69] Menjalankan worker... 
+[17/11/2026 12.12.19,55] Menjalankan worker... 
+[17/11/2026 12.12.50,34] Menjalankan worker... 
+[17/11/2026 12.13.21,04] Menjalankan worker... 
+[17/11/2026 12.13.51,80] Menjalankan worker... 
+[17/11/2026 12.14.22,59] Menjalankan worker... 
+[17/11/2026 12.14.53,35] Menjalankan worker... 
+[17/11/2026 12.15.24,13] Menjalankan worker... 
+[17/11/2026 12.15.54,89] Menjalankan worker... 
+[17/11/2026 12.16.25,74] Menjalankan worker... 
+[17/11/2026 12.16.56,50] Menjalankan worker... 
+[17/11/2026 12.17.27,33] Menjalankan worker... 
+[17/11/2026 12.17.58,12] Menjalankan worker... 
+[17/11/2026 12.18.28,90] Menjalankan worker... 
+[17/11/2026 12.18.59,64] Menjalankan worker... 
+[17/11/2026 12.19.30,40] Menjalankan worker... 
+[17/11/2026 12.20.01,12] Menjalankan worker... 
+[17/11/2026 12.20.31,86] Menjalankan worker... 
+[17/11/2026 12.21.02,59] Menjalankan worker... 
+[17/11/2026 12.21.33,70] Menjalankan worker... 
+[17/11/2026 12.22.04,48] Menjalankan worker... 
+[17/11/2026 12.22.35,33] Menjalankan worker... 
+[17/11/2026 12.23.06,16] Menjalankan worker... 
+[17/11/2026 12.23.36,91] Menjalankan worker... 
+[17/11/2026 12.24.07,67] Menjalankan worker... 
+[17/11/2026 12.24.38,41] Menjalankan worker... 
+[17/11/2026 12.25.09,25] Menjalankan worker... 
+[17/11/2026 12.25.40,06] Menjalankan worker... 
+[17/11/2026 12.26.10,87] Menjalankan worker... 
+[17/11/2026 12.26.41,70] Menjalankan worker... 
+[17/11/2026 12.27.12,41] Menjalankan worker... 
+[17/11/2026 12.27.43,20] Menjalankan worker... 
+[17/11/2026 12.28.13,91] Menjalankan worker... 
+[17/11/2026 12.28.44,68] Menjalankan worker... 
+[17/11/2026 12.29.15,57] Menjalankan worker... 
+[17/11/2026 12.29.46,31] Menjalankan worker... 
+[17/11/2026 12.30.16,95] Menjalankan worker... 
+[17/11/2026 12.30.47,76] Menjalankan worker... 
+[17/11/2026 12.31.18,35] Menjalankan worker... 
+[17/11/2026 12.31.49,10] Menjalankan worker... 
+[17/11/2026 12.32.19,71] Menjalankan worker... 
+[17/11/2026 12.32.50,48] Menjalankan worker... 
+[17/11/2026 12.33.21,08] Menjalankan worker... 
+[17/11/2026 12.33.51,88] Menjalankan worker... 
+[17/11/2026 12.34.22,40] Menjalankan worker... 
+[17/11/2026 12.34.53,15] Menjalankan worker... 
+[17/11/2026 12.35.23,69] Menjalankan worker... 
+[17/11/2026 12.35.54,56] Menjalankan worker... 
+[17/11/2026 12.36.25,16] Menjalankan worker... 
+[17/11/2026 12.36.55,81] Menjalankan worker... 
+[17/11/2026 12.37.26,38] Menjalankan worker... 
+[17/11/2026 12.37.57,06] Menjalankan worker... 
+[17/11/2026 12.38.27,79] Menjalankan worker... 
+[17/11/2026 12.38.58,50] Menjalankan worker... 
+[17/11/2026 12.39.29,25] Menjalankan worker... 
+[17/11/2026 12.39.59,98] Menjalankan worker... 
+[17/11/2026 12.40.30,67] Menjalankan worker... 
+[17/11/2026 12.41.01,41] Menjalankan worker... 
+[17/11/2026 12.41.32,22] Menjalankan worker... 
+[17/11/2026 12.42.02,93] Menjalankan worker... 
+[17/11/2026 12.42.33,59] Menjalankan worker... 
+[17/11/2026 12.43.04,31] Menjalankan worker... 
+[17/11/2026 12.43.35,07] Menjalankan worker... 
+[17/11/2026 12.44.05,83] Menjalankan worker... 
+[17/11/2026 12.44.36,57] Menjalankan worker... 
+[17/11/2026 12.45.07,30] Menjalankan worker... 
+[17/11/2026 12.45.38,02] Menjalankan worker... 
+[17/11/2026 12.46.08,77] Menjalankan worker... 
+[17/11/2026 12.46.39,47] Menjalankan worker... 
+[17/11/2026 12.47.10,13] Menjalankan worker... 
+[17/11/2026 12.47.40,89] Menjalankan worker... 
+[17/11/2026 12.48.11,58] Menjalankan worker... 
+[17/11/2026 12.48.42,25] Menjalankan worker... 
+[17/11/2026 12.49.12,86] Menjalankan worker... 
+[17/11/2026 12.49.43,57] Menjalankan worker... 
+[17/11/2026 12.50.14,29] Menjalankan worker... 
+[17/11/2026 12.50.46,65] Menjalankan worker... 
+[17/11/2026 12.51.17,38] Menjalankan worker... 
+[17/11/2026 12.51.48,06] Menjalankan worker... 
+[17/11/2026 12.52.18,82] Menjalankan worker... 
+[17/11/2026 12.52.49,56] Menjalankan worker... 
+[17/11/2026 12.53.20,28] Menjalankan worker... 
+[17/11/2026 12.53.50,96] Menjalankan worker... 
+[17/11/2026 12.54.21,68] Menjalankan worker... 
+[17/11/2026 12.54.52,42] Menjalankan worker... 
+[17/11/2026 12.55.23,20] Menjalankan worker... 
+[17/11/2026 12.55.53,83] Menjalankan worker... 
+[17/11/2026 12.56.24,60] Menjalankan worker... 
+[17/11/2026 12.56.55,27] Menjalankan worker... 
+[17/11/2026 12.57.26,05] Menjalankan worker... 
+[17/11/2026 12.57.56,77] Menjalankan worker... 
+[17/11/2026 12.58.27,52] Menjalankan worker... 
+[17/11/2026 12.58.58,26] Menjalankan worker... 
+[17/11/2026 12.59.28,94] Menjalankan worker... 
+[17/11/2026 12.59.59,66] Menjalankan worker... 
+[17/11/2026 13.00.30,42] Menjalankan worker... 
+[17/11/2026 13.01.01,16] Menjalankan worker... 
+[17/11/2026 13.01.31,81] Menjalankan worker... 
+[17/11/2026 13.02.02,64] Menjalankan worker... 
+[17/11/2026 13.02.33,43] Menjalankan worker... 
+[17/11/2026 13.03.04,09] Menjalankan worker... 
+[17/11/2026 13.03.34,82] Menjalankan worker... 
+[17/11/2026 13.04.05,47] Menjalankan worker... 
+[17/11/2026 13.04.36,16] Menjalankan worker... 
+[17/11/2026 13.05.06,84] Menjalankan worker... 
+[17/11/2026 13.05.37,53] Menjalankan worker... 
+[17/11/2026 13.06.08,21] Menjalankan worker... 
+[17/11/2026 13.06.38,93] Menjalankan worker... 
+[17/11/2026 13.07.09,72] Menjalankan worker... 
+[17/11/2026 13.07.40,40] Menjalankan worker... 
+[17/11/2026 13.08.11,13] Menjalankan worker... 
+[17/11/2026 13.08.41,82] Menjalankan worker... 
+[17/11/2026 13.09.12,58] Menjalankan worker... 
+[17/11/2026 13.09.43,32] Menjalankan worker... 
+[17/11/2026 13.10.14,04] Menjalankan worker... 
+[17/11/2026 13.10.44,74] Menjalankan worker... 
+[17/11/2026 13.11.15,47] Menjalankan worker... 
+[17/11/2026 13.11.46,16] Menjalankan worker... 
+[17/11/2026 13.12.16,85] Menjalankan worker... 
+[17/11/2026 13.12.47,47] Menjalankan worker... 
+[17/11/2026 13.13.18,17] Menjalankan worker... 
+[17/11/2026 13.13.48,84] Menjalankan worker... 
+[17/11/2026 13.14.19,47] Menjalankan worker... 
+[17/11/2026 13.14.50,12] Menjalankan worker... 
+[17/11/2026 13.15.20,84] Menjalankan worker... 
+[17/11/2026 13.15.51,53] Menjalankan worker... 
+[17/11/2026 13.15.54,49] Menjalankan worker... 
+[17/11/2026 13.16.25,15] Menjalankan worker... 
+[17/11/2026 13.16.55,93] Menjalankan worker... 
+[17/11/2026 13.17.26,62] Menjalankan worker... 
+[17/11/2026 13.17.57,26] Menjalankan worker... 
+[17/11/2026 13.18.28,03] Menjalankan worker... 
+[17/11/2026 13.18.58,73] Menjalankan worker... 
+[17/11/2026 13.19.29,35] Menjalankan worker... 
+[17/11/2026 13.20.00,17] Menjalankan worker... 
+[17/11/2026 13.20.31,03] Menjalankan worker... 
+[17/11/2026 13.21.01,76] Menjalankan worker... 
+[17/11/2026 13.21.32,53] Menjalankan worker... 
+[17/11/2026 13.22.03,27] Menjalankan worker... 
+[17/11/2026 13.22.33,94] Menjalankan worker... 
+[17/11/2026 13.23.04,70] Menjalankan worker... 
+[17/11/2026 13.23.35,46] Menjalankan worker... 
+[17/11/2026 13.24.06,11] Menjalankan worker... 
+[17/11/2026 13.24.36,77] Menjalankan worker... 
+[17/11/2026 13.25.07,47] Menjalankan worker... 
+[17/11/2026 13.25.38,12] Menjalankan worker... 
+[17/11/2026 13.26.08,91] Menjalankan worker... 
+[17/11/2026 13.26.39,60] Menjalankan worker... 
+[17/11/2026 13.27.10,29] Menjalankan worker... 
+[17/11/2026 13.27.40,91] Menjalankan worker... 
+[17/11/2026 13.28.11,58] Menjalankan worker... 
+[17/11/2026 13.28.42,24] Menjalankan worker... 
+[17/11/2026 13.29.12,95] Menjalankan worker... 
+[17/11/2026 13.29.43,64] Menjalankan worker... 
+[17/11/2026 13.30.14,30] Menjalankan worker... 
+[17/11/2026 13.30.45,04] Menjalankan worker... 
+[17/11/2026 13.31.15,76] Menjalankan worker... 
+[17/11/2026 13.31.46,40] Menjalankan worker... 
+[17/11/2026 13.32.17,07] Menjalankan worker... 
+[17/11/2026 13.32.47,73] Menjalankan worker... 
+[17/11/2026 13.33.18,44] Menjalankan worker... 
+[17/11/2026 13.33.49,17] Menjalankan worker... 
+[17/11/2026 13.34.19,87] Menjalankan worker... 
+[17/11/2026 13.34.50,58] Menjalankan worker... 
+[17/11/2026 13.35.21,29] Menjalankan worker... 
+[17/11/2026 13.35.24,49] Menjalankan worker... 
+[17/11/2026 13.35.55,22] Menjalankan worker... 
+[17/11/2026 13.36.25,79] Menjalankan worker... 
+[17/11/2026 13.36.56,46] Menjalankan worker... 
+[17/11/2026 13.37.27,10] Menjalankan worker... 
+[17/11/2026 13.37.57,78] Menjalankan worker... 
+[17/11/2026 13.38.28,29] Menjalankan worker... 
+[17/11/2026 13.38.58,98] Menjalankan worker... 
+[17/11/2026 13.39.29,51] Menjalankan worker... 
+[17/11/2026 13.40.00,19] Menjalankan worker... 
+[17/11/2026 13.40.30,80] Menjalankan worker... 
+[17/11/2026 13.41.01,51] Menjalankan worker... 
+[17/11/2026 13.41.32,45] Menjalankan worker... 
+[17/11/2026 13.42.03,14] Menjalankan worker... 
+[17/11/2026 13.42.33,79] Menjalankan worker... 
+[17/11/2026 13.43.04,49] Menjalankan worker... 
+[17/11/2026 13.43.35,20] Menjalankan worker... 
+[17/11/2026 13.44.05,83] Menjalankan worker... 
+[17/11/2026 13.44.36,46] Menjalankan worker... 
+[17/11/2026 13.45.07,15] Menjalankan worker... 
+[17/11/2026 13.45.37,79] Menjalankan worker... 
+[17/11/2026 13.46.08,54] Menjalankan worker... 
+[17/11/2026 13.46.39,18] Menjalankan worker... 
+[17/11/2026 13.47.09,91] Menjalankan worker... 
+[17/11/2026 13.47.40,58] Menjalankan worker... 
+[17/11/2026 13.48.11,26] Menjalankan worker... 
+[17/11/2026 13.48.42,01] Menjalankan worker... 
+[17/11/2026 13.49.12,72] Menjalankan worker... 
+[17/11/2026 13.49.43,57] Menjalankan worker... 
+[17/11/2026 13.50.14,27] Menjalankan worker... 
+[17/11/2026 13.50.44,93] Menjalankan worker... 
+[17/11/2026 13.51.15,58] Menjalankan worker... 
+[17/11/2026 13.51.46,23] Menjalankan worker... 
+[17/11/2026 13.52.16,95] Menjalankan worker... 
+[17/11/2026 13.52.47,64] Menjalankan worker... 
+[17/11/2026 13.53.18,31] Menjalankan worker... 
+[17/11/2026 13.53.49,01] Menjalankan worker... 
+[17/11/2026 13.54.19,67] Menjalankan worker... 
+[17/11/2026 13.54.50,45] Menjalankan worker... 
+[17/11/2026 13.55.21,11] Menjalankan worker... 
+[17/11/2026 13.55.52,01] Menjalankan worker... 
+[17/11/2026 13.56.22,75] Menjalankan worker... 
+[17/11/2026 13.56.53,43] Menjalankan worker... 
+[17/11/2026 13.57.24,12] Menjalankan worker... 
+[17/11/2026 13.57.55,02] Menjalankan worker... 
+[17/11/2026 13.58.25,71] Menjalankan worker... 
+[17/11/2026 13.58.56,41] Menjalankan worker... 
+[17/11/2026 13.59.27,13] Menjalankan worker... 
+[17/11/2026 13.59.57,82] Menjalankan worker... 
+[17/11/2026 14.00.28,47] Menjalankan worker... 
+[17/11/2026 14.00.59,21] Menjalankan worker... 
+[17/11/2026 14.01.29,88] Menjalankan worker... 
+[17/11/2026 14.02.00,55] Menjalankan worker... 
+[17/11/2026 14.02.31,29] Menjalankan worker... 
+[17/11/2026 14.03.02,11] Menjalankan worker... 
+[17/11/2026 14.03.32,82] Menjalankan worker... 
+[17/11/2026 14.04.03,54] Menjalankan worker... 
+[17/11/2026 14.04.34,23] Menjalankan worker... 
+[17/11/2026 14.05.04,96] Menjalankan worker... 
+[17/11/2026 14.05.35,64] Menjalankan worker... 
+[17/11/2026 14.06.06,37] Menjalankan worker... 
+[17/11/2026 14.06.37,01] Menjalankan worker... 
+[17/11/2026 14.07.07,66] Menjalankan worker... 
+[17/11/2026 14.07.38,34] Menjalankan worker... 
+[17/11/2026 14.08.09,06] Menjalankan worker... 
+[17/11/2026 14.08.39,80] Menjalankan worker... 
+[17/11/2026 14.09.10,53] Menjalankan worker... 
+[17/11/2026 14.09.41,22] Menjalankan worker... 
+[17/11/2026 14.10.11,87] Menjalankan worker... 
+[17/11/2026 14.10.42,66] Menjalankan worker... 
+[17/11/2026 14.11.13,38] Menjalankan worker... 
+[17/11/2026 14.11.44,12] Menjalankan worker... 
+[17/11/2026 14.12.14,83] Menjalankan worker... 
+[17/11/2026 14.12.45,53] Menjalankan worker... 
+[17/11/2026 14.13.16,21] Menjalankan worker... 
+[17/11/2026 14.13.46,91] Menjalankan worker... 
+[17/11/2026 14.14.17,67] Menjalankan worker... 
+[17/11/2026 14.14.48,31] Menjalankan worker... 
+[17/11/2026 14.15.19,00] Menjalankan worker... 
+[17/11/2026 14.15.49,67] Menjalankan worker... 
+[17/11/2026 14.16.20,34] Menjalankan worker... 
+[17/11/2026 14.16.51,04] Menjalankan worker... 
+[17/11/2026 14.17.21,70] Menjalankan worker... 
+[17/11/2026 14.17.52,44] Menjalankan worker... 
+[17/11/2026 14.18.23,12] Menjalankan worker... 
+[17/11/2026 14.18.53,83] Menjalankan worker... 
+[17/11/2026 14.19.24,55] Menjalankan worker... 
+[17/11/2026 14.19.55,21] Menjalankan worker... 
+[17/11/2026 14.20.25,97] Menjalankan worker... 
+[17/11/2026 14.20.56,64] Menjalankan worker... 
+[17/11/2026 14.21.27,44] Menjalankan worker... 
+[17/11/2026 14.21.58,21] Menjalankan worker... 
+[17/11/2026 14.22.28,93] Menjalankan worker... 
+[17/11/2026 14.22.59,61] Menjalankan worker... 
+[17/11/2026 14.23.30,34] Menjalankan worker... 
+[17/11/2026 14.24.01,09] Menjalankan worker... 
+[17/11/2026 14.24.31,71] Menjalankan worker... 
+[17/11/2026 14.25.02,44] Menjalankan worker... 
+[17/11/2026 14.25.33,15] Menjalankan worker... 
+[17/11/2026 14.26.03,84] Menjalankan worker... 
+[17/11/2026 14.26.34,83] Menjalankan worker... 
+[17/11/2026 14.27.05,51] Menjalankan worker... 
+[17/11/2026 14.27.36,16] Menjalankan worker... 
+[17/11/2026 14.28.06,89] Menjalankan worker... 
+[17/11/2026 14.28.37,54] Menjalankan worker... 
+[17/11/2026 14.29.08,25] Menjalankan worker... 
+[17/11/2026 14.29.38,92] Menjalankan worker... 
+[17/11/2026 14.30.09,58] Menjalankan worker... 
+[17/11/2026 14.30.40,35] Menjalankan worker... 
+[17/11/2026 14.31.11,06] Menjalankan worker... 
+[17/11/2026 14.31.41,71] Menjalankan worker... 
+[17/11/2026 14.32.12,37] Menjalankan worker... 
+[17/11/2026 14.32.43,08] Menjalankan worker... 
+[17/11/2026 14.33.13,83] Menjalankan worker... 
+[17/11/2026 14.33.44,55] Menjalankan worker... 
+[17/11/2026 14.34.15,22] Menjalankan worker... 
+[17/11/2026 14.34.45,96] Menjalankan worker... 
+[17/11/2026 14.35.16,66] Menjalankan worker... 
+[17/11/2026 14.35.47,33] Menjalankan worker... 
+[17/11/2026 14.36.18,18] Menjalankan worker... 
+[17/11/2026 14.36.48,89] Menjalankan worker... 
+[17/11/2026 14.37.19,58] Menjalankan worker... 
+[17/11/2026 14.37.22,52] Menjalankan worker... 
+[17/11/2026 14.37.53,19] Menjalankan worker... 
+[17/11/2026 14.38.23,88] Menjalankan worker... 
+[17/11/2026 14.38.54,62] Menjalankan worker... 
+[17/11/2026 14.39.25,30] Menjalankan worker... 
+[17/11/2026 14.39.55,98] Menjalankan worker... 
+[17/11/2026 14.40.26,65] Menjalankan worker... 
+[17/11/2026 14.40.57,34] Menjalankan worker... 
+[17/11/2026 14.41.28,07] Menjalankan worker... 
+[17/11/2026 14.41.58,78] Menjalankan worker... 
+[17/11/2026 14.42.29,45] Menjalankan worker... 
+[17/11/2026 14.43.00,13] Menjalankan worker... 
+[17/11/2026 14.43.30,75] Menjalankan worker... 
+[17/11/2026 14.44.01,48] Menjalankan worker... 
+[17/11/2026 14.44.32,18] Menjalankan worker... 
+[17/11/2026 14.45.02,96] Menjalankan worker... 
+[17/11/2026 14.45.33,59] Menjalankan worker... 
+[17/11/2026 14.46.04,27] Menjalankan worker... 
+[17/11/2026 14.46.34,88] Menjalankan worker... 
+[17/11/2026 14.47.05,60] Menjalankan worker... 
+[17/11/2026 14.47.36,16] Menjalankan worker... 
+[17/11/2026 14.48.06,89] Menjalankan worker... 
+[17/11/2026 14.48.37,51] Menjalankan worker... 
+[17/11/2026 14.49.08,18] Menjalankan worker... 
+[17/11/2026 14.49.38,70] Menjalankan worker... 
+[17/11/2026 14.50.09,47] Menjalankan worker... 
+[17/11/2026 14.50.40,00] Menjalankan worker... 
+[17/11/2026 14.51.10,68] Menjalankan worker... 
+[17/11/2026 14.51.41,21] Menjalankan worker... 
+[17/11/2026 14.52.11,93] Menjalankan worker... 
+[17/11/2026 14.52.42,64] Menjalankan worker... 
+[17/11/2026 14.53.13,31] Menjalankan worker... 
+[17/11/2026 14.53.43,99] Menjalankan worker... 
+[17/11/2026 14.54.14,63] Menjalankan worker... 
+[17/11/2026 14.54.45,20] Menjalankan worker... 
+[17/11/2026 14.55.15,92] Menjalankan worker... 
+[17/11/2026 14.55.46,66] Menjalankan worker... 
+[17/11/2026 14.56.17,42] Menjalankan worker... 
+[17/11/2026 14.56.48,08] Menjalankan worker... 
+[17/11/2026 14.57.18,82] Menjalankan worker... 
+[17/11/2026 14.57.49,52] Menjalankan worker... 
+[17/11/2026 14.58.20,26] Menjalankan worker... 
+[17/11/2026 14.58.51,00] Menjalankan worker... 
+[17/11/2026 14.59.21,71] Menjalankan worker... 
+[17/11/2026 14.59.52,35] Menjalankan worker... 
+[17/11/2026 15.00.23,04] Menjalankan worker... 
+[17/11/2026 15.00.53,81] Menjalankan worker... 
+[17/11/2026 15.01.24,56] Menjalankan worker... 
+[17/11/2026 15.01.55,26] Menjalankan worker... 
+[17/11/2026 15.02.25,93] Menjalankan worker... 
+[17/11/2026 15.02.56,63] Menjalankan worker... 
+[17/11/2026 15.03.27,33] Menjalankan worker... 
+[17/11/2026 15.03.58,03] Menjalankan worker... 
+[17/11/2026 15.04.28,74] Menjalankan worker... 
+[17/11/2026 15.04.59,45] Menjalankan worker... 
+[17/11/2026 15.05.30,11] Menjalankan worker... 
+[17/11/2026 15.06.00,87] Menjalankan worker... 
+[17/11/2026 15.06.31,70] Menjalankan worker... 
+[17/11/2026 15.07.02,43] Menjalankan worker... 
+[17/11/2026 15.07.33,16] Menjalankan worker... 
+[17/11/2026 15.08.03,89] Menjalankan worker... 
+[17/11/2026 15.08.34,62] Menjalankan worker... 
+[17/11/2026 15.09.05,30] Menjalankan worker... 
+[17/11/2026 15.09.36,02] Menjalankan worker... 
+[17/11/2026 15.10.06,79] Menjalankan worker... 
+[17/11/2026 15.10.37,46] Menjalankan worker... 
+[17/11/2026 15.11.08,21] Menjalankan worker... 
+[17/11/2026 15.11.38,87] Menjalankan worker... 
+[17/11/2026 15.12.09,52] Menjalankan worker... 
+[17/11/2026 15.12.40,23] Menjalankan worker... 
+[17/11/2026 15.13.11,02] Menjalankan worker... 
+[17/11/2026 15.13.41,69] Menjalankan worker... 
+[17/11/2026 15.14.12,37] Menjalankan worker... 
+[17/11/2026 15.14.43,08] Menjalankan worker... 
+[17/11/2026 15.15.13,77] Menjalankan worker... 
+[17/11/2026 15.15.44,50] Menjalankan worker... 
+[17/11/2026 15.16.15,21] Menjalankan worker... 
+[17/11/2026 15.16.45,93] Menjalankan worker... 
+[17/11/2026 15.17.16,55] Menjalankan worker... 
+[17/11/2026 15.17.47,29] Menjalankan worker... 
+[17/11/2026 15.18.18,02] Menjalankan worker... 
+[17/11/2026 15.18.48,77] Menjalankan worker... 
+[17/11/2026 15.19.19,37] Menjalankan worker... 
+[17/11/2026 15.19.50,08] Menjalankan worker... 
+[17/11/2026 15.20.20,80] Menjalankan worker... 
+[17/11/2026 15.20.51,46] Menjalankan worker... 
+[17/11/2026 15.21.22,21] Menjalankan worker... 
+[17/11/2026 15.21.52,96] Menjalankan worker... 
+[17/11/2026 15.22.23,65] Menjalankan worker... 
+[17/11/2026 15.22.54,34] Menjalankan worker... 
+[17/11/2026 15.23.25,02] Menjalankan worker... 
+[17/11/2026 15.23.55,67] Menjalankan worker... 
+[17/11/2026 15.24.26,31] Menjalankan worker... 
+[17/11/2026 15.24.57,01] Menjalankan worker... 
+[17/11/2026 15.25.27,71] Menjalankan worker... 
+[17/11/2026 15.25.58,36] Menjalankan worker... 
+[17/11/2026 15.26.29,10] Menjalankan worker... 
+[17/11/2026 15.26.59,84] Menjalankan worker... 
+[17/11/2026 15.27.30,52] Menjalankan worker... 
+[17/11/2026 15.28.01,19] Menjalankan worker... 
+[17/11/2026 15.28.31,98] Menjalankan worker... 
+[17/11/2026 15.29.02,66] Menjalankan worker... 
+[17/11/2026 15.29.33,34] Menjalankan worker... 
+[17/11/2026 15.30.04,10] Menjalankan worker... 
+[17/11/2026 15.30.34,72] Menjalankan worker... 
+[17/11/2026 15.31.05,42] Menjalankan worker... 
+[17/11/2026 15.31.36,13] Menjalankan worker... 
+[17/11/2026 15.32.06,82] Menjalankan worker... 
+[17/11/2026 15.32.09,91] Menjalankan worker... 
+[17/11/2026 15.32.40,59] Menjalankan worker... 
+[17/11/2026 15.33.11,30] Menjalankan worker... 
+[17/11/2026 15.33.42,08] Menjalankan worker... 
+[17/11/2026 15.34.12,71] Menjalankan worker... 
+[17/11/2026 15.34.43,42] Menjalankan worker... 
+[17/11/2026 15.35.14,13] Menjalankan worker... 
+[17/11/2026 15.35.44,86] Menjalankan worker... 
+[17/11/2026 15.36.15,75] Menjalankan worker... 
+[17/11/2026 15.36.46,39] Menjalankan worker... 
+[17/11/2026 15.37.17,12] Menjalankan worker... 
+[17/11/2026 15.37.47,76] Menjalankan worker... 
+[17/11/2026 15.38.18,47] Menjalankan worker... 
+[17/11/2026 15.38.49,12] Menjalankan worker... 
+[17/11/2026 15.39.19,79] Menjalankan worker... 
+[17/11/2026 15.39.50,53] Menjalankan worker... 
+[17/11/2026 15.40.21,16] Menjalankan worker... 
+[17/11/2026 15.40.51,86] Menjalankan worker... 
+[17/11/2026 15.41.22,56] Menjalankan worker... 
+[17/11/2026 15.41.53,31] Menjalankan worker... 
+[17/11/2026 15.42.24,02] Menjalankan worker... 
+[17/11/2026 15.42.54,76] Menjalankan worker... 
+[17/11/2026 15.43.25,43] Menjalankan worker... 
+[17/11/2026 15.43.56,13] Menjalankan worker... 
+[17/11/2026 15.44.26,78] Menjalankan worker... 
+[17/11/2026 15.44.57,51] Menjalankan worker... 
+[17/11/2026 15.45.28,19] Menjalankan worker... 
+[17/11/2026 15.45.58,86] Menjalankan worker... 
+[17/11/2026 15.46.29,59] Menjalankan worker... 
+[17/11/2026 15.47.00,29] Menjalankan worker... 
+[17/11/2026 15.47.31,09] Menjalankan worker... 
+[17/11/2026 15.48.01,81] Menjalankan worker... 
+[17/11/2026 15.48.32,52] Menjalankan worker... 
+[17/11/2026 15.49.03,26] Menjalankan worker... 
+[17/11/2026 15.49.33,92] Menjalankan worker... 
+[17/11/2026 15.50.04,73] Menjalankan worker... 
+[17/11/2026 15.50.35,45] Menjalankan worker... 
+[17/11/2026 15.51.06,24] Menjalankan worker... 
+[17/11/2026 15.51.36,96] Menjalankan worker... 
+[17/11/2026 15.52.07,68] Menjalankan worker... 
+[17/11/2026 15.52.38,42] Menjalankan worker... 
+[17/11/2026 15.53.09,15] Menjalankan worker... 
+[17/11/2026 15.53.39,83] Menjalankan worker... 
+[17/11/2026 15.54.10,52] Menjalankan worker... 
+[17/11/2026 15.54.41,19] Menjalankan worker... 
+[17/11/2026 15.55.11,88] Menjalankan worker... 
+[17/11/2026 15.55.42,58] Menjalankan worker... 
+[17/11/2026 15.56.13,26] Menjalankan worker... 
+[17/11/2026 15.56.43,87] Menjalankan worker... 
+[17/11/2026 15.57.14,58] Menjalankan worker... 
+[17/11/2026 15.57.45,48] Menjalankan worker... 
+[17/11/2026 15.58.16,16] Menjalankan worker... 
+[17/11/2026 15.58.46,85] Menjalankan worker... 
+[17/11/2026 15.59.17,53] Menjalankan worker... 
+[17/11/2026 15.59.48,22] Menjalankan worker... 
+[17/11/2026 16.00.18,91] Menjalankan worker... 
+[17/11/2026 16.00.49,61] Menjalankan worker... 
+[17/11/2026 16.01.20,36] Menjalankan worker... 
+[17/11/2026 16.01.51,03] Menjalankan worker... 
+[17/11/2026 16.02.21,65] Menjalankan worker... 
+[17/11/2026 16.02.52,37] Menjalankan worker... 
+[17/11/2026 16.03.23,08] Menjalankan worker... 
+[17/11/2026 16.03.53,87] Menjalankan worker... 
+[17/11/2026 16.04.24,51] Menjalankan worker... 
+[17/11/2026 16.04.55,04] Menjalankan worker... 
+[17/11/2026 16.05.25,74] Menjalankan worker... 
+[17/11/2026 16.05.56,33] Menjalankan worker... 
+[17/11/2026 16.06.27,04] Menjalankan worker... 
+[17/11/2026 16.06.57,54] Menjalankan worker... 
+[17/11/2026 16.07.28,23] Menjalankan worker... 
+[17/11/2026 16.07.58,86] Menjalankan worker... 
+[17/11/2026 16.08.29,58] Menjalankan worker... 
+[17/11/2026 16.09.00,14] Menjalankan worker... 
+[17/11/2026 16.09.30,82] Menjalankan worker... 
+[17/11/2026 16.10.01,35] Menjalankan worker... 
+[17/11/2026 16.10.32,04] Menjalankan worker... 
+[17/11/2026 16.11.02,59] Menjalankan worker... 
+[17/11/2026 16.11.33,28] Menjalankan worker... 
+[17/11/2026 16.12.03,88] Menjalankan worker... 
+[17/11/2026 16.12.34,55] Menjalankan worker... 
+[17/11/2026 16.13.05,12] Menjalankan worker... 
+[17/11/2026 16.13.35,80] Menjalankan worker... 
+[17/11/2026 16.14.06,37] Menjalankan worker... 
+[17/11/2026 16.14.37,04] Menjalankan worker... 
+[17/11/2026 16.15.07,75] Menjalankan worker... 
+[17/11/2026 16.15.38,42] Menjalankan worker... 
+[17/11/2026 16.16.09,11] Menjalankan worker... 
+[17/11/2026 16.16.39,79] Menjalankan worker... 
+[17/11/2026 16.17.10,51] Menjalankan worker... 
+[17/11/2026 16.17.41,20] Menjalankan worker... 
+[17/11/2026 16.18.11,82] Menjalankan worker... 
+[17/11/2026 16.18.42,54] Menjalankan worker... 
+[17/11/2026 16.19.13,25] Menjalankan worker... 
+[17/11/2026 16.19.43,99] Menjalankan worker... 
+[17/11/2026 16.20.14,71] Menjalankan worker... 
+[17/11/2026 16.20.45,55] Menjalankan worker... 
+[17/11/2026 16.21.16,30] Menjalankan worker... 
+[17/11/2026 16.21.46,97] Menjalankan worker... 
+[17/11/2026 16.22.17,73] Menjalankan worker... 
+[17/11/2026 16.22.48,41] Menjalankan worker... 
+[17/11/2026 16.23.19,16] Menjalankan worker... 
+[17/11/2026 16.23.49,92] Menjalankan worker... 
+[17/11/2026 16.24.20,62] Menjalankan worker... 
+[17/11/2026 16.24.51,43] Menjalankan worker... 
+[17/11/2026 16.25.22,12] Menjalankan worker... 
+[17/11/2026 16.25.52,80] Menjalankan worker... 
+[17/11/2026 16.26.23,54] Menjalankan worker... 
+[17/11/2026 16.26.54,24] Menjalankan worker... 
+[17/11/2026 16.27.24,93] Menjalankan worker... 
+[17/11/2026 16.27.55,61] Menjalankan worker... 
+[17/11/2026 16.28.26,33] Menjalankan worker... 
+[17/11/2026 16.28.57,07] Menjalankan worker... 
+[17/11/2026 16.29.27,82] Menjalankan worker... 
+[17/11/2026 16.29.58,50] Menjalankan worker... 
+[17/11/2026 16.30.29,15] Menjalankan worker... 
+[17/11/2026 16.30.59,88] Menjalankan worker... 
+[17/11/2026 16.31.30,63] Menjalankan worker... 
+[17/11/2026 16.32.01,27] Menjalankan worker... 
+[17/11/2026 16.32.32,00] Menjalankan worker... 
+[17/11/2026 16.33.02,73] Menjalankan worker... 
+[17/11/2026 16.33.33,49] Menjalankan worker... 
+[17/11/2026 16.34.04,20] Menjalankan worker... 
+[17/11/2026 16.34.34,85] Menjalankan worker... 
+[17/11/2026 16.35.05,58] Menjalankan worker... 
+[17/11/2026 16.35.36,23] Menjalankan worker... 
+[17/11/2026 16.36.07,02] Menjalankan worker... 
+[17/11/2026 16.36.37,73] Menjalankan worker... 
+[17/11/2026 16.37.08,50] Menjalankan worker... 
+[17/11/2026 16.37.39,20] Menjalankan worker... 
+[17/11/2026 16.38.09,90] Menjalankan worker... 
+[17/11/2026 16.38.40,59] Menjalankan worker... 
+[17/11/2026 16.39.11,31] Menjalankan worker... 
+[17/11/2026 16.39.42,10] Menjalankan worker... 
+[17/11/2026 16.40.12,76] Menjalankan worker... 
+[17/11/2026 16.40.43,46] Menjalankan worker... 
+[17/11/2026 16.41.14,19] Menjalankan worker... 
+[17/11/2026 16.41.44,89] Menjalankan worker... 
+[17/11/2026 16.42.15,57] Menjalankan worker... 
+[17/11/2026 16.42.46,27] Menjalankan worker... 
+[17/11/2026 16.43.16,98] Menjalankan worker... 
+[17/11/2026 16.43.47,73] Menjalankan worker... 
+[17/11/2026 16.44.18,50] Menjalankan worker... 
+[17/11/2026 16.44.49,25] Menjalankan worker... 
+[17/11/2026 16.45.19,95] Menjalankan worker... 
+[17/11/2026 16.45.50,62] Menjalankan worker... 
+[17/11/2026 16.46.21,30] Menjalankan worker... 
+[17/11/2026 16.46.51,98] Menjalankan worker... 
+[17/11/2026 16.47.22,77] Menjalankan worker... 
+[17/11/2026 16.47.55,07] Menjalankan worker... 
+[17/11/2026 16.48.25,96] Menjalankan worker... 
+[17/11/2026 16.48.56,68] Menjalankan worker... 
+[17/11/2026 16.49.27,37] Menjalankan worker... 
+[17/11/2026 16.49.58,10] Menjalankan worker... 
+[17/11/2026 16.50.28,87] Menjalankan worker... 
+[17/11/2026 16.50.59,57] Menjalankan worker... 
+[17/11/2026 16.51.30,29] Menjalankan worker... 
+[17/11/2026 16.52.00,99] Menjalankan worker... 
+[17/11/2026 16.52.31,68] Menjalankan worker... 
+[17/11/2026 16.53.02,47] Menjalankan worker... 
+[17/11/2026 16.53.33,18] Menjalankan worker... 
+[17/11/2026 16.54.03,95] Menjalankan worker... 
+[17/11/2026 16.54.34,59] Menjalankan worker... 
+[17/11/2026 16.55.05,31] Menjalankan worker... 
+[17/11/2026 16.55.36,01] Menjalankan worker... 
+[17/11/2026 16.55.39,22] Menjalankan worker... 
+[17/11/2026 16.56.09,86] Menjalankan worker... 
+[17/11/2026 16.56.40,59] Menjalankan worker... 
+[17/11/2026 16.57.11,33] Menjalankan worker... 
+[17/11/2026 16.57.42,01] Menjalankan worker... 
+[17/11/2026 16.58.12,89] Menjalankan worker... 
+[17/11/2026 16.58.43,66] Menjalankan worker... 
+[17/11/2026 16.59.14,38] Menjalankan worker... 
+[17/11/2026 16.59.45,14] Menjalankan worker... 
+[17/11/2026 17.00.15,90] Menjalankan worker... 
+[17/11/2026 17.00.46,58] Menjalankan worker... 
+[17/11/2026 17.01.17,30] Menjalankan worker... 
+[17/11/2026 17.01.48,04] Menjalankan worker... 
+[17/11/2026 17.02.18,70] Menjalankan worker... 
+[17/11/2026 17.02.49,39] Menjalankan worker... 
+[17/11/2026 17.03.20,02] Menjalankan worker... 
+[17/11/2026 17.03.50,75] Menjalankan worker... 
+[17/11/2026 17.04.21,51] Menjalankan worker... 
+[17/11/2026 17.04.52,23] Menjalankan worker... 
+[17/11/2026 17.05.23,00] Menjalankan worker... 
+[17/11/2026 17.05.53,70] Menjalankan worker... 
+[17/11/2026 17.06.24,44] Menjalankan worker... 
+[17/11/2026 17.06.55,15] Menjalankan worker... 
+[17/11/2026 17.07.25,87] Menjalankan worker... 
+[17/11/2026 17.07.56,66] Menjalankan worker... 
+[17/11/2026 17.08.27,31] Menjalankan worker... 
+[17/11/2026 17.08.57,91] Menjalankan worker... 
+[17/11/2026 17.09.28,62] Menjalankan worker... 
+[17/11/2026 17.09.59,15] Menjalankan worker... 
+[17/11/2026 17.10.29,85] Menjalankan worker... 
+[17/11/2026 17.11.00,35] Menjalankan worker... 
+[17/11/2026 17.11.31,41] Menjalankan worker... 
+[17/11/2026 17.12.01,96] Menjalankan worker... 
+[17/11/2026 17.12.32,71] Menjalankan worker... 
+[17/11/2026 17.13.03,25] Menjalankan worker... 
+[17/11/2026 17.13.33,95] Menjalankan worker... 
+[17/11/2026 17.14.04,52] Menjalankan worker... 
+[17/11/2026 17.14.35,25] Menjalankan worker... 
+[17/11/2026 17.15.05,78] Menjalankan worker... 
+[17/11/2026 17.15.36,54] Menjalankan worker... 
+[17/11/2026 17.16.07,14] Menjalankan worker... 
+[17/11/2026 17.16.37,80] Menjalankan worker... 
+[17/11/2026 17.17.08,33] Menjalankan worker... 
+[17/11/2026 17.17.39,04] Menjalankan worker... 
+[17/11/2026 17.18.09,71] Menjalankan worker... 
+[17/11/2026 17.18.40,43] Menjalankan worker... 
+[17/11/2026 17.19.11,11] Menjalankan worker... 
+[17/11/2026 17.19.14,32] Menjalankan worker... 
+[17/11/2026 17.19.45,01] Menjalankan worker... 
+[17/11/2026 17.20.15,70] Menjalankan worker... 
+[17/11/2026 17.20.46,46] Menjalankan worker... 
+[17/11/2026 17.21.17,17] Menjalankan worker... 
+[17/11/2026 17.21.47,86] Menjalankan worker... 
+[17/11/2026 17.22.18,60] Menjalankan worker... 
+[17/11/2026 17.22.49,28] Menjalankan worker... 
+[17/11/2026 17.23.20,02] Menjalankan worker... 
+[17/11/2026 17.23.50,67] Menjalankan worker... 
+[17/11/2026 17.24.21,33] Menjalankan worker... 
+[17/11/2026 17.24.52,06] Menjalankan worker... 
+[17/11/2026 17.25.22,80] Menjalankan worker... 
+[17/11/2026 17.25.53,51] Menjalankan worker... 
+[17/11/2026 17.26.24,24] Menjalankan worker... 
+[17/11/2026 17.26.54,97] Menjalankan worker... 
+[17/11/2026 17.27.25,70] Menjalankan worker... 
+[17/11/2026 17.27.56,39] Menjalankan worker... 
+[17/11/2026 17.28.27,14] Menjalankan worker... 
+[17/11/2026 17.28.57,87] Menjalankan worker... 
+[17/11/2026 17.29.28,57] Menjalankan worker... 
+[17/11/2026 17.29.59,28] Menjalankan worker... 
+[17/11/2026 17.30.29,99] Menjalankan worker... 
+[17/11/2026 17.31.00,70] Menjalankan worker... 
+[17/11/2026 17.31.31,47] Menjalankan worker... 
+[17/11/2026 17.32.02,19] Menjalankan worker... 
+[17/11/2026 17.32.32,87] Menjalankan worker... 
+[17/11/2026 17.33.03,48] Menjalankan worker... 
+[17/11/2026 17.33.34,21] Menjalankan worker... 
+[17/11/2026 17.34.04,89] Menjalankan worker... 
+[17/11/2026 17.34.35,59] Menjalankan worker... 
+[17/11/2026 17.35.06,31] Menjalankan worker... 
+[17/11/2026 17.35.37,04] Menjalankan worker... 
+[17/11/2026 17.36.07,80] Menjalankan worker... 
+[17/11/2026 17.36.38,48] Menjalankan worker... 
+[17/11/2026 17.37.09,15] Menjalankan worker... 
+[17/11/2026 17.37.39,87] Menjalankan worker... 
+[17/11/2026 17.38.10,62] Menjalankan worker... 
+[17/11/2026 17.38.41,24] Menjalankan worker... 
+[17/11/2026 17.39.12,03] Menjalankan worker... 
+[17/11/2026 17.39.42,73] Menjalankan worker... 
+[17/11/2026 17.40.13,45] Menjalankan worker... 
+[17/11/2026 17.40.44,15] Menjalankan worker... 
+[17/11/2026 17.41.14,88] Menjalankan worker... 
+[17/11/2026 17.41.45,57] Menjalankan worker... 
+[17/11/2026 17.42.16,31] Menjalankan worker... 
+[17/11/2026 17.42.47,04] Menjalankan worker... 
+[17/11/2026 17.43.17,76] Menjalankan worker... 
+[17/11/2026 17.43.48,49] Menjalankan worker... 
+[17/11/2026 17.44.19,15] Menjalankan worker... 
+[17/11/2026 17.44.49,86] Menjalankan worker... 
+[17/11/2026 17.45.20,57] Menjalankan worker... 
+[17/11/2026 17.45.51,26] Menjalankan worker... 
+[17/11/2026 17.46.21,98] Menjalankan worker... 
+[17/11/2026 17.46.52,73] Menjalankan worker... 
+[17/11/2026 17.47.23,44] Menjalankan worker... 
+[17/11/2026 17.47.54,19] Menjalankan worker... 
+[17/11/2026 17.48.24,91] Menjalankan worker... 
+[17/11/2026 17.48.55,64] Menjalankan worker... 
+[17/11/2026 17.49.26,33] Menjalankan worker... 
+[17/11/2026 17.49.57,03] Menjalankan worker... 
+[17/11/2026 17.50.27,71] Menjalankan worker... 
+[17/11/2026 17.50.58,46] Menjalankan worker... 
+[17/11/2026 17.51.29,14] Menjalankan worker... 
+[17/11/2026 17.51.59,85] Menjalankan worker... 
+[17/11/2026 17.52.30,58] Menjalankan worker... 
+[17/11/2026 17.53.01,24] Menjalankan worker... 
+[17/11/2026 17.53.31,99] Menjalankan worker... 
+[17/11/2026 17.54.02,71] Menjalankan worker... 
+[17/11/2026 17.54.33,32] Menjalankan worker... 
+[17/11/2026 17.55.04,04] Menjalankan worker... 
+[17/11/2026 17.55.34,76] Menjalankan worker... 
+[17/11/2026 17.56.05,45] Menjalankan worker... 
+[17/11/2026 17.56.36,09] Menjalankan worker... 
+[17/11/2026 17.57.06,75] Menjalankan worker... 
+[17/11/2026 17.57.37,47] Menjalankan worker... 
+[17/11/2026 17.58.08,16] Menjalankan worker... 
+[17/11/2026 17.58.38,89] Menjalankan worker... 
+[17/11/2026 17.59.09,46] Menjalankan worker... 
+[17/11/2026 17.59.40,16] Menjalankan worker... 
+[17/11/2026 18.00.10,86] Menjalankan worker... 
+[17/11/2026 18.00.41,58] Menjalankan worker... 
+[17/11/2026 18.01.12,26] Menjalankan worker... 
+[17/11/2026 18.01.42,95] Menjalankan worker... 
+[17/11/2026 18.02.13,71] Menjalankan worker... 
+[17/11/2026 18.02.44,39] Menjalankan worker... 
+[17/11/2026 18.03.15,07] Menjalankan worker... 
+[17/11/2026 18.03.45,81] Menjalankan worker... 
+[17/11/2026 18.04.16,55] Menjalankan worker... 
+[17/11/2026 18.04.47,22] Menjalankan worker... 
+[17/11/2026 18.05.17,83] Menjalankan worker... 
+[17/11/2026 18.05.48,57] Menjalankan worker... 
+[17/11/2026 18.06.19,29] Menjalankan worker... 
+[17/11/2026 18.06.50,06] Menjalankan worker... 
+[17/11/2026 18.07.20,82] Menjalankan worker... 
+[17/11/2026 18.07.51,44] Menjalankan worker... 
+[17/11/2026 18.08.22,31] Menjalankan worker... 
+[17/11/2026 18.08.52,98] Menjalankan worker... 
+[17/11/2026 18.09.23,74] Menjalankan worker... 
+[17/11/2026 18.09.54,44] Menjalankan worker... 
+[17/11/2026 18.10.25,13] Menjalankan worker... 
+[17/11/2026 18.10.55,84] Menjalankan worker... 
+[17/11/2026 18.11.26,63] Menjalankan worker... 
+[17/11/2026 18.11.57,34] Menjalankan worker... 
+[17/11/2026 18.12.28,03] Menjalankan worker... 
+[17/11/2026 18.12.58,74] Menjalankan worker... 
+[17/11/2026 18.13.29,43] Menjalankan worker... 
+[17/11/2026 18.14.00,16] Menjalankan worker... 
+[17/11/2026 18.14.30,89] Menjalankan worker... 
+[17/11/2026 18.15.01,58] Menjalankan worker... 
+[17/11/2026 18.15.32,30] Menjalankan worker... 
+[17/11/2026 18.16.03,00] Menjalankan worker... 
+[17/11/2026 18.16.33,75] Menjalankan worker... 
+[17/11/2026 18.17.04,42] Menjalankan worker... 
+[17/11/2026 18.17.35,07] Menjalankan worker... 
+[17/11/2026 18.18.05,83] Menjalankan worker... 
+[17/11/2026 18.18.36,54] Menjalankan worker... 
+[17/11/2026 18.19.07,23] Menjalankan worker... 
+[17/11/2026 18.19.37,99] Menjalankan worker... 
+[17/11/2026 18.20.08,70] Menjalankan worker... 
+[17/11/2026 18.20.39,39] Menjalankan worker... 
+[17/11/2026 18.21.10,10] Menjalankan worker... 
+[17/11/2026 18.21.40,81] Menjalankan worker... 
+[17/11/2026 18.22.11,46] Menjalankan worker... 
+[17/11/2026 18.22.42,17] Menjalankan worker... 
+[17/11/2026 18.23.12,74] Menjalankan worker... 
+[17/11/2026 18.23.43,43] Menjalankan worker... 
+[17/11/2026 18.24.14,00] Menjalankan worker... 
+[17/11/2026 18.24.44,70] Menjalankan worker... 
+[17/11/2026 18.25.15,28] Menjalankan worker... 
+[17/11/2026 18.25.45,96] Menjalankan worker... 
+[17/11/2026 18.26.16,58] Menjalankan worker... 
+[17/11/2026 18.26.47,29] Menjalankan worker... 
+[17/11/2026 18.27.17,84] Menjalankan worker... 
+[17/11/2026 18.27.48,50] Menjalankan worker... 
+[17/11/2026 18.28.19,04] Menjalankan worker... 
+[17/11/2026 18.28.49,72] Menjalankan worker... 
+[17/11/2026 18.29.20,23] Menjalankan worker... 
+[17/11/2026 18.29.50,95] Menjalankan worker... 
+[17/11/2026 18.30.21,52] Menjalankan worker... 
+[17/11/2026 18.30.52,26] Menjalankan worker... 
+[17/11/2026 18.31.22,77] Menjalankan worker... 
+[17/11/2026 18.31.53,53] Menjalankan worker... 
+[17/11/2026 18.32.24,11] Menjalankan worker... 
+[17/11/2026 18.32.54,84] Menjalankan worker... 

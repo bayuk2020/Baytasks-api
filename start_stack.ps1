@@ -6,8 +6,7 @@
 # Folder Startup Windows hanya berisi laragon.lnk. Jadi setelah reboot, Apache
 # dan MySQL hidup, tapi `artisan serve`, worker reminder, scheduler, dan
 # cloudflared TIDAK — api.kabyra.my.id mati sampai dijalankan manual satu per
-# satu. Script ini menghidupkan apa pun yang sedang tidak jalan, jadi aman
-# dipanggil berulang: komponen yang sudah hidup dilewati, tidak pernah dobel.
+# satu. Script ini menghidupkan apa pun yang sedang tidak jalan.
 #
 # CARA PAKAI
 #   powershell -ExecutionPolicy Bypass -File C:\laragon\www\Baytasks-api\start_stack.ps1
@@ -27,57 +26,104 @@ $ErrorActionPreference = 'Continue'
 $root = 'C:\laragon\www\Baytasks-api'
 
 # -----------------------------------------------------------------------------
-# KENAPA DETEKSINYA TIDAK MEMAKAI CommandLine
+# PELAJARAN 17-18 NOV 2026 — KENAPA DETEKSINYA SEPERTI INI
 #
-# Sebagian proses di mesin ini dijalankan dari terminal Administrator. Win32_Process
-# TIDAK memberikan CommandLine untuk proses elevated kalau yang bertanya bukan
-# proses elevated — nilainya kosong. Jadi mencocokkan 'run_worker.bat' di
-# CommandLine akan MELEWATKAN worker yang sedang hidup, dan script ini akan
-# menjalankan worker kedua: reminder terkirim dobel.
+# Versi pertama script ini menilai worker/scheduler "hidup" semata-mata dari
+# umur berkas log-nya. Itu gagal total ketika MySQL sempat menolak koneksi:
+# `php artisan` menggantung, cmd menahan handle ke worker_log.txt, salinan
+# berikutnya tidak bisa menulis apa pun, umur log membeku, dan script ini
+# menyimpulkan workernya mati lalu menjalankan salinan baru SETIAP 5 MENIT.
+# Hasilnya 44 proses run_worker.bat dan 31 run_scheduler.bat menumpuk.
 #
-# Karena itu tiap komponen dideteksi dari bukti yang tidak bergantung hak akses:
-#   - artisan serve : port 8000 sedang LISTENING
-#   - worker        : worker_log.txt disentuh < 3 menit lalu (loop-nya 30 detik)
-#   - scheduler     : scheduler_log.txt disentuh < 4 menit lalu (loop-nya 60 detik)
-#   - cloudflared   : ada proses bernama cloudflared.exe (nama proses selalu
-#                     terbaca, beda dengan CommandLine)
+# Sekarang ada tiga lapis pengaman:
+#   1. run_worker.bat / run_scheduler.bat memegang kunci (worker.lock /
+#      scheduler.lock), jadi instance kedua keluar sendiri.
+#   2. Script ini TIDAK menjalankan apa pun kalau prosesnya masih terlihat ada.
+#   3. Kalau proses ada TAPI denyutnya basi, statusnya dilaporkan "MACET" —
+#      bukan dijadikan alasan menjalankan salinan baru.
+#
+# Deteksi memakai dua sinyal karena masing-masing punya titik buta:
+#   - CommandLine proses: tidak terbaca untuk proses yang dijalankan sebagai
+#     Administrator (nilainya kosong), jadi instance elevated milik user tidak
+#     akan terlihat.
+#   - Denyut (heartbeat): terbaca untuk siapa pun, tapi bisa basi kalau php
+#     menggantung.
+# Yang dipakai: ADA PROSES **atau** DENYUT MASIH SEGAR = jangan start.
 # -----------------------------------------------------------------------------
 
-function Test-PortListening([int]$port) {
-    try {
-        return [bool](Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction Stop)
-    } catch {
-        return $false
-    }
+function Get-Pembungkus([string]$namaBat) {
+    return @(
+        Get-CimInstance Win32_Process -Filter "Name='cmd.exe'" -ErrorAction SilentlyContinue |
+            Where-Object { $_.CommandLine -and $_.CommandLine -match [regex]::Escape($namaBat) }
+    )
 }
 
-function Test-Heartbeat([string]$path, [int]$withinSeconds) {
+function Test-Denyut([string]$path, [int]$batasDetik) {
     if (-not (Test-Path -LiteralPath $path)) { return $false }
-    $age = (Get-Date) - (Get-Item -LiteralPath $path).LastWriteTime
-    return ($age.TotalSeconds -le $withinSeconds)
+    $umur = (Get-Date) - (Get-Item -LiteralPath $path).LastWriteTime
+    return ($umur.TotalSeconds -le $batasDetik)
+}
+
+function Test-PortListening([int]$port) {
+    try { return [bool](Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction Stop) }
+    catch { return $false }
 }
 
 function Test-ProcessByName([string]$name) {
     return [bool](Get-Process -Name ([System.IO.Path]::GetFileNameWithoutExtension($name)) -ErrorAction SilentlyContinue)
 }
 
-# --- Pemangkas log -----------------------------------------------------------
-# Log-log ini ditulis dengan `>>` dari dalam batch, jadi handle-nya DIPEGANG
-# selama proses hidup: rename/hapus akan gagal (sharing violation). Yang bisa
-# dilakukan adalah memotong isinya di tempat (SetLength(0)) sambil menyimpan
-# ekor terakhirnya ke file .prev.txt supaya jejak terdekat tidak hilang.
+function Get-ServiceTunnel {
+    return Get-Service -Name 'cloudflared' -ErrorAction SilentlyContinue
+}
+
+function Test-Http([string]$url, [int]$timeoutDetik = 20) {
+    try {
+        $r = Invoke-WebRequest -Uri $url -TimeoutSec $timeoutDetik -UseBasicParsing -ErrorAction Stop
+        return [int]$r.StatusCode -lt 400
+    } catch {
+        # 4xx tetap dihitung "sampai", karena yang diuji di sini adalah
+        # sambungannya, bukan isi responsnya. Yang dianggap gagal hanya kalau
+        # tidak ada respons sama sekali.
+        if ($_.Exception.Response) { return [int]$_.Exception.Response.StatusCode -lt 500 }
+        return $false
+    }
+}
+
+# -----------------------------------------------------------------------------
+# KENAPA KESEHATAN TUNNEL TIDAK CUKUP DIUKUR DARI "ADA PROSESNYA"
 #
-# Dipanggil SETELAH deteksi, karena memotong file ikut memperbarui
-# LastWriteTime — kalau dijalankan lebih dulu, worker/scheduler yang sudah mati
-# akan terlihat seperti masih berdenyut.
+# tunnel_log.txt 17 Nov 2026 merekam cloudflared yang kehilangan SEMUA koneksi
+# ke edge Cloudflare sambil prosesnya tetap hidup beberapa saat:
+#     ERR Connection terminated connIndex=1
+#     ERR no more connections active and exiting
+# Dalam keadaan itu `Get-Process cloudflared` masih menjawab "ada", padahal
+# domainnya sudah tidak bisa diakses siapa pun.
+#
+# Jadi yang diuji di sini adalah PERBEDAAN antara origin lokal dan domain
+# publik:
+#   origin OK + publik OK    -> sehat
+#   origin OK + publik GAGAL -> tunnelnya yang rusak (bukan API-nya)
+#   origin GAGAL             -> masalahnya di API, jangan salahkan tunnel
+# -----------------------------------------------------------------------------
+function Get-KesehatanTunnel {
+    $origin = Test-Http 'http://127.0.0.1:8000/api/finance/categories' 15
+    if (-not $origin) { return 'origin-mati' }
+    $publik = Test-Http 'https://api.kabyra.my.id/api/finance/categories' 25
+    if ($publik) { return 'sehat' }
+    return 'tunnel-rusak'
+}
+
+# --- Pemangkas log -----------------------------------------------------------
+# Log ini ditulis dengan `>>` dari dalam batch, jadi handle-nya dipegang selama
+# php berjalan: rename/hapus bisa gagal. Yang dilakukan adalah memotong isinya
+# di tempat sambil menyimpan ekor terakhirnya ke .prev.txt.
 function Compact-Log([string]$path, [int]$maxMB, [int]$keepLines = 2000) {
     if (-not (Test-Path -LiteralPath $path)) { return }
     $file = Get-Item -LiteralPath $path
     if ($file.Length -le ($maxMB * 1MB)) { return }
     $mb = [math]::Round($file.Length / 1MB, 2)
 
-    # ChangeExtension(..., $null) menyisakan titik di ujung ("worker_log."),
-    # jadi nama file dibentuk dari direktori + nama tanpa ekstensi.
     $prev = Join-Path ([System.IO.Path]::GetDirectoryName($path)) `
                       ([System.IO.Path]::GetFileNameWithoutExtension($path) + '.prev.txt')
     try {
@@ -88,12 +134,9 @@ function Compact-Log([string]$path, [int]$maxMB, [int]$keepLines = 2000) {
     }
 
     try {
-        # FileShare::ReadWrite supaya proses penulis tidak terganggu.
-        $fs = [System.IO.File]::Open(
-            $path,
-            [System.IO.FileMode]::Open,
-            [System.IO.FileAccess]::Write,
-            [System.IO.FileShare]::ReadWrite)
+        $fs = [System.IO.File]::Open($path, [System.IO.FileMode]::Open,
+                                     [System.IO.FileAccess]::Write,
+                                     [System.IO.FileShare]::ReadWrite)
         try { $fs.SetLength(0) } finally { $fs.Dispose() }
         Write-Output "  log dipangkas: $([System.IO.Path]::GetFileName($path)) ($mb MB -> 0, ekor $keepLines baris di .prev.txt)"
     } catch {
@@ -102,21 +145,53 @@ function Compact-Log([string]$path, [int]$maxMB, [int]$keepLines = 2000) {
 }
 
 $components = @(
-    @{ Nama = 'artisan serve (API :8000)'; Cek = { Test-PortListening 8000 };                                          Vbs = 'run_serve_silent.vbs';     Log = 'serve_log.txt' }
-    @{ Nama = 'worker reminder';           Cek = { Test-Heartbeat (Join-Path $root 'worker_log.txt') 180 };             Vbs = 'run_silent.vbs';           Log = 'worker_log.txt' }
-    @{ Nama = 'scheduler Laravel';         Cek = { Test-Heartbeat (Join-Path $root 'scheduler_log.txt') 240 };          Vbs = 'run_scheduler_silent.vbs'; Log = 'scheduler_log.txt' }
-    @{ Nama = 'cloudflared tunnel';        Cek = { Test-ProcessByName 'cloudflared.exe' };                              Vbs = 'run_tunnel_silent.vbs';    Log = 'tunnel_log.txt' }
+    @{
+        Nama      = 'artisan serve (API :8000)'
+        Hidup     = { Test-PortListening 8000 }
+        Proses    = { @() }                       # port sudah cukup sebagai bukti
+        Denyut    = { $true }
+        Vbs       = 'run_serve_silent.vbs'
+        Log       = @('serve_log.txt')
+    }
+    @{
+        Nama      = 'worker reminder'
+        Hidup     = { (Get-Pembungkus 'run_worker.bat').Count -gt 0 -or (Test-Denyut (Join-Path $root 'worker_heartbeat.txt') 180) }
+        Proses    = { Get-Pembungkus 'run_worker.bat' }
+        Denyut    = { Test-Denyut (Join-Path $root 'worker_heartbeat.txt') 180 }
+        Vbs       = 'run_silent.vbs'
+        Log       = @('worker_run.log', 'worker_log.txt')
+    }
+    @{
+        Nama      = 'scheduler Laravel'
+        Hidup     = { (Get-Pembungkus 'run_scheduler.bat').Count -gt 0 -or (Test-Denyut (Join-Path $root 'scheduler_heartbeat.txt') 240) }
+        Proses    = { Get-Pembungkus 'run_scheduler.bat' }
+        Denyut    = { Test-Denyut (Join-Path $root 'scheduler_heartbeat.txt') 240 }
+        Vbs       = 'run_scheduler_silent.vbs'
+        Log       = @('scheduler_run.log', 'scheduler_log.txt')
+    }
 )
 
 Write-Output "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] start_stack.ps1"
 
-$toCompact = @()
+$semuaLog = @()
 
 foreach ($c in $components) {
-    $toCompact += (Join-Path $root $c.Log)
+    $semuaLog += $c.Log
 
-    if (& $c.Cek) {
-        Write-Output ("  OK    {0}" -f $c.Nama)
+    $jumlahProses = @(& $c.Proses).Count
+
+    # Penumpukan: laporkan dengan jelas, jangan pernah tambah lagi.
+    if ($jumlahProses -gt 1) {
+        Write-Output ("  TUMPUK {0}  ({1} salinan berjalan - seharusnya 1; hentikan yang berlebih)" -f $c.Nama, $jumlahProses)
+        continue
+    }
+
+    if (& $c.Hidup) {
+        if (-not (& $c.Denyut)) {
+            Write-Output ("  MACET {0}  (proses ada tapi denyutnya basi - kemungkinan php menggantung, mis. MySQL mati)" -f $c.Nama)
+        } else {
+            Write-Output ("  OK    {0}" -f $c.Nama)
+        }
         continue
     }
 
@@ -136,8 +211,85 @@ foreach ($c in $components) {
     Start-Sleep -Seconds 4
 }
 
-$toCompact += (Join-Path $root 'watchdog_log.txt')
-foreach ($log in $toCompact) { Compact-Log $log $MaxLogMB }
+# -----------------------------------------------------------------------------
+# CLOUDFLARED — ditangani terpisah dari komponen lain karena punya dua mode.
+#
+# MODE SERVICE (setelah install_tunnel_service.ps1 dijalankan): Windows sendiri
+# yang menghidupkan ulang kalau crash, lewat recovery action. Script ini CUKUP
+# melapor, dan SAMA SEKALI TIDAK BOLEH menjalankan run_tunnel_silent.vbs --
+# itu akan membuat connector kedua pada tunnel yang sama, dan Cloudflare lalu
+# membagi trafik ke dua connector yang bisa punya ingress berbeda.
+#
+# MODE MANUAL (service belum dipasang): perilaku lama, yaitu menyalakan
+# run_tunnel_silent.vbs kalau prosesnya hilang.
+# -----------------------------------------------------------------------------
+$semuaLog += 'tunnel_log.txt'
+$svcTunnel = Get-ServiceTunnel
+
+if ($svcTunnel) {
+    if ($svcTunnel.Status -eq 'Running') {
+        $sehat = Get-KesehatanTunnel
+        switch ($sehat) {
+            'sehat'       { Write-Output "  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)" }
+            'tunnel-rusak' {
+                Write-Output "  RUSAK cloudflared tunnel  (service jalan & origin lokal sehat, tapi domain publik TIDAK menjawab)"
+                if (-not $Status) {
+                    Write-Output "        -> merestart service cloudflared"
+                    try {
+                        Restart-Service -Name 'cloudflared' -Force -ErrorAction Stop
+                        Write-Output "        -> restart terkirim"
+                    } catch {
+                        Write-Output "        ! gagal restart (butuh hak Administrator): $($_.Exception.Message)"
+                    }
+                }
+            }
+            'origin-mati' { Write-Output "  ?     cloudflared tunnel  (origin lokal :8000 tidak menjawab - periksa API dulu, bukan tunnelnya)" }
+        }
+    } else {
+        Write-Output "  MATI  cloudflared tunnel  (Windows Service status: $($svcTunnel.Status))"
+        if (-not $Status) {
+            try {
+                Start-Service -Name 'cloudflared' -ErrorAction Stop
+                Write-Output "        -> service dinyalakan"
+            } catch {
+                Write-Output "        ! gagal menyalakan (butuh hak Administrator): $($_.Exception.Message)"
+            }
+        }
+    }
+} else {
+    # Service belum dipasang -- jalur lama.
+    if (Test-ProcessByName 'cloudflared.exe') {
+        $sehat = Get-KesehatanTunnel
+        switch ($sehat) {
+            'sehat' {
+                Write-Output "  OK    cloudflared tunnel  (proses manual, BELUM jadi service)"
+            }
+            'tunnel-rusak' {
+                Write-Output "  RUSAK cloudflared tunnel  (proses ada & origin sehat, tapi domain publik tidak menjawab)"
+                Write-Output "        -> jalankan install_tunnel_service.ps1 sebagai Administrator supaya"
+                Write-Output "           Windows yang menghidupkannya ulang otomatis"
+            }
+            'origin-mati' {
+                # Jangan laporkan tunnel sebagai OK kalau origin-nya sendiri mati:
+                # status tunnel memang belum bisa disimpulkan dari sini.
+                Write-Output "  ?     cloudflared tunnel  (origin lokal :8000 tidak menjawab - periksa API dulu, bukan tunnelnya)"
+            }
+        }
+    } elseif ($Status) {
+        Write-Output "  MATI  cloudflared tunnel  (mode -Status, tidak dijalankan)"
+    } else {
+        $vbs = Join-Path $root 'run_tunnel_silent.vbs'
+        if (Test-Path -LiteralPath $vbs) {
+            Write-Output "  START cloudflared tunnel  (run_tunnel_silent.vbs)"
+            Start-Process -FilePath 'wscript.exe' -ArgumentList "`"$vbs`"" -WindowStyle Hidden | Out-Null
+        } else {
+            Write-Output "  ! cloudflared tunnel: launcher tidak ditemukan: $vbs"
+        }
+    }
+}
+
+$semuaLog += 'watchdog_log.txt'
+foreach ($log in ($semuaLog | Select-Object -Unique)) { Compact-Log (Join-Path $root $log) $MaxLogMB }
 
 # Apache dan MySQL dibiarkan ke Laragon (laragon.lnk sudah ada di folder
 # Startup). Keduanya tidak disentuh di sini supaya tidak bentrok dengan

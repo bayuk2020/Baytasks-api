@@ -16,7 +16,8 @@ class Milestone extends Model
         'current_value',
         'due_date',
         'weight',
-        'completed'
+        'completed',
+        'sort_order',
     ];
 
     protected $casts = [
@@ -26,6 +27,7 @@ class Milestone extends Model
         'weight' => 'integer',
         'completed' => 'boolean',
         'due_date' => 'date:Y-m-d',
+        'sort_order' => 'integer',
     ];
 
     /**

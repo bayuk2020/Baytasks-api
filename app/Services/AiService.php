@@ -32,28 +32,56 @@ class AiService
      * env_name => [display_name, endpoint_url, model_default]
      */
     private const OPENAI_COMPATIBLE_PROVIDERS = [
-        'GROQ'        => ['Groq',         'https://api.groq.com/openai/v1/chat/completions',          'llama-3.3-70b-versatile'],
-        'OPENROUTER'  => ['OpenRouter',    'https://openrouter.ai/api/v1/chat/completions',            'meta-llama/llama-3.3-70b-instruct:free'],
-        'NVIDIA'      => ['NVIDIA NIM',    'https://integrate.api.nvidia.com/v1/chat/completions',     'meta/llama-3.3-70b-instruct'],
+        // Nama model DIPERIKSA ULANG 2026-11-18 lewat endpoint /models masing-masing
+        // provider, lalu diuji satu per satu DENGAN function calling. Jangan ganti
+        // nama model dari ingatan -- model gratis sering dipensiunkan diam-diam, dan
+        // kalau namanya salah provider-nya balas 404/410 lalu rantai fallback
+        // membuang 10 detik per provider mati (lihat TIMEOUT_SECONDS).
+        'GROQ'        => ['Groq',          'https://api.groq.com/openai/v1/chat/completions',          'openai/gpt-oss-120b'],
+        'OPENROUTER'  => ['OpenRouter',    'https://openrouter.ai/api/v1/chat/completions',            'nvidia/nemotron-3.5-lightning:free'],
+        'COHERE'      => ['Cohere',        'https://api.cohere.ai/compatibility/v1/chat/completions',  'command-a-03-2025'],
+        'MISTRAL'     => ['Mistral',       'https://api.mistral.ai/v1/chat/completions',               'mistral-small-latest'],
+        'NVIDIA'      => ['NVIDIA NIM',    'https://integrate.api.nvidia.com/v1/chat/completions',     'nvidia/nemotron-3.5-lightning-30b-a3b'],
         'CEREBRAS'    => ['Cerebras',      'https://api.cerebras.ai/v1/chat/completions',              'llama-3.3-70b'],
         'SAMBANOVA'   => ['SambaNova',     'https://api.sambanova.ai/v1/chat/completions',             'Meta-Llama-3.1-70B-Instruct'],
-        'MISTRAL'     => ['Mistral',       'https://api.mistral.ai/v1/chat/completions',               'mistral-small-latest'],
         'TOGETHER'    => ['Together AI',   'https://api.together.xyz/v1/chat/completions',             'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free'],
         'DEEPSEEK'    => ['DeepSeek',      'https://api.deepseek.com/chat/completions',                'deepseek-chat'],
         'FIREWORKS'   => ['Fireworks AI',  'https://api.fireworks.ai/inference/v1/chat/completions',   'accounts/fireworks/models/llama-v3p3-70b-instruct'],
         'HUGGINGFACE' => ['Hugging Face',  'https://router.huggingface.co/v1/chat/completions',        'deepseek-ai/DeepSeek-V3'],
-        'COHERE'      => ['Cohere',        'https://api.cohere.ai/compatibility/v1/chat/completions',  'command-r-plus-08-2024'],
         'AI21'        => ['AI21',          'https://api.ai21.com/studio/v1/chat/completions',          'jamba-mini'],
     ];
 
     /**
      * Urutan fallback ANTAR PROVIDER. Ubah urutan ini kapan saja tanpa
      * menyentuh kode lain di bawah.
+     *
+     * Urutan ini bukan selera -- ini hasil pengukuran 2026-11-18, diuji dengan
+     * function calling (yang wajib untuk BayTasks, karena AI harus bisa
+     * memanggil create_task / record_transaction / dst):
+     *
+     *   Gemini  2716 ms  OK      <- setelah perbaikan enum, lihat toGeminiTools()
+     *   Groq    1656 ms  OK      (openai/gpt-oss-120b)
+     *   OpenRtr 2329 ms  OK      (nvidia/nemotron-3.5-lightning:free)
+     *   Cohere  2492 ms  OK      (command-a-03-2025; model lama command-r-plus
+     *                             masih hidup tapi 15349 ms -- terlalu lambat
+     *                             untuk webhook Telegram)
+     *
+     * Empat provider di atas cukup. Sisanya SENGAJA tidak dimasukkan ke rantai
+     * karena saat diuji semuanya gagal dan masing-masing memakan jatah timeout:
+     *   Mistral      429 Rate limit exceeded (key valid, cuma kena limit)
+     *   NVIDIA NIM   timeout >30 detik dari jaringan ini
+     *   Cerebras     401 Wrong API Key
+     *   SambaNova    401 Incorrect API key provided
+     *   DeepSeek     402 Insufficient Balance
+     *   Fireworks    412 Account suspended
+     *   HuggingFace  402 butuh pre-paid credits
+     *   Together/AI21 belum ada key di .env
+     *
+     * Kalau salah satunya sudah dibereskan (key baru / saldo diisi), cukup
+     * tambahkan kembali namanya ke daftar ini -- implementasinya sudah ada.
      */
     private const PROVIDER_CHAIN_ORDER = [
-        'GEMINI', 'GROQ', 'OPENROUTER', 'NVIDIA',
-        'CEREBRAS', 'SAMBANOVA', 'MISTRAL', 'TOGETHER',
-        'DEEPSEEK', 'FIREWORKS', 'HUGGINGFACE', 'COHERE', 'AI21',
+        'GEMINI', 'GROQ', 'OPENROUTER', 'COHERE',
     ];
 
     private const GEMINI_MODEL = 'gemini-2.5-flash';
@@ -353,7 +381,10 @@ class AiService
                             'type' => 'function',
                             'function' => [
                                 'name' => $tc['name'],
-                                'arguments' => json_encode($tc['arguments'], JSON_UNESCAPED_UNICODE),
+                                // (object) supaya tool tanpa argumen terkirim
+                                // sebagai "{}" dan bukan "[]" — sebagian provider
+                                // OpenAI-compatible menolak bentuk list di sini.
+                                'arguments' => json_encode((object) ($tc['arguments'] ?? []), JSON_UNESCAPED_UNICODE),
                             ],
                         ], $m['tool_calls']),
                     ];
@@ -407,7 +438,21 @@ class AiService
                     $tc = $m['tool_calls'][0];
                     $contents[] = [
                         'role' => 'model',
-                        'parts' => [['functionCall' => ['name' => $tc['name'], 'args' => $tc['arguments']]]],
+                        // (object) WAJIB di sini. `args` di sisi Gemini bertipe
+                        // protobuf Struct, yaitu objek. Kalau tool dipanggil TANPA
+                        // argumen (mis. get_finance_categories), $tc['arguments']
+                        // berisi array PHP kosong, dan json_encode([]) menghasilkan
+                        // `[]` — sebuah LIST. Gemini menolaknya dengan:
+                        //   400 Unknown name "args" at 'contents[1].parts[0]
+                        //       .function_call': Proto field is not repeating,
+                        //       cannot start list.
+                        // Efeknya persis seperti bug enum di sanitizeSchemaForGemini:
+                        // percakapan yang butuh tool tanpa argumen SELALU gagal di
+                        // Gemini lalu jatuh ke provider cadangan.
+                        'parts' => [['functionCall' => [
+                            'name' => $tc['name'],
+                            'args' => (object) ($tc['arguments'] ?? []),
+                        ]]],
                     ];
                 } else {
                     $contents[] = ['role' => 'model', 'parts' => [['text' => $m['content'] ?? '']]];
@@ -418,12 +463,21 @@ class AiService
 
             if ($m['role'] === 'tool') {
                 $decoded = json_decode($m['content'] ?? '{}', true);
+
+                // `response` juga bertipe Struct di Gemini — harus objek, bukan
+                // list. Hasil tool kita sering berupa array berindeks angka
+                // (mis. daftar transaksi), jadi yang seperti itu dibungkus dulu
+                // ke dalam key `result` supaya tetap jadi objek di JSON.
+                $response = is_array($decoded) && $decoded !== [] && array_keys($decoded) !== range(0, count($decoded) - 1)
+                    ? $decoded
+                    : ['result' => $decoded];
+
                 $contents[] = [
                     'role' => 'user',
                     'parts' => [[
                         'functionResponse' => [
                             'name' => $m['name'] ?? 'unknown',
-                            'response' => is_array($decoded) ? $decoded : ['result' => $decoded],
+                            'response' => (object) $response,
                         ],
                     ]],
                 ];
@@ -456,8 +510,73 @@ class AiService
         return array_map(fn (array $tool) => [
             'name' => $tool['name'],
             'description' => $tool['description'] ?? '',
-            'parameters' => $tool['parameters'] ?? ['type' => 'object', 'properties' => new \stdClass()],
+            'parameters' => $this->sanitizeSchemaForGemini(
+                $tool['parameters'] ?? ['type' => 'object', 'properties' => new \stdClass()]
+            ),
         ], $tools);
+    }
+
+    /**
+     * Rapikan JSON Schema supaya diterima Gemini.
+     *
+     * MASALAH YANG DIPERBAIKI
+     * Gemini memakai subset OpenAPI 3.0, dan di sana `enum` HANYA sah untuk
+     * properti bertipe string. AiToolRegistry punya beberapa properti integer
+     * dengan enum angka, contohnya:
+     *
+     *     'board_id' => ['type' => 'integer', 'enum' => [2, 4]]
+     *
+     * Gemini menolak seluruh request-nya dengan:
+     *     400 Invalid value at 'tools[0].function_declarations[0]
+     *         .parameters.properties[1].value.enum[0]' (TYPE_STRING), 2
+     *
+     * Karena Gemini ada di urutan PERTAMA rantai fallback, satu enum angka ini
+     * membuat SELURUH fitur AI jatuh ke provider cadangan setiap kali dipanggil —
+     * dan waktu itu provider cadangannya juga mati semua, jadi efeknya "AI tidak
+     * jalan" total. Provider OpenAI-compatible tidak bermasalah dengan enum
+     * angka, jadi perbaikannya dilakukan di sini saja, bukan dengan melemahkan
+     * skema di AiToolRegistry untuk semua provider.
+     *
+     * Yang dilakukan: untuk properti non-string, `enum` dibuang tapi daftar
+     * nilainya dipindah ke `description` supaya model tetap tahu pilihannya.
+     * Berjalan rekursif karena skema bisa bersarang (object di dalam object,
+     * dan `items` milik array).
+     */
+    private function sanitizeSchemaForGemini(mixed $schema): mixed
+    {
+        if (! is_array($schema)) {
+            return $schema;
+        }
+
+        $type = isset($schema['type']) && is_string($schema['type'])
+            ? strtolower($schema['type'])
+            : null;
+
+        if (isset($schema['enum']) && is_array($schema['enum']) && $type !== null && $type !== 'string') {
+            $values = implode(', ', array_map(
+                static fn ($v) => is_scalar($v) ? (string) $v : json_encode($v),
+                $schema['enum']
+            ));
+
+            $description = trim((string) ($schema['description'] ?? ''));
+            $schema['description'] = $description === ''
+                ? "Nilai yang diizinkan: {$values}."
+                : rtrim($description, ' .').". Nilai yang diizinkan: {$values}.";
+
+            unset($schema['enum']);
+        }
+
+        if (isset($schema['properties']) && is_array($schema['properties'])) {
+            foreach ($schema['properties'] as $name => $property) {
+                $schema['properties'][$name] = $this->sanitizeSchemaForGemini($property);
+            }
+        }
+
+        if (isset($schema['items'])) {
+            $schema['items'] = $this->sanitizeSchemaForGemini($schema['items']);
+        }
+
+        return $schema;
     }
 
     private function shortenBody(string $body): string

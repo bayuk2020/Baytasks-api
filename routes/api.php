@@ -230,6 +230,10 @@ Route::prefix('finance')->group(function () {
 // GOALS SYSTEM API
 // =========================
 Route::apiResource('goals', GoalController::class);
+// Didaftarkan SEBELUM apiResource. Kalau ditaruh sesudah, `milestones/reorder`
+// akan lebih dulu cocok dengan pola `milestones/{milestone}` milik apiResource
+// dan Laravel mengira "reorder" adalah sebuah id.
+Route::post('milestones/reorder', [MilestoneController::class, 'reorder']);
 Route::apiResource('milestones', MilestoneController::class)->only(['store', 'update', 'destroy']);
 Route::apiResource('quarterly-plans', QuarterlyPlanController::class)->only(['store', 'update']);
 

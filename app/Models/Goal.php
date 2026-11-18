@@ -45,7 +45,14 @@ class Goal extends Model
      */
     public function milestones(): HasMany
     {
-        return $this->hasMany(Milestone::class, 'goal_id', 'id');
+        // Urutan ditentukan sort_order (bisa diatur user lewat drag & drop di
+        // halaman detail Goal). `id` dipakai sebagai pemecah seri supaya dua
+        // milestone dengan sort_order sama tidak bertukar posisi secara acak
+        // antar query — MySQL tidak menjamin urutan baris yang nilai ORDER BY-nya
+        // kembar.
+        return $this->hasMany(Milestone::class, 'goal_id', 'id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
     }
 
     /**

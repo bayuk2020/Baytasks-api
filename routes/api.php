@@ -113,6 +113,8 @@ Route::get('/app-settings', [AppSettingController::class, 'index']);
 Route::patch('/app-settings', [AppSettingController::class, 'update']);
 Route::post('/app-settings/sleep', [AppSettingController::class, 'sleep']);
 Route::post('/app-settings/send/{jenis}', [AppSettingController::class, 'sendNow']);
+Route::post('/app-settings/test-reminder', [AppSettingController::class, 'testReminder']);
+Route::get('/app-settings/koneksi', [AppSettingController::class, 'koneksi']);
 
 // =========================
 // BOARDS

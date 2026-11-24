@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\SubtaskController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AppSettingController;
 use App\Http\Controllers\Api\BookBookmarkController;
+use App\Http\Controllers\Api\BookFileController;
 use App\Http\Controllers\Api\TelegramSettingController;
 use App\Http\Controllers\Api\BoardController;
 use App\Http\Controllers\Api\HabitController;
@@ -103,6 +104,11 @@ Route::post('/tasks/reorder', [TaskController::class, 'reorder']);
 // `toggle` sengaja memakai POST ke satu alamat: menandai dan melepas penanda
 // adalah tindakan yang sama dari sudut pandang user (sekali klik di pita
 // penanda), jadi sisi web tidak perlu tahu lebih dulu status halamannya.
+
+// Berkas PDF disajikan lewat rute API supaya header CORS ikut terpasang --
+// pdf.js mengambilnya dengan fetch, bukan lewat <iframe>. Lihat
+// BookFileController untuk alasan lengkapnya.
+Route::get('/books/{book}/file', [BookFileController::class, 'show']);
 
 Route::get('/books/{book}/bookmarks', [BookBookmarkController::class, 'index']);
 Route::post('/books/{book}/bookmarks/toggle', [BookBookmarkController::class, 'toggle']);

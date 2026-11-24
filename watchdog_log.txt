@@ -8742,3 +8742,53 @@ Access is denied.
   OK    scheduler Laravel
   OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
   (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+Access is denied.
+[2026-11-24 13.36.04] start_stack.ps1
+  OK    artisan serve (API :8000)
+  START worker reminder  (run_silent.vbs)
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+[2026-11-24 13.41.03] start_stack.ps1
+  OK    artisan serve (API :8000)
+  START worker reminder  (run_silent.vbs)
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+[2026-11-24 13.46.03] start_stack.ps1
+  OK    artisan serve (API :8000)
+  START worker reminder  (run_silent.vbs)
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+[2026-11-24 13.51.03] start_stack.ps1
+  OK    artisan serve (API :8000)
+  START worker reminder  (run_silent.vbs)
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+[2026-11-24 14.26.04] start_stack.ps1
+  OK    artisan serve (API :8000)
+  START worker reminder  (run_silent.vbs)
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+[2026-11-24 14.36.20] start_stack.ps1
+  OK    artisan serve (API :8000)
+  START worker reminder  (run_silent.vbs)
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+Access is denied.
+[2026-11-24 15.25.58] start_stack.ps1
+  OK    artisan serve (API :8000)
+  START worker reminder  (run_silent.vbs)
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+[2026-11-24 15.31.03] start_stack.ps1
+  OK    artisan serve (API :8000)
+  OK    worker reminder
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)

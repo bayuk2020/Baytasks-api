@@ -231,10 +231,24 @@ Storage::disk('public')
     ) {
 
         $oldPage =
-            $book->current_page;
+            (int) $book->current_page;
 
         $newPage =
             (int) $request->current_page;
+
+        // Halaman yang tidak benar-benar berpindah TIDAK boleh menghasilkan
+        // baris sesi baca. Tanpa penjaga ini, pemanggil yang mengirim nilai
+        // yang sama berulang kali (mis. pembaca PDF yang menyimpan otomatis)
+        // menumpuk sesi kosong: pada 24 Nov 2026 ditemukan 27 dari 40 baris
+        // reading_sessions ber-pages_read = 0, yang ikut mengacaukan hitungan
+        // "Pages read" dan "Sessions" di halaman buku.
+        if ($newPage === $oldPage) {
+            return response()->json([
+                'success' => true,
+                'book'    => $book,
+                'catatan' => 'Halaman tidak berubah, sesi baca tidak dicatat.',
+            ]);
+        }
 
         $book->current_page =
             $newPage;

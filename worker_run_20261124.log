@@ -1,0 +1,935 @@
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select * from `telegram_settings` limit 1)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:829
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕ 
+  ➜ 829▕             throw new QueryException(
+    830▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    831▕             );
+    832▕         }
+    833▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
+      PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
+
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272
+"2026-11-24" // app\Console\Commands\SendTaskReminders.php:272

@@ -4295,3 +4295,4 @@
   2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:65
       PDO::__construct("mysql:host=127.0.0.1;port=3306;dbname=baytasks", "root", Object(SensitiveParameterValue), [])
 
+[24/11/2026 15.26.05,74] Instance worker lain masih jalan -- keluar. 

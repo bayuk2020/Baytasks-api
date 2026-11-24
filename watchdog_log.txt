@@ -8736,3 +8736,9 @@ Access is denied.
   OK    scheduler Laravel
   OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
   (Apache + MySQL: urusan Laragon, tidak disentuh script ini)
+[2026-11-24 13.16.04] start_stack.ps1
+  OK    artisan serve (API :8000)
+  START worker reminder  (run_silent.vbs)
+  OK    scheduler Laravel
+  OK    cloudflared tunnel  (Windows Service, domain publik menjawab)
+  (Apache + MySQL: urusan Laragon, tidak disentuh script ini)

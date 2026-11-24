@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Telegram\Core\TelegramSessionManager;
 use App\Telegram\Handlers\TaskHandler;
 use App\Telegram\Handlers\HabitHandler;
 use App\Telegram\Handlers\AiHandler;
@@ -98,6 +99,23 @@ class TelegramWebhookController extends Controller
         // Ambil session saat ini
         $session = DB::table('telegram_sessions')->where('chat_id', $chatId)->first();
         $step = $session->step ?? 'idle';
+
+        // PENANGKAL SESI NYANGKUT: sesi non-idle yang sudah lama tidak bergerak
+        // dianggap ditinggalkan, lalu dipulangkan ke 'idle'. Tanpa ini, step
+        // seperti `leisure_dashboard_waiting` menetap selamanya dan semua teks
+        // user dibelokkan ke handler modul -- tidak pernah sampai ke AI.
+        // Lihat TelegramSessionManager::MENIT_SESI_BASI untuk alasan lengkapnya.
+        $sessionManager = new TelegramSessionManager();
+        if ($sessionManager->sesiBasi($session)) {
+            Log::info('[TelegramWebhook] Sesi basi dipulangkan ke idle.', [
+                'chat_id'    => $chatId,
+                'step_lama'  => $step,
+                'updated_at' => $session->updated_at,
+            ]);
+            $sessionManager->clearSession($chatId);
+            $session = DB::table('telegram_sessions')->where('chat_id', $chatId)->first();
+            $step = 'idle';
+        }
 
         // Tentukan Prefixes untuk Message Text
         $taskPrefixes = ['form_', 'waiting_', 'wiz_', 'manual_board_', 'select_task_', 'action_', 'set_prio_', 'sub_', 'intercept_target_', 'task_wizard_running'];

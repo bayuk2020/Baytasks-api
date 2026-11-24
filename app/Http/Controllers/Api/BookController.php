@@ -49,6 +49,13 @@ return response()->json([
     'books' => $books,
     'bookNotes' => BookNote::latest()->get(),
     'readingSessions' => ReadingSession::latest()->get(),
+
+    // Ikut dikirim di sini supaya halaman Library cukup satu permintaan.
+    // Jumlahnya kecil (satu baris per halaman yang ditandai), jadi tidak
+    // sebanding kalau dibuat panggilan terpisah.
+    'bookBookmarks' => \App\Models\BookBookmark::orderBy('book_id')
+        ->orderBy('page_number')
+        ->get(),
 ]);
     }
 

@@ -2,28 +2,30 @@
 
 namespace App\Services;
 
+use App\Models\AppSetting;
 use App\Models\Task;
 use App\Models\TelegramSetting;
+use App\Services\IzinNotifikasi;
 
 class DailyBriefing
 {
     public function run()
     {
-        $setting =
-            TelegramSetting::first();
+        // Semua syarat kirim di satu tempat -- lihat Services/IzinNotifikasi.
+        //
+        // Pemilik saklar untuk briefing ini sekarang `notif.daily_briefing.enabled`
+        // di app_settings, BUKAN lagi kolom `telegram_settings.daily_briefing`.
+        // Kolom lama itu dibiarkan ikut diperbarui oleh AppSettingController
+        // supaya tidak saling bertentangan, tapi tidak dibaca lagi di sini.
+        //
+        // Jam diam tidak dihormati: jam briefing dipilih user sendiri.
+        $izin = IzinNotifikasi::periksa('notif.daily_briefing.enabled', false);
 
-        if (
-            !$setting ||
-            !$setting->enabled ||
-            !$setting->daily_briefing ||
-            !$setting->chat_id
-        ) {
+        if (! $izin['boleh']) {
             return;
         }
 
-        if ($setting->is_sleeping) {
-            return;
-        }
+        $setting = $izin['setting'];
 
         $open =
             Task::whereNull(
@@ -150,5 +152,8 @@ if (
             $setting->chat_id,
             $message
         );
+
+        // Jejak waktu untuk panel status di halaman Setting.
+        AppSetting::catatStatus('status.daily_briefing.last_sent_at');
     }
 }

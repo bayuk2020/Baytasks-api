@@ -94,6 +94,19 @@ class RecurringTaskService
                 'board_id' =>
                     $task->board_id,
 
+                // WAJIB diwarisi dari task asalnya. `tasks.user_id` NOT NULL
+                // tanpa default dan punya foreign key ke `users.id`, jadi tanpa
+                // baris ini MySQL menolak insert dengan:
+                //   1364 Field 'user_id' doesn't have a default value
+                // Akibatnya service ini gagal SETIAP MENIT sejak 27 Juni 2026:
+                // task berulang tidak pernah terbuat, dan tiap kegagalan menulis
+                // stacktrace ~4,5 KB ke laravel.log (20-25 MB per hari).
+                // Fallback 1 mengikuti pola yang sudah dipakai di
+                // TaskController@store (`$request->user_id ?? 1`) karena aplikasi
+                // ini satu pengguna.
+                'user_id' =>
+                    $task->user_id ?? 1,
+
                 'title' =>
                     $task->title,
 

@@ -33,18 +33,21 @@ class HabitReminders extends Command
     // =========================================================
     // AMBIL DATA CHAT ID UTAMA
     // =========================================================
-    $setting = TelegramSetting::first();
-    if (!$setting || !$setting->enabled || !$setting->chat_id) {
-      Log::warning('[baytasks:habit-reminders] ABORT: telegram_settings tidak ada / enabled=false / chat_id kosong');
-      dump('ERROR: NO TELEGRAM CHAT ID OR INTEGRATION DISABLED');
-      return 1;
-    }
+    // Semua syarat kirim di satu tempat -- lihat Services/IzinNotifikasi.
+    // Jam diam dihormati karena reminder habit dipicu jam habit, bukan jam
+    // yang user pilih di halaman Setting.
+    $izin = \App\Services\IzinNotifikasi::periksa('notif.habit_reminders.enabled', true);
 
-    if ($setting->is_sleeping) {
-      Log::info('[baytasks:habit-reminders] SKIP: is_sleeping=true');
+    if (!$izin['boleh']) {
+      Log::info('[baytasks:habit-reminders] SKIP: ' . $izin['alasan']);
+
+      // $this->info(), BUKAN dump() -- lihat alasannya di SendTaskReminders.
+      $this->info('SKIP: ' . $izin['alasan']);
+
       return 0;
     }
 
+    $setting = $izin['setting'];
     $chatId = $setting->chat_id;
 
     // =========================================================

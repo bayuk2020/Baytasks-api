@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\AppSetting;
 use App\Models\Task;
 use App\Models\Habit;
+use App\Services\IzinNotifikasi;
 use App\Services\TelegramService;
 use App\Models\TelegramSetting;
 use Illuminate\Support\Facades\DB;
@@ -26,22 +28,29 @@ class SendTaskReminders extends Command
         // =========================================================
         // AMBIL DATA CHAT ID UTAMA
         // =========================================================
-        $setting = TelegramSetting::first();
-        if (!$setting || !$setting->enabled || !$setting->chat_id) {
-            Log::warning('[baytasks:reminders] ABORT: telegram_settings tidak ada / enabled=false / chat_id kosong', [
-                'setting_exists' => (bool) $setting,
-                'enabled' => $setting->enabled ?? null,
-                'chat_id' => $setting->chat_id ?? null,
-            ]);
-            dump('ERROR: NO TELEGRAM CHAT ID OR INTEGRATION DISABLED');
-            return 1;
-        }
+        // Syarat yang dipakai bersama oleh KETIGA jalur di command ini (pulse,
+        // reminder task, reminder habit): chat_id, saklar Telegram, saklar
+        // induk, Sleep Mode, dan jam diam. Kunci kosong karena tiap jalur
+        // punya saklarnya sendiri, diperiksa di bawah.
+        //
+        // Jam diam DIHORMATI di sini -- ketiga jalur ini dipicu kejadian
+        // (jatuh tempo, jam habit, denyut), bukan jam yang user pilih sendiri
+        // seperti morning brief.
+        $izin = IzinNotifikasi::periksa('', true);
 
-        if ($setting->is_sleeping) {
-            Log::info('[baytasks:reminders] SKIP: is_sleeping=true, semua reminder dibungkam sampai bangun.');
+        if (!$izin['boleh']) {
+            Log::info('[baytasks:reminders] SKIP: ' . $izin['alasan']);
+
+            // $this->info(), BUKAN dump(): keluaran dump() tidak ikut terbaca
+            // oleh Artisan::output(), sehingga alasan skip tidak sampai ke
+            // halaman Setting saat command dipanggil dari sana. Dua-duanya
+            // sama-sama muncul di worker_run.log.
+            $this->info('SKIP: ' . $izin['alasan']);
+
             return 0;
         }
 
+        $setting = $izin['setting'];
         $chatId = $setting->chat_id;
 
         // BINDING TIMESTAMP UTAMA (UNTUK METODE TOLERANSI RENTANG DETIK)
@@ -51,7 +60,15 @@ class SendTaskReminders extends Command
         // =========================================================
         // PENGKONDISIAN A: TRIGGER INTERUPSI AKTIVITAS TIAP 15 MENIT (PULSE CHECKER)
         // =========================================================
-        if ((int)date('i') % 60 === 0) {
+        // Interval pulse sekarang diatur dari halaman Setting, tidak lagi beku
+        // di angka 60. Bawaannya tetap 60 supaya perilaku lama terjaga.
+        // Catatan: komentar judul di atas dan teks dump() di bawah menulis
+        // "15 menit" sejak dulu padahal angkanya 60 -- sekarang pakai nilai
+        // sebenarnya biar tidak menyesatkan lagi.
+        $intervalPulse = max(1, (int) AppSetting::ambil('notif.pulse.interval_minutes'));
+        $pulseHidup = (bool) AppSetting::ambil('notif.pulse.enabled');
+
+        if ($pulseHidup && (int)date('i') % $intervalPulse === 0) {
 
             // Kunci unik berdasarkan tahun, bulan, tanggal, jam, dan menit (misal: pulse_sent_202607210830)
             $pulseKey = "pulse_sent_" . date('YmdHi');
@@ -64,6 +81,22 @@ class SendTaskReminders extends Command
 
                 $currentSession = DB::table('telegram_sessions')->where('chat_id', $chatId)->first();
 
+                // Sesi non-idle yang sudah lama tidak bergerak JANGAN dianggap
+                // "sibuk". Dulu sesi nyangkut (mis. `leisure_dashboard_waiting`)
+                // membuat pulse ini di-skip tiap jam tanpa akhir, jadi pengingat
+                // ikut mati. Lihat TelegramSessionManager::MENIT_SESI_BASI.
+                if ((new \App\Telegram\Core\TelegramSessionManager())->sesiBasi($currentSession)) {
+                    dump("SESI BASI ({$currentSession->step}) -> dipulangkan ke idle, pulse tetap jalan.");
+                    DB::table('telegram_sessions')->where('chat_id', $chatId)->update([
+                        'step'           => 'idle',
+                        'active_task_id' => null,
+                        'form_state'     => null,
+                        'context_data'   => null,
+                        'updated_at'     => now(),
+                    ]);
+                    $currentSession = DB::table('telegram_sessions')->where('chat_id', $chatId)->first();
+                }
+
                 if ($currentSession && (
                     str_starts_with($currentSession->step, 'form_') ||
                     str_contains($currentSession->step, 'leisure') ||
@@ -73,9 +106,9 @@ class SendTaskReminders extends Command
                     $currentSession->step === 'waiting_subtask_confirmation' ||
                     $currentSession->step === 'task_wizard_running'
                 )) {
-                    dump("SKIP 15-MIN PULSE: Bayu is currently busy handling a module ({$currentSession->step}).");
+                    dump("SKIP PULSE ({$intervalPulse} menit): Bayu is currently busy handling a module ({$currentSession->step}).");
                 } else {
-                    dump("MATCH: 15-MINUTE ACTIVITY PULSE CHECK TRIGGERED");
+                    dump("MATCH: ACTIVITY PULSE CHECK TRIGGERED (interval {$intervalPulse} menit)");
 
                     $pulseMenu = [
                         'inline_keyboard' => [
@@ -99,10 +132,15 @@ class SendTaskReminders extends Command
         // =========================================================
         // PENGKONDISIAN B: JALUR REMINDER JATUH TEMPO TASK
         // =========================================================
-        $tasks = Task::whereNull('completed_at')
-            ->where('reminded', false)
-            ->whereNotNull('due_at')
-            ->get();
+        // Saklar "Reminder jatuh tempo task" di halaman Setting. Dimatikan =
+        // daftar kandidatnya kosong, jadi loop di bawah tidak jalan sama
+        // sekali -- tidak ada jalur lain yang bisa lolos.
+        $tasks = AppSetting::ambil('notif.task_reminders.enabled')
+            ? Task::whereNull('completed_at')
+                ->where('reminded', false)
+                ->whereNotNull('due_at')
+                ->get()
+            : collect();
 
         Log::info('[baytasks:reminders] Task candidates dengan due_at & belum reminded: ' . $tasks->count());
 
@@ -168,6 +206,9 @@ class SendTaskReminders extends Command
                 'reply_markup' => json_encode($replyMarkup)
             ]);
 
+            // Jejak waktu untuk panel status di halaman Setting.
+            AppSetting::catatStatus('status.task_reminders.last_sent_at');
+
             // Hanya tandai reminded = true di database jika ini adalah alarm terakhir
             if ($statusText === "🚨 <b>WAKTUNYA SEKARANG!</b>") {
                 $task->update(['reminded' => true]);
@@ -185,15 +226,22 @@ class SendTaskReminders extends Command
         // sama dengan belum diarsip di SEMUA query habit di bawah.
         $notArchived = fn($q) => $q->where('archived', false)->orWhereNull('archived');
 
+        // Saklar "Reminder habit" di halaman Setting. Dimatikan = kedua daftar
+        // habit di bawah kosong, jadi tidak ada notifikasi habit yang keluar
+        // (baik "terlewat" maupun reminder utama).
+        $habitHidup = (bool) AppSetting::ambil('notif.habit_reminders.enabled');
+
         // 1. EVALUASI HABIT YANG TERLEWAT
-        $expiredHabits = Habit::where($notArchived)
-            ->whereNotNull('due_time')
-            ->whereNotExists(function ($query) use ($todayStr) {
-                $query->select(DB::raw(1))
-                    ->from('habit_logs')
-                    ->whereRaw('habit_logs.habit_id = habits.id')
-                    ->where('habit_logs.date', $todayStr);
-            })->get();
+        $expiredHabits = $habitHidup
+            ? Habit::where($notArchived)
+                ->whereNotNull('due_time')
+                ->whereNotExists(function ($query) use ($todayStr) {
+                    $query->select(DB::raw(1))
+                        ->from('habit_logs')
+                        ->whereRaw('habit_logs.habit_id = habits.id')
+                        ->where('habit_logs.date', $todayStr);
+                })->get()
+            : collect();
 
         Log::info('[baytasks:reminders] Habit kandidat "terlewat" (due_time sudah lewat, belum ada log hari ini): ' . $expiredHabits->count());
 
@@ -229,13 +277,15 @@ class SendTaskReminders extends Command
         // query ulang TANPA filter itu sama sekali -- efeknya habit yang sudah
         // ditandai selesai pun tetap kebagian reminder lagi. Sudah digabung jadi
         // satu query yang benar di bawah (filter whereNotExists tetap dipakai).
-        $activeHabits = Habit::where($notArchived)
-            ->whereNotExists(function ($query) use ($todayStr) {
-                $query->select(DB::raw(1))
-                    ->from('habit_logs')
-                    ->whereRaw('habit_logs.habit_id = habits.id')
-                    ->where('habit_logs.date', $todayStr);
-            })->get();
+        $activeHabits = $habitHidup
+            ? Habit::where($notArchived)
+                ->whereNotExists(function ($query) use ($todayStr) {
+                    $query->select(DB::raw(1))
+                        ->from('habit_logs')
+                        ->whereRaw('habit_logs.habit_id = habits.id')
+                        ->where('habit_logs.date', $todayStr);
+                })->get()
+            : collect();
 
         Log::info('[baytasks:reminders] Habit aktif (belum diarsip, belum ada log hari ini): ' . $activeHabits->count());
 
@@ -312,6 +362,9 @@ class SendTaskReminders extends Command
             $telegram->sendMessage($chatId, $habitMessage, [
                 'reply_markup' => json_encode($habitMarkup)
             ]);
+
+            // Jejak waktu untuk panel status di halaman Setting.
+            AppSetting::catatStatus('status.habit_reminders.last_sent_at');
         }
 
         Log::info('[baytasks:reminders] DONE');

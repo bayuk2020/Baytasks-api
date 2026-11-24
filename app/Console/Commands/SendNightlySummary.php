@@ -3,11 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\AppSetting;
 use App\Models\Habit;
 use App\Models\HabitLog;
 use App\Models\Task;
 use App\Models\Subtask;
 use App\Models\TelegramSetting;
+use App\Services\IzinNotifikasi;
 use App\Services\TelegramService;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -24,11 +26,18 @@ class SendNightlySummary extends Command
         $setting = TelegramSetting::first();
         if (!$setting || !$setting->chat_id) {
             Log::warning('[baytasks:nightly-summary] ABORT: telegram_settings tidak ada / chat_id kosong');
+            $this->warn('ABORT: chat_id Telegram belum diatur.');
             return 0;
         }
 
-        if ($setting->is_sleeping) {
-            Log::info('[baytasks:nightly-summary] SKIP: is_sleeping=true');
+        // Semua syarat kirim di satu tempat -- lihat Services/IzinNotifikasi.
+        // Jam diam tidak dihormati di sini: jamnya dipilih user sendiri.
+        $izin = IzinNotifikasi::periksa('notif.nightly_summary.enabled', false, $setting);
+
+        if (!$izin['boleh']) {
+            Log::info('[baytasks:nightly-summary] SKIP: ' . $izin['alasan']);
+            // Dicetak supaya nightly_summary.log punya jejak alasannya.
+            $this->info('SKIP: ' . $izin['alasan']);
             return 0;
         }
 
@@ -130,6 +139,9 @@ class SendNightlySummary extends Command
         // Kirim Telegram
         $telegram = new TelegramService();
         $telegram->sendMessage($setting->chat_id, $msg);
+
+        // Jejak waktu untuk panel status di halaman Setting.
+        AppSetting::catatStatus('status.nightly_summary.last_sent_at');
 
         Log::info('[baytasks:nightly-summary] DONE -- terkirim.', ['habit_done' => $habitDoneCount, 'habit_total' => $totalHabit]);
         $this->info('Nightly summary sent successfully!');

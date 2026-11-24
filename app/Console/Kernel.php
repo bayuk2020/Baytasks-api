@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Models\AppSetting;
 use App\Services\RecurringTaskService;
 use App\Services\DailyBriefing;
 use Illuminate\Console\Scheduling\Schedule;
@@ -15,6 +16,23 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule): void
     {
+        // Jam kirim dibaca dari halaman Setting, tidak lagi beku di sini.
+        //
+        // Method ini dieksekusi ulang SETIAP `schedule:run` (sekali per menit),
+        // jadi mengubah jam di web langsung berlaku pada menit berikutnya --
+        // tidak perlu merestart apa pun.
+        //
+        // Pembacaannya WAJIB tidak boleh melempar exception: kalau gagal di
+        // sini, seluruh scheduler berhenti dan semua notifikasi mati senyap.
+        // AppSetting::ambil() sudah menelan error database dan memulangkan
+        // nilai bawaan; try/catch ini lapis kedua kalau ada yang tak terduga.
+        $jam = function (string $kunci, string $bawaan): string {
+            try {
+                return AppSetting::rapikanJam((string) AppSetting::ambil($kunci)) ?? $bawaan;
+            } catch (\Throwable $e) {
+                return $bawaan;
+            }
+        };
         /**
          * Menjalankan command untuk mengirim reminder tugas dan pulse check.
          * Command ini akan dieksekusi setiap menit oleh scheduler.
@@ -77,7 +95,7 @@ class Kernel extends ConsoleKernel
         $schedule
             ->call(fn() => app(DailyBriefing::class)->run())
             ->name('daily-briefing')
-            ->dailyAt('10:00')
+            ->dailyAt($jam('notif.daily_briefing.time', '10:00'))
             ->timezone('Asia/Jakarta')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/daily.log'));
@@ -87,7 +105,7 @@ class Kernel extends ConsoleKernel
          */
         $schedule
             ->command('baytasks:morning-brief')
-            ->dailyAt('08:00')
+            ->dailyAt($jam('notif.morning_brief.time', '08:00'))
             ->timezone('Asia/Jakarta')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/morning_brief.log'));
@@ -99,7 +117,7 @@ class Kernel extends ConsoleKernel
          */
         $schedule
             ->command('baytasks:nightly-summary')
-            ->dailyAt('21:00')
+            ->dailyAt($jam('notif.nightly_summary.time', '21:00'))
             ->timezone('Asia/Jakarta')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/nightly_summary.log'));

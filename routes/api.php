@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\SubtaskController;
 use App\Http\Controllers\Api\AttachmentController;
+use App\Http\Controllers\Api\AppSettingController;
+use App\Http\Controllers\Api\BookBookmarkController;
 use App\Http\Controllers\Api\TelegramSettingController;
 use App\Http\Controllers\Api\BoardController;
 use App\Http\Controllers\Api\HabitController;
@@ -86,6 +88,31 @@ Route::delete('/attachments/{id}', [AttachmentController::class, 'destroy']);
 Route::get('/telegram-settings', [TelegramSettingController::class, 'show']);
 Route::post('/telegram-settings', [TelegramSettingController::class, 'save']);
 Route::post('/tasks/reorder', [TaskController::class, 'reorder']);
+
+// =========================
+// APP SETTINGS (halaman Setting)
+// =========================
+// Catatan: halaman Setting TIDAK memakai /telegram-settings POST lagi, karena
+// endpoint itu mengirim pesan "Koneksi BayTasks Berhasil!" ke Telegram setiap
+// kali dipanggil -- dan halaman Setting menyimpan otomatis. Rutenya dibiarkan
+// ada supaya pemanggil lama tidak rusak.
+
+// =========================
+// BOOK BOOKMARKS (modul Library)
+// =========================
+// `toggle` sengaja memakai POST ke satu alamat: menandai dan melepas penanda
+// adalah tindakan yang sama dari sudut pandang user (sekali klik di pita
+// penanda), jadi sisi web tidak perlu tahu lebih dulu status halamannya.
+
+Route::get('/books/{book}/bookmarks', [BookBookmarkController::class, 'index']);
+Route::post('/books/{book}/bookmarks/toggle', [BookBookmarkController::class, 'toggle']);
+Route::patch('/book-bookmarks/{id}', [BookBookmarkController::class, 'update']);
+Route::delete('/book-bookmarks/{id}', [BookBookmarkController::class, 'destroy']);
+
+Route::get('/app-settings', [AppSettingController::class, 'index']);
+Route::patch('/app-settings', [AppSettingController::class, 'update']);
+Route::post('/app-settings/sleep', [AppSettingController::class, 'sleep']);
+Route::post('/app-settings/send/{jenis}', [AppSettingController::class, 'sendNow']);
 
 // =========================
 // BOARDS

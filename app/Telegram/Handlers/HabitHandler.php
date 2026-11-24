@@ -278,7 +278,31 @@ class HabitHandler
             ]);
             $this->telegram->sendMessage($this->chatId, "👌 <b>Oke siap, Bay!</b> Selamat melanjutkan aktivitasmu kawan, santai aja dulu sejenak.");
             $this->sessionManager->clearSession($this->chatId);
+            return;
         }
+
+        // =========================================================
+        // JARING PENGAMAN: STEP TANPA PENANGANAN TEKS -> LEMPAR KE AI
+        // =========================================================
+        // Tiga blok di atas hanya menangani step `leisure_view_tasks`,
+        // `leisure_view_habits`, dan `leisure_activity`. Step leisure/habit
+        // lainnya -- terutama `leisure_dashboard_waiting`, yang dipasang oleh
+        // renderLeisureDashboardMenu() -- dulu jatuh ke ujung fungsi ini dan
+        // return tanpa mengirim apa pun. Hasilnya bot DIAM TOTAL: tidak ada
+        // balasan, tidak ada pesan "perintah tidak dikenali", tidak ada error
+        // di log, dan teks user tidak pernah sampai ke AI.
+        //
+        // Sekarang teks di step semacam itu dianggap obrolan bebas: sesi
+        // dipulangkan ke idle lalu diserahkan ke AiHandler, persis seperti
+        // yang dilakukan TelegramWebhookController saat step == 'idle'.
+        $stepSekarang = $this->session->step ?? 'idle';
+        \Illuminate\Support\Facades\Log::info('[HabitHandler] Teks di step tanpa penanganan, dialihkan ke AI.', [
+            'chat_id' => $this->chatId,
+            'step'    => $stepSekarang,
+        ]);
+
+        $this->sessionManager->clearSession($this->chatId);
+        (new AiHandler($this->chatId, (string) $this->text))->execute();
     }
 
     private function checkLeisureDashboard()

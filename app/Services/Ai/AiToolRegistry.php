@@ -980,17 +980,25 @@ class AiToolRegistry
     /**
      * Modul: Pengaturan Bot -- Sleep Mode. Saat aktif, semua reminder
      * proaktif (task/habit/morning brief/nightly summary/daily briefing)
-     * dibungkam sampai dinyalakan lagi -- lihat guard `is_sleeping` di
-     * app/Console/Commands/*.php dan app/Services/DailyBriefing.php.
+     * dibungkam -- lihat guard `sedangTidur()` di app/Console/Commands/*.php
+     * dan app/Services/DailyBriefing.php.
+     *
+     * Sleep Mode TIDAK lagi bertahan tanpa batas: ia berakhir sendiri pada
+     * TelegramSetting::JAM_BANGUN_OTOMATIS berikutnya. Jaring pengaman itu
+     * dipasang karena tool ini pernah tidak dipanggil saat user menyapa
+     * pagi, dan semua notifikasi diam lima hari -- ceritanya lengkap di
+     * TelegramSetting::sedangTidur().
      */
     public static function toggleSleepMode(): array
     {
         return [
             'name' => 'toggle_sleep_mode',
             'description' => 'Menyalakan atau mematikan Sleep Mode. Saat Sleep Mode menyala, bot BERHENTI '
-                .'mengirim semua reminder proaktif (task, habit, morning brief, nightly summary) sampai '
-                .'dimatikan lagi. Panggil dengan status=true kalau user bilang mau tidur/selamat tidur, '
-                .'dan status=false kalau user menyapa pagi/bilang sudah bangun.',
+                .'mengirim semua reminder proaktif (task, habit, morning brief, nightly summary). '
+                .'WAJIB dipanggil dengan status=false setiap kali user menyapa pagi, bilang sudah bangun, '
+                .'atau menanyakan kenapa reminder tidak muncul -- jangan hanya menjawab sapaannya. '
+                .'Panggil dengan status=true kalau user bilang mau tidur/selamat tidur. '
+                .'Sleep Mode juga berakhir otomatis jam 05:00 kalau tidak pernah dimatikan manual.',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [

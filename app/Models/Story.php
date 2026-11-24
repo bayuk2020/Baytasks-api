@@ -24,7 +24,12 @@ class Story extends Model
      */
     public static function publicStorageUrl(string $relativePath): string
     {
-        $base = rtrim((string) env('PUBLIC_ASSET_URL', 'http://api.kabyra.my.id'), '/');
+        // Default WAJIB https. Dulu di sini tertulis http://, dan karena URL
+        // ini ikut tersimpan ke kolom image_path, gambar lama jadi beralamat
+        // http di halaman yang dibuka lewat https -- browser memblokirnya
+        // sebagai mixed content, jadi gambarnya tidak muncul meski berkasnya
+        // sehat. Nilai sebenarnya diambil dari PUBLIC_ASSET_URL di .env.
+        $base = rtrim((string) env('PUBLIC_ASSET_URL', 'https://api.kabyra.my.id'), '/');
 
         return $base.'/storage/'.ltrim($relativePath, '/');
     }

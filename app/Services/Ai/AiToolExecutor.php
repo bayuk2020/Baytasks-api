@@ -575,13 +575,19 @@ class AiToolExecutor
             return ['error' => 'Belum ada baris telegram_settings yang terdaftar.'];
         }
 
-        $setting->update(['is_sleeping' => $status]);
+        // Lewat helper model, bukan update() langsung: `tidurkan()` sekalian
+        // mencatat `sleeping_since`, dan catatan itulah yang dipakai
+        // TelegramSetting::sedangTidur() untuk membangunkan diri sendiri
+        // kalau tool ini tidak pernah dipanggil lagi dengan status=false.
+        $status ? $setting->tidurkan() : $setting->bangunkan();
+
+        $jamBangun = str_pad((string) \App\Models\TelegramSetting::JAM_BANGUN_OTOMATIS, 2, '0', STR_PAD_LEFT) . ':00';
 
         return [
             'success' => true,
             'is_sleeping' => $status,
             'message' => $status
-                ? 'Sleep Mode diaktifkan -- semua reminder proaktif (task/habit/morning brief/nightly summary) dibungkam sampai dimatikan lagi.'
+                ? "Sleep Mode diaktifkan -- semua reminder proaktif (task/habit/morning brief/nightly summary) dibungkam. Kalau tidak dimatikan manual, Sleep Mode berakhir sendiri jam {$jamBangun}."
                 : 'Sleep Mode dimatikan -- reminder proaktif jalan normal lagi.',
         ];
     }
